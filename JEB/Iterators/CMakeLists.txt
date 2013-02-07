@@ -10,8 +10,10 @@ set(PUBLIC_HEADERS
     PairInserter.hpp
     )
 
-install(FILES ${PUBLIC_HEADERS} DESTINATION include/JEB/Iterators)
-#install(TARGETS Iterators ARCHIVE DESTINATION lib)
+if (DEFINED JEB_INSTALL_API)
+    install(FILES ${PUBLIC_HEADERS} DESTINATION include/JEB/Iterators)
+    #install(TARGETS Iterators ARCHIVE DESTINATION lib)
+endif(DEFINED JEB_INSTALL_API)
 
 if (NOT DEFINED JEB_DISABLE_UNIT_TESTS)
     enable_testing()

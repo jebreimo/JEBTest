@@ -27,8 +27,10 @@ set(SRC
 
 add_library(JEBCollections STATIC ${SRC})
 
-install(FILES ${PUBLIC_HEADERS} DESTINATION include/JEB/Collections)
-install(TARGETS JEBCollections ARCHIVE DESTINATION lib)
+if (DEFINED JEB_INSTALL_API)
+    install(FILES ${PUBLIC_HEADERS} DESTINATION include/JEB/Collections)
+    #install(TARGETS JEBCollections ARCHIVE DESTINATION lib)
+endif(DEFINED JEB_INSTALL_API)
 
 if (NOT DEFINED JEB_DISABLE_UNIT_TESTS)
     enable_testing()

@@ -9,7 +9,10 @@ set(PUBLIC_HEADERS
     Sort.hpp
     )
 
-install(FILES ${PUBLIC_HEADERS} DESTINATION include/JEB/Algorithms)
+if (DEFINED JEB_INSTALL_API)
+    install(FILES ${PUBLIC_HEADERS} DESTINATION include/JEB/Algorithms)
+endif(DEFINED JEB_INSTALL_API)
+
 #install(TARGETS Algorithms ARCHIVE DESTINATION lib)
 
 if (NOT DEFINED JEB_DISABLE_UNIT_TESTS)

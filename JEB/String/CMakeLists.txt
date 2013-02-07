@@ -31,9 +31,11 @@ set(SRC
 
 add_library(JEBString STATIC ${SRC})
 
-install(FILES ${PUBLIC_HEADERS} DESTINATION include/JEB/String)
-install(FILES ${PUBLIC_HEADERS_UTF8} DESTINATION include/JEB/String/Utf8)
-install(TARGETS JEBString ARCHIVE DESTINATION lib)
+if (DEFINED JEB_INSTALL_API)
+    install(FILES ${PUBLIC_HEADERS} DESTINATION include/JEB/String)
+    install(FILES ${PUBLIC_HEADERS_UTF8} DESTINATION include/JEB/String/Utf8)
+    #install(TARGETS JEBString ARCHIVE DESTINATION lib)
+endif(DEFINED JEB_INSTALL_API)
 
 if (NOT DEFINED JEB_DISABLE_UNIT_TESTS)
     enable_testing()

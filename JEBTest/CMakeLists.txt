@@ -29,7 +29,15 @@ set(PUBLIC_HEADERS
     Session.hpp
     )
 
-add_library(JEBTest STATIC ${SRC})
+add_library(JEBTest ${SRC})
+target_link_libraries(JEBTest
+    JEBBits
+    JEBCollections
+    JEBMath
+    JEBString
+    JEBSys
+    JEBUnicode)
 
-install(FILES ${PUBLIC_HEADERS} DESTINATION JEB/Test)
+install(FILES ${PUBLIC_HEADERS} DESTINATION include/JEB/Test)
 #install(TARGETS JEBTest ARCHIVE DESTINATION lib)
+install(TARGETS JEBTest DESTINATION lib)

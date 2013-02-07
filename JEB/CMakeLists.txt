@@ -21,9 +21,11 @@ add_subdirectory(Sys)
 #add_subdirectory(ArgParser)
 #add_subdirectory(Xml)
 
-#set(PUBLIC_HEADERS
-#    JEBDefinitions.hpp
-#    )
+if (DEFINED JEB_INSTALL_API)
+    set(PUBLIC_HEADERS
+        JEBDefinitions.hpp
+        )
 
-#include(../CMakeConfig.cmake)
-#install(FILES ${PUBLIC_HEADERS} DESTINATION include/JEB)
+    include(../CMakeConfig.cmake)
+    install(FILES ${PUBLIC_HEADERS} DESTINATION include/JEB)
+endif(DEFINED JEB_INSTALL_API)
