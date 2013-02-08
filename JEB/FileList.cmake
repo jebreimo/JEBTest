@@ -1,5 +1,3 @@
-cmake_minimum_required(VERSION 2.8)
-
 set(JEB_LIB_DIR JEB)
 include(${JEB_LIB_DIR}/Algorithms/FileList.cmake)
 include(${JEB_LIB_DIR}/Bits/FileList.cmake)
