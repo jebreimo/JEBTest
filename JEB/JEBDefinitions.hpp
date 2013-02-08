@@ -2,7 +2,7 @@
 #define JEB_DEFINITIONS_HPP
 
 #ifdef JEB_USE_UNIT_TEST_NAMESPACE
-    #define JEB JEBTestExternals
+    #define JEB JEBTestLib
 #endif
 
 /** @file

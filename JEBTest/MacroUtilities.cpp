@@ -3,8 +3,8 @@
 #include "JEB/Sys/Path.hpp"
 #include "JEB/String/String.hpp"
 
-using namespace JEBTestExternals::Sys::Path;
-using namespace JEBTestExternals::String;
+using namespace JEBTestLib::Sys::Path;
+using namespace JEBTestLib::String;
 
 namespace JEB { namespace Unit {
 
