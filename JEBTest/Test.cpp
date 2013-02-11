@@ -4,7 +4,7 @@
 
 #include "Test.hpp"
 
-namespace JEB { namespace Unit {
+namespace JEB { namespace Test {
 
 Test::Test(const std::string& name)
     : m_Assertions(0),

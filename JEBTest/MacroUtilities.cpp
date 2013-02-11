@@ -3,10 +3,12 @@
 #include "JEB/Sys/Path.hpp"
 #include "JEB/String/String.hpp"
 
-using namespace JEBTestLib::Sys::Path;
-using namespace JEBTestLib::String;
+#undef JEB
 
-namespace JEB { namespace Unit {
+using namespace JEBTestLib::String;
+using namespace JEBTestLib::Sys;
+
+namespace JEB { namespace Test {
 
 std::string extractTestName(const std::string& name)
 {
@@ -17,7 +19,7 @@ std::string extractTestName(const std::string& name)
 
 std::vector<std::string> extractTestNames(const std::string& names)
 {
-    std::vector<std::string> list = String::split(names, ",");
+    std::vector<std::string> list = split(names, ",");
     for (auto it = list.begin(); it != list.end(); it++)
         *it = extractTestName(trim(*it));
     return list;
@@ -25,8 +27,8 @@ std::vector<std::string> extractTestNames(const std::string& names)
 
 std::string extractSuiteName(const std::string& path)
 {
-    std::string name = baseName(removeExtension(path));
-    if (startsWith(name, "testsuite_", FindFlags::CaseInsensitive))
+    std::string name = Path::baseName(Path::removeExtension(path));
+    if (startsWith(name, "testsuite_"/*, FindFlags::CaseInsensitive*/))
         return name.substr(10);
     return name;
 }

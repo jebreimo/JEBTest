@@ -1,9 +1,9 @@
-#ifndef JEB_UNIT_FORMATTERS_HPP
-#define JEB_UNIT_FORMATTERS_HPP
+#ifndef JEB_TEST_FORMATTERS_HPP
+#define JEB_TEST_FORMATTERS_HPP
 
 #include <sstream>
 
-namespace JEB { namespace Unit {
+namespace JEB { namespace Test {
 
 template <typename T, typename U>
 std::ostream& operator<<(std::ostream& os, const std::pair<T, U>& p)

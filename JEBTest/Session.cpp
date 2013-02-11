@@ -5,7 +5,7 @@
 #include <stdexcept>
 #include "TestSuite.hpp"
 
-namespace JEB { namespace Unit {
+namespace JEB { namespace Test {
 
 Session::Session()
     : m_Log(&std::cerr)

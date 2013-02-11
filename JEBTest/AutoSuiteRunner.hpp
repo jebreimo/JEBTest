@@ -1,9 +1,9 @@
-#ifndef JEB_UNIT_AUTOSUITERUNNER_HPP
-#define JEB_UNIT_AUTOSUITERUNNER_HPP
+#ifndef JEB_TEST_AUTOSUITERUNNER_HPP
+#define JEB_TEST_AUTOSUITERUNNER_HPP
 
 #include <vector>
 
-namespace JEB { namespace Unit {
+namespace JEB { namespace Test {
 
 class AutoSuite;
 

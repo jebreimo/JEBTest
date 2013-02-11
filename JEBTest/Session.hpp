@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 
-namespace JEB { namespace Unit {
+namespace JEB { namespace Test {
 
 class Error;
 class TestSuite;

@@ -1,9 +1,9 @@
-#ifndef JEB_UNIT_COMPARERS_HPP
-#define JEB_UNIT_COMPARERS_HPP
+#ifndef JEB_TEST_COMPARERS_HPP
+#define JEB_TEST_COMPARERS_HPP
 
 #include <cstring>
 
-namespace JEB { namespace Unit {
+namespace JEB { namespace Test {
 
 static double DoubleEpsilon = 0;
 static float FloatEpsilon = 0;

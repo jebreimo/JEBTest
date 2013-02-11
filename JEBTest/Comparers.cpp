@@ -4,7 +4,7 @@
 
 using namespace std;
 
-namespace JEB { namespace Unit {
+namespace JEB { namespace Test {
 
 template <>
 bool compare<double, double>(double t, double u)

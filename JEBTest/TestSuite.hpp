@@ -1,9 +1,9 @@
-#ifndef JEB_UNIT_TESTSUITE_HPP
-#define JEB_UNIT_TESTSUITE_HPP
+#ifndef JEB_TEST_TESTSUITE_HPP
+#define JEB_TEST_TESTSUITE_HPP
 
 #include "Test.hpp"
 
-namespace JEB { namespace Unit {
+namespace JEB { namespace Test {
 
 typedef std::shared_ptr<class Test> TestPtr;
 

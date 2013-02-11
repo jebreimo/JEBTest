@@ -4,7 +4,7 @@
 #include "Exceptions.hpp"
 #include "Session.hpp"
 
-namespace JEB { namespace Unit {
+namespace JEB { namespace Test {
 
 AutoSuiteRunner::AutoSuiteRunner()
 {

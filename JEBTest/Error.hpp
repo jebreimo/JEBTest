@@ -4,7 +4,7 @@
 #include <iosfwd>
 #include <string>
 
-namespace JEB { namespace Unit {
+namespace JEB { namespace Test {
 
 class Error
 {

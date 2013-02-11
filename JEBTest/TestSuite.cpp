@@ -1,6 +1,6 @@
 #include "TestSuite.hpp"
 
-namespace JEB { namespace Unit {
+namespace JEB { namespace Test {
 
 TestSuite::TestSuite(const std::string& name)
     : m_Failed(false),

@@ -1,10 +1,10 @@
-#ifndef JEB_UNIT_EXCEPTIONS_HPP
-#define JEB_UNIT_EXCEPTIONS_HPP
+#ifndef JEB_TEST_EXCEPTIONS_HPP
+#define JEB_TEST_EXCEPTIONS_HPP
 
 #include <exception>
 #include "Error.hpp"
 
-namespace JEB { namespace Unit {
+namespace JEB { namespace Test {
 
 class AbstractFailure
 {

@@ -1,9 +1,9 @@
-#ifndef JEB_UNIT_AUTOSUITE_HPP
-#define JEB_UNIT_AUTOSUITE_HPP
+#ifndef JEB_TEST_AUTOSUITE_HPP
+#define JEB_TEST_AUTOSUITE_HPP
 
 #include <string>
 
-namespace JEB { namespace Unit {
+namespace JEB { namespace Test {
 
 class AutoSuite
 {
@@ -15,8 +15,8 @@ public:
     const Func& function() const;
     void setFunction(const Func& function);
 
-    const std::string& name() const;
-    void setName(const std::string& name);
+    std::string name() const;
+    // void setName(const std::string& name);
 private:
     Func m_Function;
     std::string m_Name;

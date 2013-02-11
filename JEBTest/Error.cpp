@@ -1,7 +1,7 @@
 #include "Error.hpp"
 #include <sstream>
 
-namespace JEB { namespace Unit {
+namespace JEB { namespace Test {
 
 Error::Error()
     : m_LineNo(0)

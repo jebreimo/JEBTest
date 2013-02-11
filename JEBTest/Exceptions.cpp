@@ -1,6 +1,6 @@
 #include "Exceptions.hpp"
 
-namespace JEB { namespace Unit {
+namespace JEB { namespace Test {
 
 AbstractFailure::AbstractFailure(const Error& error)
     : m_Error(error)

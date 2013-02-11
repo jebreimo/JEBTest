@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-namespace JEB { namespace Unit {
+namespace JEB { namespace Test {
 
 std::vector<std::string> extractTestNames(const std::string& names);
 std::string extractTestName(const std::string& name);

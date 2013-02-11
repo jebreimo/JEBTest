@@ -1,12 +1,12 @@
-#ifndef JEB_UNIT_TEST_HPP
-#define JEB_UNIT_TEST_HPP
+#ifndef JEB_TEST_TEST_HPP
+#define JEB_TEST_TEST_HPP
 
 #include <memory>
 #include <string>
 #include <vector>
 #include "Error.hpp"
 
-namespace JEB { namespace Unit {
+namespace JEB { namespace Test {
 
 class Test
 {
