@@ -20,6 +20,11 @@
 namespace JEB {
 
 /** @brief The namespace for functions working UTF-8 encoded std::string
+  *
+  * @note It is not safe to use any function that involve case conversion in
+  *     the initialization of static variables. The case-conversion code itself
+  *     relies on static variables being initialized, and the initialization
+  *     order of static variables is unpredictable.
   */
 namespace String
 {
