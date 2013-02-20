@@ -5,7 +5,7 @@
 #include <functional>
 #include <utility>
 #include <vector>
-#include "JEB/Math/Interval.hpp"
+#include "JEB/Collections/Interval.hpp"
 #include "EscapedString.hpp"
 
 namespace JEB { namespace String { namespace Generic {

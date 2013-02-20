@@ -1,5 +1,13 @@
 #include "JEB/Bits/Union16.hpp"
 
+#ifdef __APPLE__
+    #define JEB_WCHAR_SIZE 4
+    typedef uint32_t JEB_wchar_alias;
+#elif WIN32
+    #define JEB_WCHAR_SIZE 2
+    typedef uint16_t JEB_wchar_alias;
+#endif
+
 namespace JEB { namespace String { namespace Utf16 {
 
 namespace internal
@@ -9,7 +17,39 @@ template <typename Iterator, bool SwapBytes>
 bool nextWord(uint16_t& word,
               Iterator& it,
               Iterator end,
-              wchar_t)
+              uint32_t)
+{
+    if (it == end || *it > 0xFFFFu)
+        return false;
+
+    word = *it++;
+    if (SwapBytes)
+        Endian::swap(word);
+
+    return true;
+}
+
+template <typename Iterator, bool SwapBytes>
+bool prevWord(uint16_t& word,
+              Iterator& it,
+              Iterator begin,
+              uint32_t)
+{
+    if (it == begin || *it > 0xFFFFu)
+        return false;
+
+    word = *(--it);
+    if (SwapBytes)
+        Endian::swap(word);
+
+    return true;
+}
+
+template <typename Iterator, bool SwapBytes>
+bool nextWord(uint16_t& word,
+              Iterator& it,
+              Iterator end,
+              uint16_t)
 {
     if (it == end)
         return false;
@@ -25,7 +65,7 @@ template <typename Iterator, bool SwapBytes>
 bool prevWord(uint16_t& word,
               Iterator& it,
               Iterator begin,
-              wchar_t)
+              uint16_t)
 {
     if (it == begin)
         return false;
@@ -79,6 +119,23 @@ bool prevWord(uint16_t& word,
     return true;
 }
 
+template <typename Iterator, bool SwapBytes>
+bool nextWord(uint16_t& word,
+              Iterator& it,
+              Iterator end,
+              wchar_t)
+{
+    return nextWord<Iterator, SwapBytes>(word, it, end, JEB_wchar_alias());
+}
+
+template <typename Iterator, bool SwapBytes>
+bool prevWord(uint16_t& word,
+              Iterator& it,
+              Iterator begin,
+              wchar_t)
+{
+    return prevWord<Iterator, SwapBytes>(word, it, begin, JEB_wchar_alias());
+}
 }
 
 template <typename Iterator, bool SwapBytes>

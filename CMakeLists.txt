@@ -16,8 +16,6 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
 
 include_directories(${CMAKE_SOURCE_DIR})
 
-set(JEB_DISABLE_UNIT_TESTS 1)
-
 include(JEB/FileList.cmake)
 include(JEBTest/FileList.cmake)
 

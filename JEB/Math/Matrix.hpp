@@ -2,7 +2,7 @@
 #define JEB_MATH_MATRIX_HPP
 
 #include <algorithm>
-#include "JEB/Array2D.hpp"
+#include "JEB/Collections/Array2D.hpp"
 
 namespace JEB { namespace Math {
 

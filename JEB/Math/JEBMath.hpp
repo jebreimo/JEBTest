@@ -17,16 +17,16 @@ namespace d2
 }
 }
 
-#include "Constants.hpp"
-#include "Distance.hpp"
-#include "Intersections.hpp"
-#include "Line.hpp"
-#include "LineSegment.hpp"
-#include "LineString.hpp"
-#include "Point.hpp"
-#include "Profile.hpp"
-#include "ProfileMerger.hpp"
-#include "Types.hpp"
-#include "Vector.hpp"
+// #include "Constants.hpp"
+// #include "Distance.hpp"
+// #include "Intersections.hpp"
+// #include "Line.hpp"
+// #include "LineSegment.hpp"
+// #include "LineString.hpp"
+// #include "Point.hpp"
+// #include "Profile.hpp"
+// #include "ProfileMerger.hpp"
+// #include "Types.hpp"
+// #include "Vector.hpp"
 
 #endif

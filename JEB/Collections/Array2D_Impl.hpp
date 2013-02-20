@@ -1,6 +1,6 @@
 #include <algorithm>
 #include <cassert>
-#include "Algorithms.hpp"
+#include "JEB/Algorithms/Algorithms.hpp"
 
 namespace JEB {
 

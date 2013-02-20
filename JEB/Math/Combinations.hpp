@@ -1,8 +1,8 @@
 #ifndef JEB_MATH_COMBINATIONS_HPP
 #define JEB_MATH_COMBINATIONS_HPP
 
-#include <JEB/BitIterator.hpp>
-#include <JEB/Bits.hpp>
+#include "JEB/Bits/BitIterator.hpp"
+#include "JEB/Bits/Bits.hpp"
 #include "Binomial.hpp"
 
 namespace JEB { namespace Math {

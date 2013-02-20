@@ -3,7 +3,7 @@
 
 #include <utility>
 #include <vector>
-#include "Algorithms.hpp"
+#include "JEB/Algorithms/Algorithms.hpp"
 #include "Interval.hpp"
 
 /** @file

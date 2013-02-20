@@ -1,5 +1,4 @@
-#include "JEB/BitSet.hpp"
-#include "JEB/Debug.hpp"
+#include "JEB/Bits/BitSet.hpp"
 
 namespace JEB { namespace Math {
 
