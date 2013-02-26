@@ -8,6 +8,8 @@
     #define JEB_IS_WIN
 #endif
 
+#include "Path.Generic.hpp"
+
 #if defined(JEB_IS_POSIX)
     #include "Path.Posix.hpp"
     namespace JEB { namespace Sys { namespace Path {

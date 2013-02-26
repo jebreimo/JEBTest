@@ -33,7 +33,7 @@
         JU_CONSOLE_BEGIN(); \
         ::JEB::Test::AutoSuiteRunner::instance().run(); \
         JU_CONSOLE_END(); \
-        return ::JEB::Test::Session::instance().numberOfFailedSuites(); \
+        return (int)::JEB::Test::Session::instance().numberOfFailedSuites(); \
     }
 
 #define JU_TESTSUITE(...) \

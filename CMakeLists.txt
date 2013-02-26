@@ -9,7 +9,7 @@ if (APPLE)
 elseif (WIN32)
     add_definitions(-D_SCL_SECURE_NO_WARNINGS)
     add_definitions(-DJEB_USE_UNIT_TEST_NAMESPACE)
-    set(CMAKE_INSTALL_PREFIX "C:\Users\JEB")
+    set(CMAKE_INSTALL_PREFIX "C:/Users/JEB/Projects/Workspace/usr/local")
 endif(APPLE)
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/lib")
