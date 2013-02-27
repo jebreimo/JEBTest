@@ -3,6 +3,7 @@
 #include <direct.h>
 #include <stdexcept>
 #include "JEB/String/String.hpp"
+#include "Path.Generic.hpp"
 
 namespace JEB { namespace Sys { namespace Path { namespace Win {
 
@@ -39,6 +40,15 @@ std::string currentPath()
     return std::string(path);
 }
 
+//std::string expandDrive(const std::string& path)
+//{
+//    if (path.size() < 2 || path[1] != ':' ||
+//        (path.size() > 2 && path[3] == '\\'))
+//    {
+//        return path;
+//    }
+//}
+
 std::string homePath()
 {
     // TODO: return the equivalent of the POSIX version.
@@ -66,6 +76,28 @@ std::string join(const std::string& left, const std::string& right)
 std::string normalize(const std::string& p)
 {
   return p;
+}
+
+std::string removeExtension(const std::string& p)
+{
+    return splitExtension(p).first;
+}
+
+std::pair<std::string, std::string> split(const std::string& path)
+{
+    return String::splitLastToken(path, DirSep);
+}
+
+std::pair<std::string, std::string> splitDrive(const std::string& path)
+{
+    if (path.size() < 2 || path[1] != ':')
+        return std::make_pair(std::string(), path);
+    return std::make_pair(path.substr(0, 2), path.substr(2));
+}
+
+std::pair<std::string, std::string> splitExtension(const std::string& p)
+{
+    return Generic::splitExtension(p, isDirSeparator);
 }
 
 }}}}

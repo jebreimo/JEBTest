@@ -1,13 +1,12 @@
 #ifndef JEB_SYS_PATH_HPP
 #define JEB_SYS_PATH_HPP
 
+
 #if defined(__APPLE__)
     #define JEB_IS_POSIX
 #else
     #define JEB_IS_WIN
 #endif
-
-#include "Path.Generic.hpp"
 
 #if defined(JEB_IS_POSIX)
     #include "Path.Posix.hpp"
@@ -100,7 +99,7 @@
 
 // std::string removeExtension(const std::string& p);
 
-// std::vector<std::string> split(const std::string path);
+// std::pair<std::string, std::string> split(const std::string path);
 
 // void splitExtension(std::string& name,
 //                     std::string& extension,

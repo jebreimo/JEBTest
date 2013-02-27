@@ -6,8 +6,10 @@
 #include <stdexcept>
 #include <sys/stat.h>
 #include <unistd.h>
+#include "JEB/String/StringPredicates.hpp"
 #include "Environment.hpp"
 #include "Users.hpp"
+#include "Path.Generic.hpp"
 
 namespace JEB { namespace Sys { namespace Path { namespace Posix {
 
@@ -44,6 +46,11 @@ std::string expandUser(const std::string& path)
             return path;
         return join(userPath, parts.second);
     }
+}
+
+std::string extension(const std::string& p)
+{
+    return splitExtension(p).second;
 }
 
 std::string getSystemDefaultPath()
@@ -135,9 +142,19 @@ std::string normalize(const std::string& p)
         return String::join(result, DirSepStr);
 }
 
-std::vector<std::string> split(const std::string path)
+std::string removeExtension(const std::string& p)
 {
-    return String::splitToken(path, DirSep);
+    return splitExtension(p).first;
+}
+
+std::vector<std::string> split(const std::string& path)
+{
+    return String::splitLastToken(path, DirSep);
+}
+
+std::pair<std::string, std::string> splitExtension(const std::string& p)
+{
+    return Generic::splitExtension(p, JEB::String::isCharacter('/'));
 }
 
 }}}}
