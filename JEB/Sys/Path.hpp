@@ -1,7 +1,6 @@
 #ifndef JEB_SYS_PATH_HPP
 #define JEB_SYS_PATH_HPP
 
-
 #if defined(__APPLE__)
     #define JEB_IS_POSIX
 #else
