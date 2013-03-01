@@ -121,7 +121,7 @@ std::string join(const std::string& left, const std::string& right)
 std::string normalize(const std::string& p)
 {
     std::vector<std::string> result;
-    std::vector<std::string> parts = split(p);
+    std::vector<std::string> parts = String::splitToken(p, DirSep);
     for (std::vector<std::string>::const_iterator it = parts.begin(); it != parts.end(); it++)
     {
         if (*it == "..")
@@ -136,10 +136,21 @@ std::string normalize(const std::string& p)
             result.push_back(*it);
         }
     }
+    bool startsAtRoot = !p.empty() && p[0] == DirSep;
     if (result.empty() && !parts.empty())
-        return std::string(".");
+    {
+        if (startsAtRoot)
+            return DirSepStr;
+        else
+            return std::string(".");
+    }
     else
-        return String::join(result, DirSepStr);
+    {
+        if (startsAtRoot)
+            return DirSepStr + String::join(result, DirSepStr);
+        else
+            return String::join(result, DirSepStr);
+    }
 }
 
 std::string removeExtension(const std::string& p)
@@ -147,7 +158,7 @@ std::string removeExtension(const std::string& p)
     return splitExtension(p).first;
 }
 
-std::vector<std::string> split(const std::string& path)
+std::pair<std::string, std::string> split(const std::string& path)
 {
     return String::splitLastToken(path, DirSep);
 }
