@@ -1,8 +1,23 @@
 #include <string>
 #include <vector>
 #include "JEB/JEBDefinitions.hpp"
+#include "StringFlags.hpp"
 
 namespace JEB { namespace String {
+
+// template <typename InpIt, typename OutIt>
+// bool convert(InpIt begin, InpIt end,
+//              Encoding::Enum inEncoding,
+//              OutIt outBeg, OutIt outEnd,
+//              Encoding::Enum outEncoding)
+// {
+
+// }
+
+std::pair<size_t, size_t> convert(const char* srcBuffer, size_t srcSize,
+                                  Encoding::Enum srcEncoding,
+                                  char* dstBuffer, size_t dstSize,
+                                  Encoding::Enum dstEncoding);
 
 std::string utf16ToUtf8(const std::wstring& s);
 // std::string utf16LEToUtf8(const std::wstring& s);

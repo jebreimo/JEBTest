@@ -20,6 +20,13 @@ OutIt addLE(OutIt out, uint32_t codePoint);
 template <typename OutIt>
 OutIt addBE(OutIt out, uint32_t codePoint);
 
+template <typename FwdIt>
+bool encode(FwdIt& begin, FwdIt end, uint32_t codePoint);
+template <typename FwdIt>
+bool encodeLE(FwdIt& begin, FwdIt end, uint32_t codePoint);
+template <typename FwdIt>
+bool encodeBE(FwdIt& begin, FwdIt end, uint32_t codePoint);
+
 }}}
 
 #include "Encode_Impl.hpp"

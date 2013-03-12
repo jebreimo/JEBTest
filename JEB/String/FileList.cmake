@@ -6,14 +6,16 @@ include(${JEB_STRING_DIR}/Utf8/FileList.cmake)
 
 set(JEB_DIR ${JEB_STRING_DIR})
 set(JEB_PUBLIC_HEADERS
-    ${JEB_DIR}/StringPredicates.hpp
     ${JEB_DIR}/String.hpp
+    ${JEB_DIR}/StringConversion.hpp
     ${JEB_DIR}/StringFlags.hpp
+    ${JEB_DIR}/StringPredicates.hpp
     )
 
 set(JEB_SRC ${JEB_SRC}
-    ${JEB_DIR}/StringPredicates.cpp
     ${JEB_DIR}/String.cpp
+    ${JEB_DIR}/StringConversion.cpp
+    ${JEB_DIR}/StringPredicates.cpp
     )
 
 if (DEFINED JEB_INSTALL_API)

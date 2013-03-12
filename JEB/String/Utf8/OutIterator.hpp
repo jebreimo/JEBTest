@@ -19,6 +19,8 @@ public:
     OutIterator& operator++();
     OutIterator& operator++(int);
     OutIterator& operator*();
+
+    OutIt innerIterator() const;
 private:
     OutIt m_It;
 };

@@ -34,4 +34,10 @@ OutIterator<OutIt>& OutIterator<OutIt>::operator*()
     return *this;
 }
 
+template <typename OutIt>
+OutIt OutIterator<OutIt>::innerIterator() const
+{
+    return m_It;
+}
+
 }}}

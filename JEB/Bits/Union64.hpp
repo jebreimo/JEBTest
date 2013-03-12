@@ -24,9 +24,13 @@ union Union64
 
     void reverse();
 
+    int64_t i64;
     uint64_t u64;
+    int32_t i32[2];
     uint32_t u32[2];
+    int16_t i16[4];
     uint16_t u16[4];
+    int8_t i8[8];
     uint8_t u8[8];
 };
 

@@ -98,28 +98,6 @@ size_t numberOfCharacters(FwdIt begin, FwdIt end)
     return len;
 }
 
-// template <typename T>
-// bool inRange(const T& value, const T& begin, const T& end)
-// {
-//     return begin <= value && value < end;
-// }
-
-// inline bool isAscii(uint32_t c)
-// {
-//     return c < 0x80;
-// }
-
-/** @brief Returns true if @a c is a mark that shall be added to the most
-  *        recent letter character.
-  */
-// inline bool isCombiningMark(uint32_t c)
-// {
-//     return inRange<uint32_t>(c, 0x300, 0x370) ||
-//            inRange<uint32_t>(c, 0x1DC0, 0x1E00) ||
-//            inRange<uint32_t>(c, 0x20D0, 0x20F1) ||
-//            inRange<uint32_t>(c, 0xFE20, 0xFE27);
-// }
-
 // template <typename FwdIt>
 // FwdIt skipNewline(FwdIt begin, FwdIt end)
 // {
@@ -144,32 +122,6 @@ size_t numberOfCharacters(FwdIt begin, FwdIt end)
 //         break;
 //     }
 //     return begin;
-// }
-
-/** @brief Return true if @a c is a newline character.
-  */
-// inline bool isNewline(uint32_t c)
-// {
-//     return ('\n' <= c && c <= '\r') || c == 0x0085 || c == 0x2028 || c == 0x2029;
-// }
-
-// inline bool isSoftHyphen(uint32_t c)
-// {
-//     return c == JEB_CHAR_SOFT_HYPHEN;
-// }
-
-/** @brief Returns true if @a c is a whitespace character.
-  *
-  * Only characters that does not involve newlines are considered.
-  */
-// inline bool isWhitespace(uint32_t c)
-// {
-//     return c == ' ' || c == '\t';
-// }
-
-// inline bool isZeroWidthSpace(uint32_t c)
-// {
-//     return c == JEB_CHAR_ZERO_WIDTH_SPACE;
 // }
 
 }}

@@ -41,7 +41,8 @@ OutputIt add(OutputIt it, uint32_t codePoint);
   * @return the length of the encoded code point, or 0 if @a bufferSize is
   *     too small.
   */
-size_t encode(char* buffer, uint32_t chr, size_t bufferSize);
+template <typename RndIt>
+bool encode(RndIt& begin, RndIt end, uint32_t c);
 
 /** @brief Encodes a unicode code point as UTF-8.
  *  @return the length of the encoded code point.

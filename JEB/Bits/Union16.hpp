@@ -19,7 +19,9 @@ union Union16
     void reverse();
 
     uint16_t u16;
+    int16_t i16;
     uint8_t u8[2];
+    int8_t i8[2];
 };
 
 template <typename T>
