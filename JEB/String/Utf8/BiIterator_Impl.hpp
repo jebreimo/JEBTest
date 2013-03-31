@@ -69,7 +69,10 @@ template <typename BiIt>
 BiIterator<BiIt>& BiIterator<BiIt>::operator--()
 {
     m_CharEnd = m_CharStart;
-    if (!prevCodePoint(m_Value, m_CharStart, m_Begin) && m_CharStart != m_Begin)
+    int dr = prevCodePoint(m_Value, m_CharStart, m_Begin);
+    if (dr == DecodeResult::StartOfString)
+        throw std::runtime_error("Decrement at start of string.");
+    else if (dr != DecodeResult::Ok)
         throw std::runtime_error("invalid UTF-8 character");
     return *this;
 }
@@ -99,11 +102,11 @@ BiIt BiIterator<BiIt>::beginCodePoint() const
 template <typename BiIt>
 BiIt BiIterator<BiIt>::endCodePoint() const
 {
-    if (m_CharEnd == m_CharStart &&
-        !nextCodePoint(m_Value, m_CharEnd, m_End) &&
-        m_CharEnd != m_End)
+    if (m_CharEnd == m_CharStart)
     {
-        throw std::runtime_error("invalid UTF-8 character");
+        int dr = nextCodePoint(m_Value, m_CharEnd, m_End);
+        if (dr != DecodeResult::Ok && dr != DecodeResult::EndOfString)
+            throw std::runtime_error("invalid UTF-8 character");
     }
     return m_CharEnd;
 }

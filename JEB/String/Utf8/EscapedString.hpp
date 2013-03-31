@@ -14,7 +14,7 @@ uint32_t fromHex(StrInpIt& beg, StrInpIt end, size_t length)
     for (size_t i = 0; i < length; i++)
     {
         uint32_t tmp;
-        if (!nextCodePoint(tmp, beg, end))
+        if (nextCodePoint(tmp, beg, end) != DecodeResult::Ok)
             throw std::invalid_argument("Hexadecimal sequence is too short.");
         ch *= 16;
         if ('0' <= tmp && tmp <= '9')
@@ -33,9 +33,9 @@ template <typename FwdIt>
 std::pair<uint32_t, bool> unescapeNext(FwdIt& beg, FwdIt end, uint32_t escapeChar)
 {
     uint32_t ch = Unicode::Invalid;
-    bool escaped = nextCodePoint(ch, beg, end) &&
+    bool escaped = nextCodePoint(ch, beg, end) == DecodeResult::Ok &&
                    ch == escapeChar &&
-                   nextCodePoint(ch, beg, end);
+                   nextCodePoint(ch, beg, end) == DecodeResult::Ok;
     return std::make_pair(ch, escaped);
 }
 

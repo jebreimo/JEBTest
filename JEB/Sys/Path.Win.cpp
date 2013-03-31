@@ -16,6 +16,11 @@ bool isDirSeparator(uint32_t chr)
     return chr == DriveSep || chr == DirSep;
 }
 
+std::string absPath(const std::string& p)
+{
+    //if (p.size() == 1)
+}
+
 std::string baseName(const std::string& p)
 {
     return String::splitLastWhere(p, isDirSeparator).second;

@@ -317,6 +317,14 @@ RndIt upper_bound(RndIt beg, RndIt end, const T& value, UnaryFunc keyFunc)
     return beg;
 }
 
+template <typename RndIt, typename T, typename UnaryFunc>
+std::pair<RndIt, RndIt> bounds(RndIt beg, RndIt end, const T& value, UnaryFunc keyFunc)
+{
+    RndIt first = ::JEB::Algorithms::lower_bound(beg, end, value, keyFunc);
+    RndIt second = ::JEB::Algorithms::upper_bound(first, end, value, keyFunc);
+    return std::make_pair(first, second);
+}
+
 template <typename UnaryFunc>
 class KeyComparer
 {

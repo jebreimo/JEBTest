@@ -7,6 +7,8 @@
 
 namespace JEB { namespace Sys { namespace Path { namespace Win {
 
+std::string absPath(const std::string& p);
+
 std::string baseName(const std::string& p);
 
 // std::string commonPrefix(const std::string& a, const std::string& b);

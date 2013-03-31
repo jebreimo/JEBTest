@@ -53,7 +53,6 @@ BiIterator<BiIt, SwapBytes>& BiIterator<BiIt, SwapBytes>::operator++()
         endCodePoint();
     m_CharStart = m_CharEnd;
     m_Value = Unicode::Invalid;
-
     return *this;
 }
 
@@ -69,8 +68,7 @@ template <typename BiIt, bool SwapBytes>
 BiIterator<BiIt, SwapBytes>& BiIterator<BiIt, SwapBytes>::operator--()
 {
     m_CharEnd = m_CharStart;
-    if (!prevCodePoint<BiIt, SwapBytes>(m_Value, m_CharStart, m_Begin) &&
-        m_CharStart != m_Begin)
+    if (prevCodePoint<BiIt, SwapBytes>(m_Value, m_CharStart, m_Begin) != DecodeResult::Ok)
     {
         throw std::runtime_error("invalid UTF-16 character");
     }
@@ -102,11 +100,11 @@ BiIt BiIterator<BiIt, SwapBytes>::beginCodePoint() const
 template <typename BiIt, bool SwapBytes>
 BiIt BiIterator<BiIt, SwapBytes>::endCodePoint() const
 {
-    if (m_CharEnd == m_CharStart &&
-        !nextCodePoint<BiIt, SwapBytes>(m_Value, m_CharEnd, m_End) &&
-        m_CharEnd != m_End)
+    if (m_CharEnd == m_CharStart)
     {
-        throw std::runtime_error("invalid UTF-16 character");
+        int dr = nextCodePoint<BiIt, SwapBytes>(m_Value, m_CharEnd, m_End);
+        if (dr != DecodeResult::Ok && dr != DecodeResult::EndOfString)
+            throw std::runtime_error("invalid UTF-16 character");
     }
     return m_CharEnd;
 }

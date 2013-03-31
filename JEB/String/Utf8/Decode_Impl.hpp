@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <cassert>
 
 namespace JEB { namespace String { namespace Utf8 {
 
@@ -10,9 +11,10 @@ static inline bool isContinuation(uint8_t c)
     return (c & 0xC0) == 0x80;
 }
 
-static inline bool hasCountPrefix(uint8_t c, size_t count)
+static inline int cmpCountPrefix(uint8_t c, size_t count)
 {
-    return ((c >> (7 - count)) + 2 == (1 << (count + 1)));
+    assert(count < 8);
+    return int((c >> (7 - count)) + 2) - int((1 << (count + 1)));
 }
 
 static inline bool isAscii(uint32_t c)
@@ -33,8 +35,8 @@ bool isValid(FwdIt begin, FwdIt end)
     return begin == end;
 }
 
-template <typename Iterator>
-void skipNextCodePoint(Iterator& it, Iterator end)
+template <typename FwdIt>
+void skipNextCodePoint(FwdIt& it, FwdIt end)
 {
     if (it == end)
         return;
@@ -57,33 +59,35 @@ void skipNextCodePoint(Iterator& it, Iterator end)
     }
 }
 
-template <typename Iterator>
-bool nextCodePoint(uint32_t& codePoint,
-                   Iterator& it,
-                   Iterator end)
+/* Results:
+    OK = 0
+    END_OF_STRING = 1
+    INCOMPLETE_CHARACTER = 2
+    INVALID_CHARACTER = 4
+    INCOMPLETE_CHARACTER_AT_END_OF_STRING = END_OF_STRING | INCOMPLETE_CHARACTER
+*/
+template <typename FwdIt>
+int nextCodePoint(uint32_t& codePoint, FwdIt& it, FwdIt end)
 {
-    Iterator initialIt = it;
-
     if (it == end)
-        return false;
+        return DecodeResult::EndOfString;
 
     if (internal::isAscii(*it))
     {
         codePoint = (unsigned char)*it++;
-        return true;
+        return DecodeResult::Ok;
     }
 
-    if (internal::isContinuation(*it) || *it == (char)0xFF)
-    {
-        return false;
-    }
+    if (internal::isContinuation(*it) || *it >= (char)0xFE)
+        return DecodeResult::Invalid;
 
+    FwdIt initialIt = it;
     codePoint = *it & 0x7F;
     unsigned bit = 0x40;
     while (++it != end && internal::isContinuation(*it))
     {
         if ((codePoint & bit) == 0)
-            break; // Next call will deal with this error.
+            break; // Next call to this function deals with this error.
         codePoint ^= bit;
         codePoint <<= 6;
         codePoint |= *it & 0x3F;
@@ -92,47 +96,55 @@ bool nextCodePoint(uint32_t& codePoint,
 
     if ((codePoint & bit) != 0)
     {
+        int result = DecodeResult::Incomplete;
+        if (it == end)
+            result |= DecodeResult::EndOfString;
         it = initialIt;
-        return false;
+        return result;
     }
 
-    return true;
+    return DecodeResult::Ok;
 }
 
-template <typename Iterator>
-bool prevCodePoint(uint32_t& codePoint,
-                   Iterator& it,
-                   Iterator begin)
+template <typename BiIt>
+int prevCodePoint(uint32_t& codePoint, BiIt& it, BiIt begin)
 {
     if (it == begin)
-        return false;
+        return DecodeResult::StartOfString;
 
-    Iterator initialIt = it;
+    BiIt initialIt = it;
     --it;
     if (internal::isAscii(*it))
     {
         codePoint = (unsigned char)*it;
-        return true;
+        return DecodeResult::Ok;
     }
 
-    codePoint = *it & 0x3F;
-
+    codePoint = 0;
     size_t count = 1;
-    while (--it != begin && internal::isContinuation(*it))
+    while (internal::isContinuation(*it))
     {
-        codePoint |= ((unsigned)(*it & 0x3F)) << (6 * count);
-        count++;
+        if (++count == 7 || it == begin)
+        {
+            it = initialIt;
+            return DecodeResult::Invalid;
+        }
+        codePoint |= ((unsigned)(*it & 0x3F)) << (6 * (count - 2));
+        --it;
     }
-    count++;
-    if (count >= 8 || !internal::hasCountPrefix(*it, count))
+    int cmp = internal::cmpCountPrefix(*it, count);
+    if (cmp != 0)
     {
         it = initialIt;
-        return false; // TODO: Make prevCodePoint stop in the same places nextCodePoint does.
+        if (*it == (char)0xFF || cmp < 0)
+            return DecodeResult::Invalid;
+        else
+            return DecodeResult::Incomplete;
     }
 
     codePoint |= ((unsigned)(*it & ((1 << (7 - count)) - 1)) << (6 * (count - 1)));
 
-    return true;
+    return DecodeResult::Ok;
 }
 
 }}}

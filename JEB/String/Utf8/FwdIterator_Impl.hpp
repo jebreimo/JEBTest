@@ -67,11 +67,11 @@ FwdIt FwdIterator<FwdIt>::beginCodePoint() const
 template <typename FwdIt>
 FwdIt FwdIterator<FwdIt>::endCodePoint() const
 {
-    if (m_CharEnd == m_CharStart &&
-        !nextCodePoint(m_Value, m_CharEnd, m_End) &&
-        m_CharEnd == m_End)
+    if (m_CharEnd == m_CharStart)
     {
-        throw std::runtime_error("invalid UTF-8 character");
+        int dr = nextCodePoint(m_Value, m_CharEnd, m_End);
+        if (dr != DecodeResult::Ok && dr != DecodeResult::EndOfString)
+            throw std::runtime_error("invalid UTF-8 character");
     }
     return m_CharEnd;
 }

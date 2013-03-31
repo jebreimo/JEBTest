@@ -9,6 +9,7 @@
 #include <iterator>
 #include <limits>
 #include "JEB/JEBDefinitions.hpp"
+#include "JEB/String/StringFlags.hpp"
 
 /** @file
   * @brief Defines functions for working with UTF-8 encoded strings.
@@ -35,16 +36,12 @@ bool isValid(FwdIt begin, FwdIt end);
   *                       otherwise the current code point isn't valid UTF-8.
   */
 template <typename FwdIt>
-bool nextCodePoint(uint32_t& codePoint,
-                   FwdIt& it,
-                   FwdIt end);
+int nextCodePoint(uint32_t& codePoint, FwdIt& it, FwdIt end);
 
 /** @brief Assigns the code point ending at @a it to @a codePoint.
   */
 template <typename FwdIt>
-bool prevCodePoint(uint32_t& codePoint,
-                   FwdIt& it,
-                   FwdIt begin);
+int prevCodePoint(uint32_t& codePoint, FwdIt& it, FwdIt begin);
 
 }}
 }

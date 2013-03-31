@@ -58,6 +58,17 @@ namespace SplitFlags
     inline bool mergeTokens(Flags flags) {return (flags & MergeTokens) != 0;}
 }
 
+namespace DecodeResult
+{
+    enum Enum
+    {
+        Ok = 0,
+        EndOfString = 1,
+        Incomplete = 2,
+        Invalid = 4,
+        StartOfString = 8 //< Returned by prevCodePoint
+    };
+}
 }}
 
 #endif

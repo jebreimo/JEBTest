@@ -9,50 +9,49 @@
 
 namespace JEB { namespace String {
 
+typedef int (*NextCodePointFunc)(uint32_t&, const char*&, const char*);
+typedef bool (*EncodeFunc)(char*&, char*, uint32_t);
+
+NextCodePointFunc getNextCodePointFunc(Encoding::Enum encoding)
+{
+    switch (encoding)
+    {
+    case Encoding::Utf8:
+        return Utf8::nextCodePoint<const char*>;
+    case Encoding::Utf16LE:
+        return  Utf16::nextCodePointLE<const char*>;
+    case Encoding::Utf16BE:
+        return  Utf16::nextCodePointBE<const char*>;
+    default:
+        throw std::invalid_argument("Unsupported input encoding");
+    };
+}
+
+EncodeFunc getEncodeFunc(Encoding::Enum encoding)
+{
+    switch (encoding)
+    {
+    case Encoding::Utf8:
+        return Utf8::encode<char*>;
+    case Encoding::Utf16LE:
+        return Utf16::encodeLE<char*>;
+    case Encoding::Utf16BE:
+        return Utf16::encodeBE<char*>;
+    default:
+        throw std::invalid_argument("Unsupported output encoding");
+    };
+}
+
 std::pair<size_t, size_t> convert(const char* srcBuffer, size_t srcSize,
                                   Encoding::Enum srcEncoding,
                                   char* dstBuffer, size_t dstSize,
                                   Encoding::Enum dstEncoding)
 {
-    if (srcEncoding == dstEncoding)
-    {
-        if (dstSize < srcSize)
-            srcSize = dstSize;
-        std::memcpy(dstBuffer, srcBuffer, srcSize);
-        return std::make_pair(srcSize, srcSize);
-    }
+    // TODO: if source and dest encodings are the same, find last valid
+    // char in source and use memcpy.
 
-    bool (*nextCodePoint)(uint32_t&, const char*& it, const char* end) = 0;
-    switch (srcEncoding)
-    {
-    case Encoding::Utf8:
-        nextCodePoint = Utf8::nextCodePoint<const char*>;
-        break;
-    case Encoding::Utf16LE:
-        nextCodePoint = Utf16::nextCodePointLE<const char*>;
-        break;
-    case Encoding::Utf16BE:
-        nextCodePoint = Utf16::nextCodePointBE<const char*>;
-        break;
-    default:
-        throw std::invalid_argument("Unsupported input encoding");
-    };
-
-    bool (*encode)(char*&, char*, uint32_t) = NULL;
-    switch (dstEncoding)
-    {
-    case Encoding::Utf8:
-        encode = Utf8::encode<char*>;
-        break;
-    case Encoding::Utf16LE:
-        encode = Utf16::encodeLE<char*>;
-        break;
-    case Encoding::Utf16BE:
-        encode = Utf16::encodeBE<char*>;
-        break;
-    default:
-        throw std::invalid_argument("Unsupported output encoding");
-    };
+    NextCodePointFunc nextCodePoint = getNextCodePointFunc(srcEncoding);
+    EncodeFunc encode = getEncodeFunc(dstEncoding);
 
     const char* srcIt = srcBuffer;
     const char* prevSrcIt = srcIt;
@@ -60,7 +59,8 @@ std::pair<size_t, size_t> convert(const char* srcBuffer, size_t srcSize,
     char* dstIt = dstBuffer;
     char* dstEnd = dstBuffer + dstSize;
     uint32_t codePoint;
-    while (dstIt < dstEnd && nextCodePoint(codePoint, srcIt, srcEnd))
+    while (dstIt < dstEnd &&
+           nextCodePoint(codePoint, srcIt, srcEnd) == DecodeResult::Ok)
     {
         if (!encode(dstIt, dstEnd, codePoint))
             return std::make_pair((size_t)(prevSrcIt - srcBuffer),
@@ -77,6 +77,80 @@ std::string utf16ToUtf8(const std::wstring& s)
     result.reserve(s.size());
     std::copy(Utf16::begin(s), Utf16::end(s), Utf8::backInserter(result));
     return result;
+}
+
+StringConverter::StringConverter(NextCodePointFunc nextCodePoint,
+                                 EncodeFunc encode,
+                                 Encoding::Enum srcEncoding,
+                                 Encoding::Enum dstEncoding)
+    : m_NextCodePoint(nextCodePoint),
+      m_Encode(encode),
+      m_SourceEncoding(srcEncoding),
+      m_DestinationEncoding(dstEncoding)
+{}
+
+StringConverter StringConverter::create(Encoding::Enum srcEncoding,
+                                        Encoding::Enum dstEncoding)
+{
+    return StringConverter(getNextCodePointFunc(srcEncoding),
+                           getEncodeFunc(dstEncoding),
+                           srcEncoding, dstEncoding);
+}
+
+std::pair<size_t, size_t> StringConverter::convert(const char* srcBuffer,
+                                                   size_t srcSize,
+                                                   char* dstBuffer,
+                                                   size_t dstSize)
+{
+    const char* srcIt = srcBuffer;
+    const char* prevSrcIt = srcIt;
+    const char* srcEnd = srcBuffer + srcSize;
+    char* dstIt = dstBuffer;
+    char* dstEnd = dstBuffer + dstSize;
+    uint32_t codePoint;
+    while (dstIt < dstEnd)
+    {
+        // if (!m_NextCodePoint(codePoint, srcIt, srcEnd))
+        // {
+        //     if ()
+        // }
+        if (!m_Encode(dstIt, dstEnd, codePoint))
+            return std::make_pair((size_t)(prevSrcIt - srcBuffer),
+                                  (size_t)(dstIt - dstBuffer));
+        prevSrcIt = srcIt;
+    }
+    return std::make_pair((size_t)(srcIt - srcBuffer),
+                          (size_t)(dstIt - dstBuffer));
+}
+
+StringConverter::ErrorMethod StringConverter::errorMethod() const
+{
+    return m_ErrorMethod;
+}
+
+void StringConverter::setErrorMethod(ErrorMethod errorMethod)
+{
+    m_ErrorMethod = errorMethod;
+}
+
+uint32_t StringConverter::invalidCharacterSubstitute() const
+{
+    return m_InvalidCharacterSubstitute;
+}
+
+void  StringConverter::setInvalidCharacterSubstitute(uint32_t chr)
+{
+    m_InvalidCharacterSubstitute = chr;
+}
+
+Encoding::Enum StringConverter::destinationEncoding() const
+{
+    return m_DestinationEncoding;
+}
+
+Encoding::Enum StringConverter::sourceEncoding() const
+{
+    return m_SourceEncoding;
 }
 
 }}

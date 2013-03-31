@@ -11,6 +11,8 @@
 #include "Users.hpp"
 #include "Path.Generic.hpp"
 
+#include "JEB/Debug/Debug.hpp"
+
 namespace JEB { namespace Sys { namespace Path { namespace Posix {
 
 const char DirSep = '/';
@@ -122,7 +124,7 @@ std::string normalize(const std::string& p)
 {
     std::vector<std::string> result;
     std::vector<std::string> parts = String::splitToken(p, DirSep);
-    for (std::vector<std::string>::const_iterator it = parts.begin(); it != parts.end(); it++)
+    for (auto it = parts.begin(); it != parts.end(); ++it)
     {
         if (*it == "..")
         {
@@ -146,10 +148,7 @@ std::string normalize(const std::string& p)
     }
     else
     {
-        if (startsAtRoot)
-            return DirSepStr + String::join(result, DirSepStr);
-        else
-            return String::join(result, DirSepStr);
+        return String::join(result, DirSepStr);
     }
 }
 

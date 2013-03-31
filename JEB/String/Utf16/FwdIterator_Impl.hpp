@@ -24,10 +24,7 @@ FwdIterator<FwdIt, SwapBytes>::FwdIterator(FwdIt beg, FwdIt end)
 template <typename FwdIt, bool SwapBytes>
 bool FwdIterator<FwdIt, SwapBytes>::operator==(const FwdIterator<FwdIt, SwapBytes>& rhs) const
 {
-    if (m_CharStart == rhs.m_CharStart)
-        return true;
-    else
-        return m_CharStart == m_End && rhs.m_CharStart == rhs.m_End;
+    return m_CharStart == rhs.m_CharStart;
 }
 
 template <typename FwdIt, bool SwapBytes>
@@ -39,7 +36,9 @@ bool FwdIterator<FwdIt, SwapBytes>::operator!=(const FwdIterator<FwdIt, SwapByte
 template <typename FwdIt, bool SwapBytes>
 FwdIterator<FwdIt, SwapBytes>& FwdIterator<FwdIt, SwapBytes>::operator++()
 {
-    m_CharStart = endOfCharacter();
+    if (m_CharStart == m_CharEnd)
+        endCodePoint();
+    m_CharStart = m_CharEnd;
     m_Value = Unicode::Invalid;
     return *this;
 }
@@ -56,7 +55,7 @@ template <typename FwdIt, bool SwapBytes>
 uint32_t FwdIterator<FwdIt, SwapBytes>::operator*() const
 {
     if (m_Value == Unicode::Invalid)
-        endOfCharacter();
+        endCodePoint();
     return m_Value;
 }
 
@@ -71,8 +70,9 @@ FwdIt FwdIterator<FwdIt, SwapBytes>::endCodePoint() const
 {
     if (m_CharEnd == m_CharStart)
     {
-        uint32_t cp;
-        nextCodePoint(cp, m_CharEnd, m_End);
+        int dr = nextCodePoint<BiIt, SwapBytes>(m_Value, m_CharEnd, m_End);
+        if (dr != DecodeResult::Ok && dr != DecodeResult::EndOfString)
+            throw std::runtime_error("invalid UTF-16 character");
     }
     return m_CharEnd;
 }
