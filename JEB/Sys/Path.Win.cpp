@@ -19,6 +19,7 @@ bool isDirSeparator(uint32_t chr)
 std::string absPath(const std::string& p)
 {
     //if (p.size() == 1)
+	return p;
 }
 
 std::string baseName(const std::string& p)

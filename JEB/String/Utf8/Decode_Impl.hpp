@@ -25,14 +25,15 @@ static inline bool isAscii(uint32_t c)
 }
 
 template <typename FwdIt>
-bool isValid(FwdIt begin, FwdIt end)
+bool isValid(FwdIt begin, FwdIt end, bool acceptIncomleteAtEnd)
 {
     unsigned cp;
-    while (nextCodePoint(cp, begin, end))
+    int result;
+    while ((result = nextCodePoint(cp, begin, end)) == 0)
     {
     }
-
-    return begin == end;
+    return result == DecodeResult::EndOfString ||
+           (acceptIncomleteAtEnd && (result & DecodeResult::EndOfString));
 }
 
 template <typename FwdIt>
@@ -59,13 +60,6 @@ void skipNextCodePoint(FwdIt& it, FwdIt end)
     }
 }
 
-/* Results:
-    OK = 0
-    END_OF_STRING = 1
-    INCOMPLETE_CHARACTER = 2
-    INVALID_CHARACTER = 4
-    INCOMPLETE_CHARACTER_AT_END_OF_STRING = END_OF_STRING | INCOMPLETE_CHARACTER
-*/
 template <typename FwdIt>
 int nextCodePoint(uint32_t& codePoint, FwdIt& it, FwdIt end)
 {

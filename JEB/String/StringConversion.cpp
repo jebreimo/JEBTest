@@ -79,6 +79,15 @@ std::string utf16ToUtf8(const std::wstring& s)
     return result;
 }
 
+StringConverter::StringConverter()
+    : m_NextCodePoint(nullptr),
+      m_Encode(nullptr),
+      m_SourceEncoding(Encoding::Unknown),
+      m_DestinationEncoding(Encoding::Unknown),
+      m_ErrorMethod(ThrowException),
+      m_InvalidCharacterSubstitute('?')
+{}
+
 StringConverter::StringConverter(NextCodePointFunc nextCodePoint,
                                  EncodeFunc encode,
                                  Encoding::Enum srcEncoding,
@@ -86,7 +95,9 @@ StringConverter::StringConverter(NextCodePointFunc nextCodePoint,
     : m_NextCodePoint(nextCodePoint),
       m_Encode(encode),
       m_SourceEncoding(srcEncoding),
-      m_DestinationEncoding(dstEncoding)
+      m_DestinationEncoding(dstEncoding),
+      m_ErrorMethod(ThrowException),
+      m_InvalidCharacterSubstitute('?')
 {}
 
 StringConverter StringConverter::create(Encoding::Enum srcEncoding,
@@ -95,6 +106,15 @@ StringConverter StringConverter::create(Encoding::Enum srcEncoding,
     return StringConverter(getNextCodePointFunc(srcEncoding),
                            getEncodeFunc(dstEncoding),
                            srcEncoding, dstEncoding);
+}
+
+void StringConverter::setEncodings(Encoding_t srcEncoding,
+                                   Encoding_t dstEncoding)
+{
+    m_NextCodePoint = getNextCodePointFunc(srcEncoding);
+    m_Encode = getEncodeFunc(dstEncoding);
+    m_SourceEncoding = srcEncoding;
+    m_DestinationEncoding = dstEncoding;
 }
 
 std::pair<size_t, size_t> StringConverter::convert(const char* srcBuffer,
@@ -110,13 +130,29 @@ std::pair<size_t, size_t> StringConverter::convert(const char* srcBuffer,
     uint32_t codePoint;
     while (dstIt < dstEnd)
     {
-        // if (!m_NextCodePoint(codePoint, srcIt, srcEnd))
-        // {
-        //     if ()
-        // }
-        if (!m_Encode(dstIt, dstEnd, codePoint))
+        int dr = m_NextCodePoint(codePoint, srcIt, srcEnd);
+        if (dr != DecodeResult::Ok)
+        {
+            if (dr & DecodeResult::EndOfString)
+            {
+                break;
+            }
+            else if (m_ErrorMethod == ThrowException)
+            {
+                throw std::runtime_error("Encoding error in input");
+            }
+            else if (m_ErrorMethod == InsertCharacter)
+            {
+                if (!m_Encode(dstIt, dstEnd, m_InvalidCharacterSubstitute))
+                    return std::make_pair((size_t)(prevSrcIt - srcBuffer),
+                                          (size_t)(dstIt - dstBuffer));
+            }
+        }
+        else if (!m_Encode(dstIt, dstEnd, codePoint))
+        {
             return std::make_pair((size_t)(prevSrcIt - srcBuffer),
                                   (size_t)(dstIt - dstBuffer));
+        }
         prevSrcIt = srcIt;
     }
     return std::make_pair((size_t)(srcIt - srcBuffer),

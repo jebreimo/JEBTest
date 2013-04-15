@@ -18,7 +18,7 @@
 namespace JEB { namespace String { namespace Utf8 {
 
 template <typename FwdIt>
-bool isValid(FwdIt begin, FwdIt end);
+bool isValid(FwdIt begin, FwdIt end, bool acceptIncomleteAtEnd = false);
 
 /** @brief Assigns the code point starting at @a it to @a codePoint.
   *

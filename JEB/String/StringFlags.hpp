@@ -33,6 +33,8 @@ namespace Encoding
     };
 }
 
+typedef Encoding::Enum Encoding_t;
+
 namespace FindFlags
 {
     enum Enum
@@ -42,6 +44,8 @@ namespace FindFlags
     };
     typedef unsigned Flags;
 }
+
+typedef FindFlags::Enum FindFlags_t;
 
 namespace SplitFlags
 {
@@ -58,6 +62,8 @@ namespace SplitFlags
     inline bool mergeTokens(Flags flags) {return (flags & MergeTokens) != 0;}
 }
 
+typedef SplitFlags::Enum SplitFlags_t;
+
 namespace DecodeResult
 {
     enum Enum
@@ -69,6 +75,9 @@ namespace DecodeResult
         StartOfString = 8 //< Returned by prevCodePoint
     };
 }
+
+typedef DecodeResult::Enum DecodeResult_t;
+
 }}
 
 #endif
