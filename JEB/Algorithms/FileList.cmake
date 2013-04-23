@@ -1,7 +1,6 @@
 set(JEB_DIR JEB/Algorithms)
 set(JEB_PUBLIC_HEADERS
     ${JEB_DIR}/Algorithms.hpp
-    ${JEB_DIR}/Sort.hpp
     )
 
 if (DEFINED JEB_INSTALL_API)

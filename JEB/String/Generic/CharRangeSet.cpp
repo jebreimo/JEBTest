@@ -4,7 +4,7 @@
 #include <numeric>
 #include <stdexcept>
 #include "JEB/Algorithms/Algorithms.hpp"
-#include "JEB/Collections/PairUtilities.hpp"
+//#include "JEB/Collections/PairUtilities.hpp"
 #include "EscapedString.hpp"
 
 namespace JEB { namespace String { namespace Generic {
@@ -94,7 +94,7 @@ bool CharRangeSet::hasAll(const Range& range) const
     std::vector<Range>::const_iterator it = JEB::Algorithms::lower_bound(
             m_Ranges.begin(), m_Ranges.end(),
             range.first,
-            second<uint32_t, uint32_t>);
+            [](const Range& r){return r.second;});
     return it != m_Ranges.end() && subInterval(*it, range, INCLUSIVE);
 }
 
@@ -103,7 +103,7 @@ bool CharRangeSet::hasAny(const Range& range) const
     std::vector<Range>::const_iterator it = JEB::Algorithms::lower_bound(
             m_Ranges.begin(), m_Ranges.end(),
             range.first,
-            second<uint32_t, uint32_t>);
+            [](const Range& r){return r.second;});
     return it != m_Ranges.end() && overlaps(*it, range, INCLUSIVE);
 }
 

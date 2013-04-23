@@ -1,6 +1,5 @@
 set(JEB_DIR JEB/Iterators)
 set(JEB_PUBLIC_HEADERS
-    ${JEB_DIR}/CircularListIterator.hpp
     ${JEB_DIR}/Iterators.hpp
     ${JEB_DIR}/PairInserter.hpp
     )

@@ -1,19 +1,14 @@
 set(JEB_DIR JEB/Bits)
 set(JEB_PUBLIC_HEADERS
-    ${JEB_DIR}/BitIterator.hpp
     ${JEB_DIR}/Bits.hpp
     ${JEB_DIR}/Bits_Impl.hpp
-    ${JEB_DIR}/BitSet.hpp
     ${JEB_DIR}/Endian.hpp
-    ${JEB_DIR}/SparseBitSet.hpp
     ${JEB_DIR}/Union16.hpp
     ${JEB_DIR}/Union32.hpp
     ${JEB_DIR}/Union64.hpp
     )
 
 set(JEB_SRC ${JEB_SRC}
-    ${JEB_DIR}/BitSet.cpp
-    ${JEB_DIR}/SparseBitSet.cpp
     )
 
 if (DEFINED JEB_INSTALL_API)
