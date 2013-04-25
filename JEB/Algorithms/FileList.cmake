@@ -8,7 +8,6 @@ if (DEFINED JEB_INSTALL_API)
 endif(DEFINED JEB_INSTALL_API)
 
 if (DEFINED JEB_ENABLE_UNIT_TESTS)
-    enable_testing()
     set(CTEST_OUTPUT_ON_FAILURE 1)
     add_subdirectory(${JEB_DIR}/UnitTest)
 endif(DEFINED JEB_ENABLE_UNIT_TESTS)

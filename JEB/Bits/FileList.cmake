@@ -1,7 +1,5 @@
 set(JEB_DIR JEB/Bits)
 set(JEB_PUBLIC_HEADERS
-    ${JEB_DIR}/Bits.hpp
-    ${JEB_DIR}/Bits_Impl.hpp
     ${JEB_DIR}/Endian.hpp
     ${JEB_DIR}/Union16.hpp
     ${JEB_DIR}/Union32.hpp
