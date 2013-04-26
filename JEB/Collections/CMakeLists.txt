@@ -1,0 +1,28 @@
+cmake_minimum_required(VERSION 2.8)
+
+set(JEB_PROJECT Collections)
+set(JEB_DIR JEB/${JEB_PROJECT})
+
+project(${JEB_PROJECT})
+
+set(PUBLIC_HEADERS
+    FromString.hpp
+    Interval.hpp
+    MapUtilities.hpp
+    ToString.hpp
+   )
+
+set(SRC
+    FromString.cpp
+   )
+
+add_library(${JEB_PROJECT} OBJECT ${SRC})
+
+if (DEFINED JEB_INSTALL_API)
+    install(FILES ${PUBLIC_HEADERS} DESTINATION include/${JEB_DIR})
+endif(DEFINED JEB_INSTALL_API)
+
+if (DEFINED JEB_INCLUDE_UNIT_TESTS)
+    set(CTEST_OUTPUT_ON_FAILURE 1)
+    add_subdirectory(UnitTest)
+endif(DEFINED JEB_INCLUDE_UNIT_TESTS)

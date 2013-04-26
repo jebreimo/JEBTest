@@ -14,12 +14,17 @@ if (APPLE)
     set(CMAKE_INSTALL_PREFIX "/Users/janeb/usr/local")
 elseif (WIN32)
     add_definitions(-D_SCL_SECURE_NO_WARNINGS)
-    set(CMAKE_INSTALL_PREFIX "C:/Users/JEB")
+    set(CMAKE_INSTALL_PREFIX "D:/Libraries")
 endif(APPLE)
 
-include(JEB/FileList.cmake)
-include(JEBTest/FileList.cmake)
-
-add_library(JEBTest ${JEB_SRC})
+add_subdirectory(JEB)
+add_subdirectory(JEBTest)
+add_library(JEBTest
+			$<TARGET_OBJECTS:Collections>
+			$<TARGET_OBJECTS:String>
+			$<TARGET_OBJECTS:Sys>
+			$<TARGET_OBJECTS:Test>
+			$<TARGET_OBJECTS:Unicode>
+			${JEB_SRC})
 
 install(TARGETS JEBTest DESTINATION lib)

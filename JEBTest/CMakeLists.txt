@@ -1,8 +1,9 @@
 cmake_minimum_required(VERSION 2.8)
 
-include(../CMakeConfig.cmake)
+set(JEB_PROJECT Test)
+set(JEB_DIR JEB/${JEB_PROJECT})
 
-project(JEBTest)
+project(${JEB_PROJECT})
 
 set(SRC
     AutoSuite.cpp
@@ -23,21 +24,11 @@ set(PUBLIC_HEADERS
     Error.hpp
     Exceptions.hpp
     Formatters.hpp
-    JEBUnit.hpp
+    JEBTest.hpp
     Macros.hpp
     MacroUtilities.hpp
     Session.hpp
     )
 
-add_library(JEBTest ${SRC})
-target_link_libraries(JEBTest
-    JEBBits
-    JEBCollections
-    JEBMath
-    JEBString
-    JEBSys
-    JEBUnicode)
-
-install(FILES ${PUBLIC_HEADERS} DESTINATION include/JEB/Test)
-#install(TARGETS JEBTest ARCHIVE DESTINATION lib)
-install(TARGETS JEBTest DESTINATION lib)
+add_library(${JEB_PROJECT} OBJECT ${SRC})
+install(FILES ${PUBLIC_HEADERS} DESTINATION include/${JEB_DIR})
