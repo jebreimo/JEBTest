@@ -4,6 +4,7 @@
 #include <numeric>
 #include <stdexcept>
 #include "JEB/Algorithms/Algorithms.hpp"
+#include "JEB/Collections/Interval.hpp"
 #include "EscapedString.hpp"
 
 namespace JEB { namespace String { namespace Generic {

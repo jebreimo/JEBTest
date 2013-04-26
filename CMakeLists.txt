@@ -20,11 +20,11 @@ endif(APPLE)
 add_subdirectory(JEB)
 add_subdirectory(JEBTest)
 add_library(JEBTest
-			$<TARGET_OBJECTS:Collections>
-			$<TARGET_OBJECTS:String>
-			$<TARGET_OBJECTS:Sys>
-			$<TARGET_OBJECTS:Test>
-			$<TARGET_OBJECTS:Unicode>
-			${JEB_SRC})
+            $<TARGET_OBJECTS:Collections>
+            $<TARGET_OBJECTS:String>
+            $<TARGET_OBJECTS:Sys>
+            $<TARGET_OBJECTS:Test>
+            $<TARGET_OBJECTS:Unicode>
+            )
 
 install(TARGETS JEBTest DESTINATION lib)

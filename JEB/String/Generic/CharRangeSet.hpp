@@ -6,7 +6,6 @@
 #include <memory>
 #include <utility>
 #include <vector>
-#include "JEB/Collections/Interval.hpp"
 #include "EscapedString.hpp"
 
 namespace JEB { namespace String { namespace Generic {
@@ -76,8 +75,8 @@ CharRangeSet CharRangeSet::parse(StrFwdIt beg, StrFwdIt end)
         if (state == ExpectSecond)
         {
             range.second = ch.first;
-            if (!Interval::valid(range))
-                throw std::invalid_argument("Invalid range in expression.");
+            if (range.first > range.second)
+                throw std::invalid_argument("Invalid character range in expression.");
             set.add(range);
             state = ExpectFirst;
         }

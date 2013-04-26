@@ -17,51 +17,56 @@ uint32_t fromHex(StrInpIt& beg, StrInpIt end, size_t length)
         if (nextCodePoint(tmp, beg, end) != DecodeResult::Ok)
             throw std::invalid_argument("Hexadecimal sequence is too short.");
         ch *= 16;
-        if ('0' <= tmp && tmp <= '9')
+        if (uint32_t(tmp - '0') < 10)
             ch += tmp - '0';
-        else if ('A' <= tmp && tmp <= 'F')
-            ch += tmp - 'A' + 10;
-        else if ('a' <= tmp && tmp <= 'f')
-            ch += tmp - 'a' + 10;
+        else if (uint32_t((tmp | 0x20) - 'a') < 6)
+            ch += 10 + (tmp | 0x20) - 'a';
         else
             throw std::invalid_argument("Hexadecimal sequence is too short.");
     }
     return ch;
 }
 
+/** Advances @a beg past the next character, returning its (unescaped) value.
+ *
+ *  Escaped characters:
+ *   \\0 \\a \\b \\f \\n \\r \\t \\v \\u#### \\U######## \x##
+ *
+ *  @not If the string ends with a single escape character, the return value
+ *      is the tuple (@a escapeChar, @a false). This is the only circumstance
+ *      where that value can be returned.
+ *
+ *  @returns A pair consisting of the next character and a flag indicating
+ *      whether or not the character was escaped. If the character was
+ *      escaped, it is the unescaped value that is returned.
+ */
 template <typename FwdIt>
-std::pair<uint32_t, bool> unescapeNext(FwdIt& beg, FwdIt end, uint32_t escapeChar)
+std::pair<uint32_t, bool> unescapeNext(FwdIt& beg, FwdIt end,
+                                       uint32_t escapeChar = '\\')
 {
     uint32_t ch = Unicode::Invalid;
-    bool escaped = nextCodePoint(ch, beg, end) == DecodeResult::Ok &&
-                   ch == escapeChar &&
-                   nextCodePoint(ch, beg, end) == DecodeResult::Ok;
-    return std::make_pair(ch, escaped);
-}
+    if (nextCodePoint(ch, beg, end) != DecodeResult::Ok ||
+                      ch != escapeChar ||
+                      nextCodePoint(ch, beg, end) != DecodeResult::Ok)
+        return std::make_pair(ch, false);
 
-template <typename FwdIt>
-std::pair<uint32_t, bool> unescapeNext(FwdIt& beg, FwdIt end)
-{
-    std::pair<uint32_t, bool> value = unescapeNext(beg, end, '\\');
-    if (!value.second)
-        return value;
-
-    switch (value.first)
+    switch (ch)
     {
-    case '0': value.first = '\0'; break;
-    case 'a': value.first = '\a'; break;
-    case 'b': value.first = '\b'; break;
-    case 'f': value.first = '\f'; break;
-    case 'n': value.first = '\n'; break;
-    case 'r': value.first = '\r'; break;
-    case 't': value.first = '\t'; break;
-    case 'v': value.first = '\v'; break;
-    case 'u': value.first = fromHex(beg, end, 4); break;
-    case 'x': value.first = fromHex(beg, end, 2); break;
+    case '0': ch = '\0'; break;
+    case 'a': ch = '\a'; break;
+    case 'b': ch = '\b'; break;
+    case 'f': ch = '\f'; break;
+    case 'n': ch = '\n'; break;
+    case 'r': ch = '\r'; break;
+    case 't': ch = '\t'; break;
+    case 'v': ch = '\v'; break;
+    case 'u': ch = fromHex(beg, end, 4); break;
+    case 'U': ch = fromHex(beg, end, 8); break;
+    case 'x': ch = fromHex(beg, end, 2); break;
     default: break;
     }
 
-    return value;
+    return std::make_pair(ch, true);
 }
 
 }}}
