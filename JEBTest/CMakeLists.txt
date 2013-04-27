@@ -1,9 +1,8 @@
 cmake_minimum_required(VERSION 2.8)
 
-set(JEB_PROJECT Test)
-set(JEB_DIR JEB/${JEB_PROJECT})
+project(Test)
 
-project(${JEB_PROJECT})
+set(JEB_DIR JEB/${PROJECT_NAME})
 
 set(SRC
     AutoSuite.cpp
@@ -30,5 +29,5 @@ set(PUBLIC_HEADERS
     Session.hpp
     )
 
-add_library(${JEB_PROJECT} OBJECT ${SRC})
+add_library(${PROJECT_NAME} OBJECT ${SRC})
 install(FILES ${PUBLIC_HEADERS} DESTINATION include/${JEB_DIR})

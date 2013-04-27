@@ -1,9 +1,8 @@
 cmake_minimum_required(VERSION 2.8)
 
-set(JEB_PROJECT Sys)
-set(JEB_DIR JEB/${JEB_PROJECT})
+project(Sys)
 
-project(${JEB_PROJECT})
+set(JEB_DIR JEB/${PROJECT_NAME})
 
 set(PUBLIC_HEADERS
     Environment.hpp
@@ -17,25 +16,29 @@ set(SRC
     )
 
 if (WIN32)
-    set(PUBLIC_HEADERS ${PUBLIC_HEADERS}
+    set(PUBLIC_HEADERS
+        ${PUBLIC_HEADERS}
         Path.Win.hpp
         )
-    set(SRC ${SRC}
+    set(SRC
+        ${SRC}
         Path.Win.cpp
         Users.Win.cpp
         )
 else (WIN32)
-    set(PUBLIC_HEADERS ${PUBLIC_HEADERS}
+    set(PUBLIC_HEADERS
+        ${PUBLIC_HEADERS}
         Path.Posix.hpp
         )
-    set(SRC ${SRC}
+    set(SRC
+        ${SRC}
         Environment.Posix.cpp
         Path.Posix.cpp
         Users.Posix.cpp
         )
 endif (WIN32)
 
-add_library(${JEB_PROJECT} OBJECT ${SRC})
+add_library(${PROJECT_NAME} OBJECT ${SRC})
 
 if (DEFINED JEB_INSTALL_API)
     install(FILES ${PUBLIC_HEADERS} DESTINATION include/${JEB_DIR})

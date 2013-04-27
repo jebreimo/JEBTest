@@ -1,16 +1,15 @@
 cmake_minimum_required(VERSION 2.8)
 
-set(JEB_PROJECT String)
-set(JEB_DIR JEB/${JEB_PROJECT})
+project(String)
 
-project(${JEB_PROJECT})
+set(JEB_DIR JEB/${PROJECT_NAME})
 
 set(PUBLIC_HEADERS
     String.hpp
     StringConversion.hpp
     StringFlags.hpp
     StringPredicates.hpp
-   )
+    )
 
 set(SRC
     String.cpp
@@ -20,7 +19,7 @@ set(SRC
     Generic/WildCardMatcher.cpp
     Generic/WildCardWord.cpp
     Utf8/Encode.cpp
-   )
+    )
 
 set(PUBLIC_HEADERS_UTF8
     Utf8/Decode.hpp
@@ -30,9 +29,9 @@ set(PUBLIC_HEADERS_UTF8
     Utf8/EscapedString.hpp
     Utf8/EscapedFwdIt.hpp
     Utf8/Utf8Chars.hpp
-   )
+    )
 
-add_library(${JEB_PROJECT} OBJECT ${SRC})
+add_library(${PROJECT_NAME} OBJECT ${SRC})
 
 if (DEFINED JEB_INSTALL_API)
     install(FILES ${PUBLIC_HEADERS} DESTINATION include/${JEB_DIR})
