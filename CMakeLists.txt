@@ -18,7 +18,6 @@ elseif (WIN32)
 endif(APPLE)
 
 add_subdirectory(JEB)
-add_subdirectory(JEBTest)
 add_library(JEBTest
             $<TARGET_OBJECTS:Collections>
             $<TARGET_OBJECTS:String>

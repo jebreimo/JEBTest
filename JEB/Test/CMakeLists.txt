@@ -23,7 +23,6 @@ set(PUBLIC_HEADERS
     Error.hpp
     Exceptions.hpp
     Formatters.hpp
-    JEBTest.hpp
     Macros.hpp
     MacroUtilities.hpp
     Session.hpp
