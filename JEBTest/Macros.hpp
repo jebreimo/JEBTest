@@ -124,4 +124,15 @@
 #define JT_FAIL_TESTSUITE(msg) \
     throw ::JEB::Test::TestSuiteFailure(__FILE__, __LINE__, msg)
 
+#define JT_SUB(expr) \
+    try \
+    { \
+        expr; \
+    } \
+    catch (::JEB::Test::TestFailure& ex) \
+    { \
+        ex.addContext(__FILE__, __LINE__, #expr); \
+        throw ex; \
+    }
+
 #endif

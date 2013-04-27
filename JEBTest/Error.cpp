@@ -39,6 +39,18 @@ std::string Error::text() const
     return ss.str();
 }
 
+void Error::addContext(const std::string& file,
+                       unsigned lineNo,
+                       const std::string& message)
+{
+    m_Context.push_back(Error(file, lineNo, message));
+}
+
+const std::vector<Error>& Error::context() const
+{
+    return m_Context;
+}
+
 std::ostream& operator<<(std::ostream& os, const Error& e)
 {
     return os << e.text();

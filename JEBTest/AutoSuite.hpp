@@ -16,7 +16,6 @@ public:
     void setFunction(const Func& function);
 
     std::string name() const;
-    // void setName(const std::string& name);
 private:
     Func m_Function;
     std::string m_Name;

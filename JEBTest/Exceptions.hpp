@@ -2,6 +2,7 @@
 #define JEB_TEST_EXCEPTIONS_HPP
 
 #include <exception>
+#include <vector>
 #include "Error.hpp"
 
 namespace JEB { namespace Test {
@@ -12,11 +13,15 @@ public:
     virtual ~AbstractFailure();
     const Error& error() const;
     std::string what() const;
+    void addContext(const std::string& file,
+                    unsigned lineNo,
+                    const std::string& message);
 protected:
     AbstractFailure(const Error& error);
 private:
     Error m_Error;
     std::string m_What;
+    std::vector<Error> m_Context;
 };
 
 class TestFailure : public AbstractFailure

@@ -27,9 +27,4 @@ std::string AutoSuite::name() const
     return ::JEB::Test::extractSuiteName(m_Name);
 }
 
-// void AutoSuite::setName(const std::string& name)
-// {
-//     m_Name = name;
-// }
-
 }}

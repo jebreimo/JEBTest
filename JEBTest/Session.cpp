@@ -152,6 +152,14 @@ void Session::writeReport(std::ostream& os)
                 os << " FAILED (" << t.assertions()
                    << " assertions passed)\n"
                    << "    " << t.error() << "\n";
+                const std::vector<Error>& context = t.error().context();
+                if (!context.empty())
+                {
+                    for (auto c = context.begin(); c != context.end(); ++c)
+                    {
+                        os << "      " << c->text() << "\n";
+                    }
+                }
                 failures++;
             }
             else
@@ -160,15 +168,15 @@ void Session::writeReport(std::ostream& os)
                 os << " PASSED (" << t.assertions() << " assertions passed)\n";
             }
         }
-        if (ts.failed())
-        {
-            os << "  INTERRUPTED\n" << "    " << ts.error() << "\n";
-            testSuiteFailures++;
-        }
-        else if (failures != 0)
+        if (failures != 0)
         {
             os << "  FAILED (" << ts.tests().size() - failures << " of "
                << ts.tests().size() << " tests passed)\n";
+            testSuiteFailures++;
+        }
+        else if (ts.failed())
+        {
+            os << "  INTERRUPTED\n" << "    " << ts.error() << "\n";
             testSuiteFailures++;
         }
         else
