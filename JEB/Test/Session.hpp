@@ -1,6 +1,7 @@
 #ifndef JEB_SESSION_HPP
 #define JEB_SESSION_HPP
 
+#include <iosfwd>
 #include <memory>
 #include <string>
 #include <vector>
@@ -27,6 +28,8 @@ public:
     void unhandledException(const Error& error);
 
     size_t numberOfFailedSuites() const;
+
+    const std::vector<TestSuitePtr>& suites() const;
 
     void print(const std::string& text);
 

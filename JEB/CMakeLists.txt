@@ -9,7 +9,7 @@ add_subdirectory(String)
 add_subdirectory(Sys)
 add_subdirectory(Test)
 add_subdirectory(Unicode)
-
+add_subdirectory(Xml)
 
 set(PUBLIC_HEADERS
     JEBTest.hpp

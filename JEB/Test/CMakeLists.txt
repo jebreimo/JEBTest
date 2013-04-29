@@ -11,6 +11,7 @@ set(SRC
     Error.cpp
     Exceptions.cpp
     MacroUtilities.cpp
+    Report.cpp
     Session.cpp
     Test.cpp
     TestSuite.cpp
