@@ -10,6 +10,7 @@
 #include "Exceptions.hpp"
 #include "Formatters.hpp"
 #include "MacroUtilities.hpp"
+#include "Report.hpp"
 #include "Session.hpp"
 
 /** @file
@@ -46,7 +47,7 @@
         ::JEB::Test::Session::instance().unhandledException(::JEB::Test::Error(__FILE__, __LINE__, "Unknown exception")); \
     } \
     ::JEB::Test::Session::instance().print(""); \
-    ::JEB::Test::Session::instance().writeReport(std::cout)
+    writeReport(std::cout, ::JEB::Test::Session::instance())
 
 /** @brief Creates a main function for console programs that run test suites.
  *
@@ -107,10 +108,14 @@
  *  Execute a test suite function named testsuite_Shapes that takes no
  *  arguments:
  *
+ *      void testsuite_Shapes() {...}
+ *
  *      JT_RUN_TESTSUITE(testsuite_Shapes);
  *
  *  Execute a test suite function named testsuite_SvgShapes that takes a file
  *  name as argument:
+ *
+ *      void testsuite_SvgShapes(std::string fileName) {...}
  *
  *      JT_RUN_TESTSUITE(testsuite_SvgShapes, "my_svg_file.svg");
  */

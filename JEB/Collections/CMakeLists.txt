@@ -8,7 +8,9 @@ set(PUBLIC_HEADERS
     FromString.hpp
     Interval.hpp
     MapUtilities.hpp
+    SetUtilities.hpp
     ToString.hpp
+    VectorUtilities.hpp
     )
 
 set(SRC

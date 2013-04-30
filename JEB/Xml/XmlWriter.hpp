@@ -3,14 +3,14 @@
 
 #include <iosfwd>
 #include <memory>
-#include <stack>
 #include <string>
+#include <vector>
 #include "JEB/Text/Indentation.hpp"
 
 /** @file Defines the class XmlWriter.
  */
 
-namespace JEB {
+namespace JEB { namespace Xml {
 
 /** @brief XmlWriter writes UTF-8 encoded formatted XML to an instance of
  *  std::ostream.
@@ -18,7 +18,8 @@ namespace JEB {
 class XmlWriter
 {
 public:
-    enum Formatting {
+    enum Formatting
+    {
         None = 0,
         IndentElements = 1,
         AlignTagText = 2,
@@ -33,8 +34,12 @@ public:
      *  constructed instance, unless setStream is used to select a different
      *  stream.
      */
-    XmlWriter(std::ostream* stream);
+    XmlWriter(std::ostream& stream);
+    XmlWriter(std::unique_ptr<std::ostream> stream);
+    XmlWriter(XmlWriter&& rhs);
     ~XmlWriter();
+
+    XmlWriter& operator=(XmlWriter&& rhs);
 
     bool open(const std::string& filename);
     void close();
@@ -110,8 +115,11 @@ public:
     const std::string& indentation() const;
     void setIndentation(const std::string& indentation);
 
-    std::ostream* stream() const;
-    void setStream(std::ostream* stream);
+    bool hasStream() const;
+    std::ostream& stream() const;
+    void setStream(std::ostream& stream);
+    void setStream(std::unique_ptr<std::ostream> stream);
+    std::ostream* releaseStream();
 
     std::string currentIndentation();
 private:
@@ -145,18 +153,17 @@ private:
         AfterText
     };
 
-    std::stack<std::string> m_Context;
+    std::vector<std::string> m_Context;
     int m_Formatting;
     FormattingState m_FormattingState;
     Indentation m_Indentation;
     size_t m_LinePos;
     size_t m_PrevStreamPos;
-    State m_State;
-    std::stack<State> m_States;
+    std::vector<State> m_States;
     std::ostream* m_Stream;
     std::unique_ptr<std::ostream> m_StreamPtr;
 };
 
-}
+}}
 
 #endif

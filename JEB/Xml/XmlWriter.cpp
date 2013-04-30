@@ -8,11 +8,11 @@
 
 #define PRECONDITION(cond, msg) \
     if (!(cond)) \
-        throw std::runtime_error(msg)
+        throw std::logic_error(msg)
 
 using namespace std;
 
-namespace JEB {
+namespace JEB { namespace Xml {
 
 namespace
 {
@@ -38,24 +38,69 @@ XmlWriter::XmlWriter()
       m_PrevStreamPos(0),
       m_Stream(&cout)
 {
-    m_States.push(Text);
+    m_States.push_back(Text);
     m_PrevStreamPos = (size_t)cout.tellp();
 }
 
-XmlWriter::XmlWriter(std::ostream* stream)
+XmlWriter::XmlWriter(std::ostream& stream)
     : m_Formatting(DefaultFormatting),
       m_FormattingState(AfterIndentation),
       m_LinePos(0),
       m_PrevStreamPos(0),
-      m_Stream(stream)
+      m_Stream(&stream)
 {
-    m_States.push(Text);
+    m_States.push_back(Text);
+    if (stream)
+        m_PrevStreamPos = (size_t)stream.tellp();
+}
+
+XmlWriter::XmlWriter(std::unique_ptr<std::ostream> stream)
+    : m_Formatting(DefaultFormatting),
+      m_FormattingState(AfterIndentation),
+      m_LinePos(0),
+      m_PrevStreamPos(0),
+      m_Stream(stream.get())
+{
+    m_StreamPtr = std::move(stream);
+    m_States.push_back(Text);
     if (stream)
         m_PrevStreamPos = (size_t)stream->tellp();
 }
 
-XmlWriter::~XmlWriter()
+XmlWriter::XmlWriter(XmlWriter&& rhs)
+    : m_Formatting(rhs.m_Formatting),
+      m_FormattingState(rhs.m_FormattingState),
+      m_LinePos(rhs.m_LinePos),
+      m_PrevStreamPos(rhs.m_PrevStreamPos),
+      m_Stream(rhs.m_Stream),
+      m_Indentation(std::move(rhs.m_Indentation)),
+      m_States(std::move(rhs.m_States)),
+      m_Context(std::move(rhs.m_Context))
 {
+    m_StreamPtr.reset(rhs.releaseStream());
+}
+
+XmlWriter::~XmlWriter()
+{}
+
+XmlWriter& XmlWriter::operator=(XmlWriter&& rhs)
+{
+    m_Formatting = rhs.m_Formatting;
+    m_FormattingState = rhs.m_FormattingState;
+    m_LinePos = rhs.m_LinePos;
+    m_PrevStreamPos = rhs.m_PrevStreamPos;
+    m_Indentation = std::move(rhs.m_Indentation);
+
+    m_Stream = rhs.m_Stream;
+    m_StreamPtr.reset(rhs.releaseStream());
+
+    m_States.clear();
+    m_States.swap(rhs.m_States);
+
+    m_Context.clear();
+    m_Context.swap(rhs.m_Context);
+
+    return *this;
 }
 
 bool XmlWriter::open(const std::string& filename)
@@ -91,20 +136,20 @@ void XmlWriter::beginAttribute(const string& name)
     write(name);
     *m_Stream << "=\"";
     m_FormattingState = AfterText;
-    m_States.push(AttributeValue);
+    m_States.push_back(AttributeValue);
 }
 
 void XmlWriter::endAttribute()
 {
-    PRECONDITION(m_States.top() == AttributeValue, "endAttribute not preceded by beginAttribute");
+    PRECONDITION(m_States.back() == AttributeValue, "endAttribute not preceded by beginAttribute");
     m_Stream->put('"');
-    m_States.pop();
+    m_States.pop_back();
     m_FormattingState = AfterText;
 }
 
 void XmlWriter::attributeValue(const string& value)
 {
-    PRECONDITION(m_States.top() == AttributeValue, "attribute value without name");
+    PRECONDITION(m_States.back() == AttributeValue, "attribute value without name");
     writeAttributeText(value);
 }
 
@@ -115,25 +160,25 @@ void XmlWriter::attributeValue(const std::wstring& value)
 
 void XmlWriter::attributeValue(int value)
 {
-    PRECONDITION(m_States.top() == AttributeValue, "attribute value without name");
+    PRECONDITION(m_States.back() == AttributeValue, "attribute value without name");
     *m_Stream << value;
 }
 
 void XmlWriter::attributeValue(long long value)
 {
-    PRECONDITION(m_States.top() == AttributeValue, "attribute value without name");
+    PRECONDITION(m_States.back() == AttributeValue, "attribute value without name");
     *m_Stream << value;
 }
 
 void XmlWriter::attributeValue(double value)
 {
-    PRECONDITION(m_States.top() == AttributeValue, "attribute value without name");
+    PRECONDITION(m_States.back() == AttributeValue, "attribute value without name");
     *m_Stream << value;
 }
 
 void XmlWriter::attributeValue(double value, int precision)
 {
-    PRECONDITION(m_States.top() == AttributeValue, "attribute value without name");
+    PRECONDITION(m_States.back() == AttributeValue, "attribute value without name");
     std::streamsize prev = m_Stream->precision(precision);
     *m_Stream << value;
     m_Stream->precision(prev);
@@ -186,31 +231,31 @@ void XmlWriter::beginElement(const string& name)
         ensureNewline();
     *m_Stream << '<';
     write(name);
-    m_Context.push(name);
+    m_Context.push_back(name);
     m_FormattingState = FirstAttribute;
-    m_States.push(ElementTag);
+    m_States.push_back(ElementTag);
 }
 
 void XmlWriter::endElement()
 {
     PRECONDITION(!m_Context.empty(), "end element without matching start element");
     tagContext();
-    if (m_States.top() == ElementTag)
+    if (m_States.back() == ElementTag)
     {
       if (m_FormattingState != FirstAttribute)
           m_Indentation.pop();
       *m_Stream << "/>";
     }
-    else if (m_States.top() != SpecialTag)
+    else if (m_States.back() != SpecialTag)
     {
         if ((m_Formatting & IndentElements) != 0)
             m_Indentation.pop();
-        if (m_States.top() == Text &&
+        if (m_States.back() == Text &&
             oneOf(m_FormattingState, AfterEndTag, StartOfLine) &&
             (m_Formatting & IndentElements) != 0)
             ensureNewline();
         *m_Stream << "</";
-        write(m_Context.top());
+        write(m_Context.back());
         *m_Stream << ">";
     }
     else
@@ -218,9 +263,9 @@ void XmlWriter::endElement()
         throw std::runtime_error("end element in a special tag");
     }
 
-    m_Context.pop();
+    m_Context.pop_back();
     m_FormattingState = AfterEndTag;
-    m_States.pop();
+    m_States.pop_back();
 }
 
 void XmlWriter::element(const std::string& name, const std::string& charData)
@@ -318,7 +363,7 @@ void XmlWriter::beginSpecialTag(const string& start, const string& end)
         oneOf(m_FormattingState, StartOfLine, AfterBraces, AfterEndTag))
         ensureNewline();
     write(start);
-    m_Context.push(end);
+    m_Context.push_back(end);
     if (String::isAlphaNumeric(String::chr(start, -1)))
     {
         m_FormattingState = FirstAttribute;
@@ -328,15 +373,15 @@ void XmlWriter::beginSpecialTag(const string& start, const string& end)
         m_FormattingState = AfterIndentation;
         m_Indentation.pushAlignment(static_cast<unsigned>(linePos()));
     }
-    m_States.push(SpecialTag);
+    m_States.push_back(SpecialTag);
 }
 
 void XmlWriter::endTag()
 {
     tagContext();
-    PRECONDITION(m_States.top() == ElementTag || m_States.top() == SpecialTag,
+    PRECONDITION(m_States.back() == ElementTag || m_States.back() == SpecialTag,
                  "endTag called outside a tag");
-    switch (m_States.top())
+    switch (m_States.back())
     {
     case ElementTag:
         textContext();
@@ -348,9 +393,9 @@ void XmlWriter::endTag()
             ensureNewline();
         else if (m_FormattingState == AfterText)
             m_Stream->put(' ');
-        *m_Stream << m_Context.top();
-        m_Context.pop();
-        m_States.pop();
+        *m_Stream << m_Context.back();
+        m_Context.pop_back();
+        m_States.pop_back();
         m_FormattingState = AfterEndTag;
         break;
     default:
@@ -456,14 +501,34 @@ void XmlWriter::setIndentation(const string& indentation)
     m_Indentation.setIndentationString(indentation);
 }
 
-std::ostream* XmlWriter::stream() const
+bool XmlWriter::hasStream() const
 {
-    return m_Stream;
+    return m_Stream != nullptr;
 }
 
-void XmlWriter::setStream(std::ostream* stream)
+std::ostream& XmlWriter::stream() const
 {
-    m_Stream = stream;
+    if (!m_Stream)
+        throw std::logic_error("Attempt to access stream member before it's been assigned.");
+    return *m_Stream;
+}
+
+void XmlWriter::setStream(std::ostream& stream)
+{
+    m_StreamPtr.reset();
+    m_Stream = &stream;
+}
+
+void XmlWriter::setStream(std::unique_ptr<std::ostream> streamPtr)
+{
+    m_StreamPtr = std::move(streamPtr);
+    m_Stream = m_StreamPtr.get();
+}
+
+std::ostream* XmlWriter::releaseStream()
+{
+    m_Stream = nullptr;
+    return m_StreamPtr.release();
 }
 
 void XmlWriter::reset()
@@ -471,31 +536,31 @@ void XmlWriter::reset()
     m_FormattingState = AfterIndentation;
     m_LinePos = 0;
     m_PrevStreamPos = (size_t)m_Stream->tellp();
-    while (!m_States.empty())
-        m_States.pop();
-    m_States.push(Text);
+    m_States.clear();
+    m_Context.clear();
+    m_States.push_back(Text);
 }
 
 void XmlWriter::tagContext()
 {
-    if (m_States.top() == AttributeValue)
+    if (m_States.back() == AttributeValue)
         endAttribute();
 }
 
 void XmlWriter::textContext()
 {
     tagContext();
-    if (m_States.top() == ElementTag)
+    if (m_States.back() == ElementTag)
     {
         if (m_FormattingState != FirstAttribute)
             m_Indentation.pop();
         *m_Stream << '>';
         if ((m_Formatting & IndentElements) != 0)
             m_Indentation.pushIndent();
-        m_States.top() = Text;
+        m_States.back() = Text;
         m_FormattingState = AfterBraces;
     }
-    else if (m_States.top() == SpecialTag &&
+    else if (m_States.back() == SpecialTag &&
              m_FormattingState == FirstAttribute)
     {
         m_Indentation.pushAlignment(static_cast<unsigned>(linePos()));
@@ -599,4 +664,4 @@ void XmlWriter::write(std::string::const_iterator beg,
     m_PrevStreamPos = (size_t)m_Stream->tellp();
 }
 
-}
+}}

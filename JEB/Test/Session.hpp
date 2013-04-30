@@ -38,7 +38,7 @@ public:
     std::ostream* log();
     void setLog(std::ostream* log);
 
-    void writeReport(std::ostream& dst);
+    // void writeReport(std::ostream& dst);
 private:
     Session();
     ~Session();

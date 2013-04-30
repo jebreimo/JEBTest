@@ -4,10 +4,12 @@ project(JEB)
 
 set(JEB_DIR JEB)
 
+add_subdirectory(ArgParser)
 add_subdirectory(Collections)
 add_subdirectory(String)
 add_subdirectory(Sys)
 add_subdirectory(Test)
+add_subdirectory(Text)
 add_subdirectory(Unicode)
 add_subdirectory(Xml)
 

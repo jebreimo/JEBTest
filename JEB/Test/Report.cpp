@@ -1,5 +1,8 @@
+#include "Report.hpp"
+
 #include <iomanip>
 #include <iostream>
+#include "JEB/Xml/XmlWriter.hpp"
 #include "Session.hpp"
 #include "TestSuite.hpp"
 
@@ -73,5 +76,7 @@ void writeReport(std::ostream& os, const Session& session)
     }
     os.flush();
 }
+
+void writeXmlReport(std::ostream& os, const Session& session);
 
 }}

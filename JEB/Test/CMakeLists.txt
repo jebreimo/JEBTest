@@ -26,6 +26,7 @@ set(PUBLIC_HEADERS
     Formatters.hpp
     Macros.hpp
     MacroUtilities.hpp
+    Report.hpp
     Session.hpp
     )
 
