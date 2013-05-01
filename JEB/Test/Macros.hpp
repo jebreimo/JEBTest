@@ -47,7 +47,7 @@
         ::JEB::Test::Session::instance().unhandledException(::JEB::Test::Error(__FILE__, __LINE__, "Unknown exception")); \
     } \
     ::JEB::Test::Session::instance().print(""); \
-    writeReport(std::cout, ::JEB::Test::Session::instance())
+    ::JEB::Test::writeReport(std::cout, ::JEB::Test::Session::instance())
 
 /** @brief Creates a main function for console programs that run test suites.
  *

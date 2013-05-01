@@ -15,7 +15,7 @@ if (APPLE)
 elseif (WIN32)
     add_definitions(-D_SCL_SECURE_NO_WARNINGS)
     set(CMAKE_INSTALL_PREFIX "D:/Libraries")
-endif(APPLE)
+endif (APPLE)
 
 add_subdirectory(JEB)
 add_library(JEBTest
@@ -28,13 +28,13 @@ add_library(JEBTest
 
 install(TARGETS JEBTest DESTINATION lib)
 
-FIND_PACKAGE(Doxygen)
+find_package(Doxygen)
 
-IF (DOXYGEN_FOUND)
-    SET(DOXYGEN_INPUT Doxyfile)
-    SET(DOXYGEN_OUTPUT doc/html/index.html)
+if (DOXYGEN_FOUND)
+    set(DOXYGEN_INPUT Doxyfile)
+    set(DOXYGEN_OUTPUT doc/html/index.html)
 
-    ADD_CUSTOM_COMMAND(
+    add_custom_command(
       OUTPUT ${DOXYGEN_OUTPUT}
       COMMAND ${CMAKE_COMMAND} -E echo_append "Building API Documentation..."
       COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_INPUT}
@@ -43,13 +43,12 @@ IF (DOXYGEN_FOUND)
       DEPENDS ${DOXYGEN_INPUT}
       )
 
-    ADD_CUSTOM_TARGET(apidoc ALL DEPENDS ${DOXYGEN_OUTPUT})
+    add_custom_target(apidoc ALL DEPENDS ${DOXYGEN_OUTPUT})
 
-    ADD_CUSTOM_TARGET(apidoc_forced
+    add_custom_target(apidoc_forced
       COMMAND ${CMAKE_COMMAND} -E echo_append "Building API Documentation..."
       COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_INPUT}
       COMMAND ${CMAKE_COMMAND} -E echo "Done."
       WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
       )
-
-ENDIF (DOXYGEN_FOUND)
+endif (DOXYGEN_FOUND)

@@ -2,9 +2,11 @@
 
 #include <iomanip>
 #include <iostream>
-#include "JEB/Xml/XmlWriter.hpp"
 #include "Session.hpp"
 #include "TestSuite.hpp"
+
+#include "JEB/Xml/XmlWriter.hpp"
+#undef JEB
 
 namespace JEB { namespace Test {
 
@@ -77,6 +79,7 @@ void writeReport(std::ostream& os, const Session& session)
     os.flush();
 }
 
-void writeXmlReport(std::ostream& os, const Session& session);
+void writeXmlReport(std::ostream& os, const Session& session)
+{}
 
 }}

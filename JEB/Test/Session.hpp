@@ -37,8 +37,6 @@ public:
 
     std::ostream* log();
     void setLog(std::ostream* log);
-
-    // void writeReport(std::ostream& dst);
 private:
     Session();
     ~Session();
@@ -47,7 +45,6 @@ private:
     std::vector<TestSuitePtr> m_TestSuites;
 };
 
-}
-}
+}}
 
 #endif
