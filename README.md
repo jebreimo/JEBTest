@@ -13,8 +13,11 @@ There are a couple of reasons for prefering test and as functions rather than cl
 
 TODO
 ====
-- Proper console report
-
+- Proper text report (I've destroyed the old report with recent changes)
+- Redirecting stdout and stderr to a log file
+- JUnit xml report
+- Exceptions for both skipping a test and skipping a test hierarchy (formerly called a "suite")
+- Command line parameters
 
 Examples
 ========
