@@ -1,8 +1,10 @@
-#include "Session.hpp"
+#include "Test.hpp"
 #include <iostream>
 #include <stdexcept>
 
-#include "Test.hpp"
+#include "JEB/Sys/Path.hpp"
+#include "JEB/String/String.hpp"
+#undef JEB
 
 namespace JEB { namespace Test {
 
@@ -21,6 +23,11 @@ size_t Test::assertions() const
 void Test::incrementAssertions()
 {
     m_Assertions++;
+}
+
+void Test::addTest(TestPtr test)
+{
+    m_Tests.push_back(test);
 }
 
 const Error& Test::error() const
@@ -46,6 +53,16 @@ void Test::setFailed(bool failed)
 const std::string& Test::name() const
 {
     return m_Name;
+}
+
+std::vector<TestPtr>& Test::tests()
+{
+    return m_Tests;
+}
+
+const std::vector<TestPtr>& Test::tests() const
+{
+    return m_Tests;
 }
 
 }}

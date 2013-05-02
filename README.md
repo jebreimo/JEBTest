@@ -1,14 +1,20 @@
 Goals for this project:
+=======================
 - No source code dependencies to any projects except the standard library, not even boost
-- Tests and test suites are independent functions rather than classes
+- Tests are organized with functions rather than classes
 - Adding new tests should cause as little overhead as possible
 - The error report should make it easy to discover which test, if any, has failed 
 - Don't introduce any syntax that confuses C++ text editors
-- Keep the division of tests into test suites that CppUnit (and JUnit) uses.
 
-There are a couple of reasons for prefering test and test suites as functions rather than classes:
+There are a couple of reasons for prefering test and as functions rather than classes:
+
 - Less overhead for the programmer (less typing)
 - When tests share a common data set, classes tend to force the use of setup and tear-down steps that make RAII less elegant than it should be.
+
+TODO
+====
+- Proper console report
+
 
 Examples
 ========

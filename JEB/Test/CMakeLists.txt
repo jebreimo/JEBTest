@@ -5,8 +5,8 @@ project(Test)
 set(JEB_DIR JEB/${PROJECT_NAME})
 
 set(SRC
-    AutoSuite.cpp
-    AutoSuiteRunner.cpp
+    AutoTest.cpp
+    AutoTestRunner.cpp
     Comparers.cpp
     Error.cpp
     Exceptions.cpp
@@ -14,12 +14,11 @@ set(SRC
     Report.cpp
     Session.cpp
     Test.cpp
-    TestSuite.cpp
     )
 
 set(PUBLIC_HEADERS
-    AutoSuite.hpp
-    AutoSuiteRunner.hpp
+    AutoTest.hpp
+    AutoTestRunner.hpp
     Comparers.hpp
     Error.hpp
     Exceptions.hpp

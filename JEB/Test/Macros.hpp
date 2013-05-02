@@ -1,3 +1,10 @@
+/* JEBTest: A C++ unit testing framework
+ * Copyright 2013 Jan Erik Breimo
+ * All rights reserved.
+ *
+ * This file is distributed under the BSD License.
+ * License text is included with the source distribution.
+ */
 #ifndef JEB_TEST_MACROS_HPP
 #define JEB_TEST_MACROS_HPP
 
@@ -5,7 +12,7 @@
 #include <exception>
 #include <iostream>
 #include <sstream>
-#include "AutoSuite.hpp"
+#include "AutoTest.hpp"
 #include "Comparers.hpp"
 #include "Exceptions.hpp"
 #include "Formatters.hpp"
@@ -52,7 +59,7 @@
 /** @brief Creates a main function for console programs that run test suites.
  *
  *  The created main function will run all tests in all test suites defined
- *  with the JT_TESTSUITE macro or added explicitly with a AutoSuite variable.
+ *  with the JT_TESTSUITE macro or added explicitly with a AutoTest variable.
  *
  *  All reports and messages are written to the console (command line window)
  */
@@ -60,9 +67,9 @@
     int main() \
     { \
         JT_CONSOLE_BEGIN(); \
-        ::JEB::Test::AutoSuiteRunner::instance().run(); \
+        ::JEB::Test::AutoTestRunner::instance().run(); \
         JT_CONSOLE_END(); \
-        return (int)::JEB::Test::Session::instance().numberOfFailedSuites(); \
+        return (int)::JEB::Test::Session::instance().numberOfFailedTests(); \
     }
 
 /** @brief Defines a test suite.
@@ -90,7 +97,7 @@
             } \
         } \
     } \
-    static ::JEB::Test::AutoSuite JT_PRIV_UNIQUE_NAME(JT_suite_instance_, __LINE__)(__FILE__, JT_PRIV_UNIQUE_NAME(JT_suite_, __LINE__))
+    static ::JEB::Test::AutoTest JT_PRIV_UNIQUE_NAME(JT_suite_instance_, __LINE__)(__FILE__, JT_PRIV_UNIQUE_NAME(JT_suite_, __LINE__))
 
 /** @brief Macro for explicitly running a test suite with arguments.
  *
@@ -119,26 +126,31 @@
  *
  *      JT_RUN_TESTSUITE(testsuite_SvgShapes, "my_svg_file.svg");
  */
-#define JT_RUN_TESTSUITE(name, ...) \
-    ::JEB::Test::Session::instance().beginSuite( \
-            ::JEB::Test::extractSuiteName(#name)); \
-    try { \
-        name(__VA_ARGS__); \
-        ::JEB::Test::Session::instance().endSuite(); \
-    } catch (const ::JEB::Test::TestSuiteFailure& ex) { \
-        ::JEB::Test::Session::instance().suiteFailed(ex.error()); \
-    }
+// #define JT_RUN_TESTSUITE(name, ...) \
+//     if (::JEB::Test::Session::instance().isTestEnabled(#name)) \
+//     { \
+//         ::JEB::Test::Session::instance().beginTest( \
+//                 ::JEB::Test::extractSuiteName(#name)); \
+//         try { \
+//             name(__VA_ARGS__); \
+//             ::JEB::Test::Session::instance().endTest(); \
+//         } catch (const ::JEB::Test::TestSuiteFailure& ex) { \
+//             ::JEB::Test::Session::instance().suiteFailed(ex.error()); \
+//         } \
+//     }
 
 /** @brief Macro for explcitly running a test with arguments.
  */
 #define JT_RUN_TEST(name, ...) \
-    ::JEB::Test::Session::instance().beginTest( \
-            ::JEB::Test::extractTestName(#name)); \
-    try { \
-        name(__VA_ARGS__); \
-        ::JEB::Test::Session::instance().endTest(); \
-    } catch (const ::JEB::Test::TestFailure& ex) { \
-        ::JEB::Test::Session::instance().testFailed(ex.error()); \
+    if (::JEB::Test::Session::instance().isTestEnabled(#name)) \
+    { \
+        ::JEB::Test::Session::instance().beginTest(#name); \
+        try { \
+            name(__VA_ARGS__); \
+            ::JEB::Test::Session::instance().endTest(); \
+        } catch (const ::JEB::Test::TestFailure& ex) { \
+            ::JEB::Test::Session::instance().testFailed(ex.error()); \
+        } \
     }
 
 /** @brief Macro for verifying that an expression throws an exception.
@@ -229,8 +241,8 @@
 
 /** @brief Force a test suite failure with the given error message.
  */
-#define JT_FAIL_TESTSUITE(msg) \
-    throw ::JEB::Test::TestSuiteFailure(__FILE__, __LINE__, msg)
+// #define JT_FAIL_TESTSUITE(msg) \
+//     throw ::JEB::Test::TestSuiteFailure(__FILE__, __LINE__, msg)
 
 /** @brief Provide extra information when calling a function from within a test.
  *

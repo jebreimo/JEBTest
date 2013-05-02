@@ -1,16 +1,16 @@
-#ifndef JEB_TEST_AUTOSUITE_HPP
-#define JEB_TEST_AUTOSUITE_HPP
+#ifndef JEB_TEST_AUTOTEST_HPP
+#define JEB_TEST_AUTOTEST_HPP
 
 #include <string>
 
 namespace JEB { namespace Test {
 
-class AutoSuite
+class AutoTest
 {
 public:
     typedef void (*Func)();
 
-    AutoSuite(const std::string& fileName, Func suiteFunc);
+    AutoTest(const std::string& fileName, Func suiteFunc);
 
     const Func& function() const;
     void setFunction(const Func& function);

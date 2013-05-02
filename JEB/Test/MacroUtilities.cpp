@@ -10,27 +10,21 @@ using namespace JEBTestLib::Sys;
 
 namespace JEB { namespace Test {
 
-std::string extractTestName(const std::string& name)
-{
-    if (startsWith(name, "test_", FindFlags::CaseInsensitive))
-        return name.substr(5);
-    return name;
-}
+// std::string extractTestName(const std::string& name)
+// {
+//     if (startsWith(name, "test_", FindFlags::CaseInsensitive))
+//         return name.substr(5);
+//     return name;
+// }
 
 std::vector<std::string> extractTestNames(const std::string& names)
 {
-    std::vector<std::string> list = split(names, ",");
-    for (auto it = list.begin(); it != list.end(); it++)
-        *it = extractTestName(trim(*it));
-    return list;
+    return split(names, ",");
 }
 
 std::string extractSuiteName(const std::string& path)
 {
-    std::string name = Path::baseName(Path::removeExtension(path));
-    if (startsWith(name, "testsuite_"/*, FindFlags::CaseInsensitive*/))
-        return name.substr(10);
-    return name;
+    return Path::baseName(Path::removeExtension(path));
 }
 
 }}
