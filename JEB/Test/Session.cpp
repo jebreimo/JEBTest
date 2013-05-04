@@ -7,9 +7,11 @@
  */
 #include "Session.hpp"
 
+#include <fstream>
 #include <iomanip>
 #include <iostream>
 #include <stdexcept>
+#include "Report.hpp"
 #include "Test.hpp"
 
 #include "JEB/String/String.hpp"
@@ -17,8 +19,11 @@
 
 namespace JEB { namespace Test {
 
+using namespace JEBTestLib::String;
+
 Session::Session()
     : m_AllTestsEnabled(true),
+      m_EnabledReports(0),
       m_Log(&std::cerr)
 {
 }
@@ -33,49 +38,72 @@ Session& Session::instance()
     return test;
 }
 
-// void Session::beginSuite(const std::string& name)
-// {
-//     TestSuitePtr ts(new TestSuite(name));
-//     if (m_ActiveTest.empty())
-//     {
-//         m_TestSuites.push_back(ts);
-//         m_ActiveTest.push_back(ts);
-//     }
-//     else
-//     {
-//         TestSuitePtr parent = std::dynamic_pointer_cast<TestSuite>(m_ActiveTest.back());
-//         if (!parent)
-//             throw std::logic_error("Call to beginSuite when endTest was expected");
-//         parent->addTest(ts);
-//     }
-//     print(std::string("Running test suite ") + name + "\n");
-// }
+bool Session::reportEnabled(ReportFormat format) const
+{
+    return (m_EnabledReports & format) != 0;
+}
 
-// void Session::endSuite()
-// {
-//     // TODO: update report code
-//     // TODO: better handling of tests outside test suites
-//     if (m_ActiveTest.empty() ||
-//         !std::dynamic_pointer_cast<TestSuite>(m_ActiveTest.back()))
-//     {
-//         throw std::logic_error("Call to endSuite not preceded by a call to beginSuite");
-//     }
-//     m_ActiveTest.
-//     if (m_TestSuites.empty())
-//         throw std::logic_error("Call to endSuite not preceded by a call to beginSuite");
-// }
+void Session::setReportEnabled(ReportFormat format, bool enabled)
+{
+    if (enabled)
+        m_EnabledReports |= format;
+    else
+        m_EnabledReports &= ~format;
+}
 
-// void Session::suiteFailed(const Error& error)
-// {
-//     // if (m_TestSuites.empty())
-//     //     throw std::logic_error("Call to suiteFailed not preceded by a call to beginSuite");
-//     Test& ts = *m_TestSuites.back();
-//     if (ts.tests().empty())
-//         print("\n");
-//     ts.setFailed(true);
-//     ts.setError(error);
-//     print(std::string("  ") + error.text() + "\n");
-// }
+const std::string& Session::reportFileName() const
+{
+    return m_ReportFileName;
+}
+
+void Session::setReportFileName(const std::string& fileName)
+{
+    m_ReportFileName = fileName;
+}
+
+typedef void (*ReportFunc)(std::ostream&, const Session&);
+
+void writeFileReport(ReportFunc func,
+                     const std::string& fileName,
+                     const Session& session)
+{
+    std::ofstream file(fileName);
+    if (!file)
+        throw std::runtime_error(FORMAT_STRING("Can't create report file: " << fileName));
+    func(file, session);
+}
+
+void writeReport(ReportFunc func,
+                 const std::string& fileName,
+                 const std::string& fileNameExtension,
+                 bool forceExtension,
+                 const Session& session)
+{
+    if (fileName.empty())
+    {
+        func(std::cout, session);
+    }
+    else if (!forceExtension ||
+             endsWith(fileName, fileNameExtension, FindFlags::CaseInsensitive))
+    {
+        writeFileReport(func, fileName, session);
+    }
+    else
+    {
+        writeFileReport(func, fileName + fileNameExtension, session);
+    }
+}
+
+void Session::writeReports()
+{
+    unsigned reports = m_EnabledReports ? m_EnabledReports : TextReport;
+    if (reports & TextReport)
+        writeReport(writeTextReport, m_ReportFileName, ".txt",
+                    (m_EnabledReports & ~TextReport) != 0, *this);
+    if (reports & JUnitReport)
+        writeReport(writeTextReport, m_ReportFileName, ".xml",
+                    (m_EnabledReports & ~JUnitReport) != 0, *this);
+}
 
 void Session::beginTest(const std::string& name)
 {
@@ -185,7 +213,7 @@ std::string Session::getTestName(const std::string& name) const
     for (auto it = m_ActiveTest.begin(); it != m_ActiveTest.end(); ++it)
         names.push_back((*it)->name());
     names.push_back(name);
-    return JEBTestLib::String::join(names, "/");
+    return join(names, "/");
 }
 
 }}

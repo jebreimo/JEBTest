@@ -8,7 +8,7 @@
 #ifdef JEB_USE_EXTERN_DEST
 extern std::ostream* JEB_Stream;
 #else
-static std::ostream* JEB_Stream = &std::cerr;
+static std::ostream* JEB_Stream = &std::clog;
 #endif
 
 #define JEB_CHECKPOINT() \

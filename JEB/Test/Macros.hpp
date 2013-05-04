@@ -54,7 +54,7 @@
         ::JEB::Test::Session::instance().unhandledException(::JEB::Test::Error(__FILE__, __LINE__, "Unknown exception")); \
     } \
     ::JEB::Test::Session::instance().print(""); \
-    ::JEB::Test::writeReport(std::cout, ::JEB::Test::Session::instance())
+    ::JEB::Test::Session::instance()::writeReports()
 
 /** @brief Creates a main function for console programs that run test suites.
  *
@@ -66,9 +66,16 @@
 #define JT_CONSOLE_MAIN() \
     int main() \
     { \
-        JT_CONSOLE_BEGIN(); \
-        ::JEB::Test::AutoTestRunner::instance().run(); \
-        JT_CONSOLE_END(); \
+        try \
+        { \
+            JT_CONSOLE_BEGIN(); \
+            ::JEB::Test::AutoTestRunner::instance().run(); \
+            JT_CONSOLE_END(); \
+        } \
+        catch (std::exception& ex) \
+        { \
+            std::cerr << "EXCEPTION: " << ex.what() << std::endl; \
+        } \
         return (int)::JEB::Test::Session::instance().numberOfFailedTests(); \
     }
 

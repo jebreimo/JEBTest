@@ -39,14 +39,13 @@ namespace JEB { namespace Sys { namespace Path { namespace Generic {
 template <typename PathSepPred>
 std::pair<std::string, std::string> splitExtension(const std::string& p, PathSepPred isPathSep)
 {
-    std::pair<std::string, std::string> parts = String::splitLastToken(p, (uint32_t)'.');
-    if (parts.first.empty() || parts.second.empty() ||
-        isPathSep(parts.first.back()) ||
-        std::find_if(parts.second.begin(), parts.second.end(), isPathSep) != parts.second.end())
+    size_t pos = p.find_last_of('.');
+    if (pos == std::string::npos || pos == 0 || pos == p.size() - 1 ||
+        std::find_if(p.begin() + pos - 1, p.end(), isPathSep) != p.end())
     {
         return std::make_pair(p, std::string());
     }
-    return parts;
+    return std::make_pair(p.substr(0, pos), p.substr(pos));
 }
 
 }}}}

@@ -521,6 +521,16 @@ std::vector<std::string> splitWhere(
     return parts;
 }
 
+std::pair<std::string, std::string> splitAt(
+        const std::string& str,
+        long pos)
+{
+    Utf8Iterator begin = Utf8::begin(str);
+    Utf8Iterator end = Utf8::end(str);
+    Utf8Iterator it = nth(begin, end, pos);
+    return std::make_pair(detail::string(begin, it), detail::string(it, end));
+}
+
 std::pair<std::string, std::string> splitFirst(
         const std::string& str,
         SplitFlags::Flags flags)

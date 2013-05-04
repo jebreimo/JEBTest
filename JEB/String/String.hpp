@@ -38,8 +38,8 @@ namespace String
       (std::ostringstream() << msg).str()
 #endif
 
-#define FORMAT_WSTRING(msg) \
-    static_cast<std::wostringstream&>(static_cast<std::wostream&>(std::wostringstream()) << msg).str()
+// #define FORMAT_WSTRING(msg) \
+//     static_cast<std::wostringstream&>(static_cast<std::wostream&>(std::wostringstream()) << msg).str()
 
 typedef std::string::const_iterator Iterator;
 typedef std::pair<Iterator, Iterator> Range;
@@ -304,6 +304,10 @@ std::vector<std::string> splitWhere(
         const std::function<bool(uint32_t)> predicate,
         size_t maxSplits = 0,
         SplitFlags::Flags flags = SplitFlags::Defaults);
+
+std::pair<std::string, std::string> splitAt(
+        const std::string& str,
+        long pos);
 
 std::pair<std::string, std::string> splitFirst(
         const std::string& str,

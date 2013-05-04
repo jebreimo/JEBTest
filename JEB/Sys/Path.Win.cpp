@@ -9,11 +9,12 @@ namespace JEB { namespace Sys { namespace Path { namespace Win {
 
 char DirSep = '\\';
 char DriveSep = ':';
+char UnixDirSep = '/';
 const size_t MaxPath = 1024;
 
 bool isDirSeparator(uint32_t chr)
 {
-    return chr == DriveSep || chr == DirSep;
+    return chr == DriveSep || chr == DirSep || chr == UnixDirSep;
 }
 
 std::string absPath(const std::string& p)
