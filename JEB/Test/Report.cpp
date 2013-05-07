@@ -17,72 +17,84 @@
 
 namespace JEB { namespace Test {
 
-void writeReport(std::ostream& os, const Session& session)
+struct Counters
+{
+    Counters() : assertions(0), tests(0), failedTests(0) {}
+    size_t assertions;
+    size_t tests;
+    size_t failedTests;
+};
+
+Counters& operator+=(Counters& lhs, const Counters& rhs)
+{
+    lhs.assertions += rhs.assertions;
+    lhs.tests += rhs.tests;
+    lhs.failedTests += rhs.failedTests;
+    return lhs;
+}
+
+static std::string testName(const std::vector<TestPtr>& parents,
+                            const TestPtr& test)
+{
+    std::string name;
+    for (auto it = parents.begin(); it != parents.end(); ++it)
+        name += (*it)->name() + ".";
+    name += test->name();
+    return name;
+}
+
+static Counters writeTextReport(
+        std::ostream& os,
+        const std::vector<TestPtr>& tests,
+        std::vector<TestPtr>& parents)
+{
+    Counters counters;
+    for (auto it = tests.begin(); it != tests.end(); ++it)
+    {
+        if ((*it)->tests().empty() || (*it)->assertions())
+            ++counters.tests;
+        counters.assertions += (*it)->assertions();
+        if (!(*it)->tests().empty())
+        {
+            parents.push_back(*it);
+            counters += writeTextReport(os, (*it)->tests(), parents);
+            parents.pop_back();
+        }
+        if ((*it)->failed())
+        {
+            ++counters.failedTests;
+            os << testName(parents, *it) << ": FAILED (assertion no."
+               << ((*it)->assertions() + 1) << ")\n"
+               << "  " << (*it)->error() << "\n";
+            const std::vector<Error>& context = (*it)->error().context();
+            if (!context.empty())
+            {
+                for (auto c = context.begin(); c != context.end(); ++c)
+                    os << "    " << c->text() << "\n";
+            }
+        }
+    }
+    return counters;
+}
+
+void writeTextReport(std::ostream& os, const Session& session)
 {
     if (session.tests().empty())
     {
         os << "No tests were executed.\n";
         return;
     }
-    os << "*** Test Report ***\n";
+    os << "\n=== Test Report ===\n";
     size_t testSuiteFailures = 0;
-    for (size_t i = 0; i < session.tests().size(); i++)
-    {
-        // const TestSuite& ts = *session.suites()[i];
-        // os << ts.name() << ":\n";
-        // size_t failures = 0;
-        // for (size_t j = 0; j < ts.tests().size(); j++)
-        // {
-            // const Test& t = *ts.tests()[j];
-            // if (t.failed())
-            // {
-            //     os << "  " << std::left << std::setw(20) << t.name();
-            //     os << " FAILED (" << t.assertions()
-            //        << " assertions passed)\n"
-            //        << "    " << t.error() << "\n";
-            //     const std::vector<Error>& context = t.error().context();
-            //     if (!context.empty())
-            //     {
-            //         for (auto c = context.begin(); c != context.end(); ++c)
-            //         {
-            //             os << "      " << c->text() << "\n";
-            //         }
-            //     }
-            //     failures++;
-            // }
-            // else
-            // {
-            //     os << "  " << std::left << std::setw(20) << t.name();
-            //     os << " PASSED (" << t.assertions() << " assertions passed)\n";
-            // }
-        // }
-        // if (failures != 0)
-        // {
-        //     os << "  FAILED (" << ts.tests().size() - failures << " of "
-        //        << ts.tests().size() << " tests passed)\n";
-        //     testSuiteFailures++;
-        // }
-        // else if (ts.failed())
-        // {
-        //     os << "  INTERRUPTED\n" << "    " << ts.error() << "\n";
-        //     testSuiteFailures++;
-        // }
-        // else
-        // {
-        //     os << "  SUCCESS (" << ts.tests().size() << " tests passed)\n";
-        // }
-    }
-    if (testSuiteFailures != 0)
-    {
-        os << "*** Result: FAILED ("
-           << session.tests().size() - testSuiteFailures << " of "
-           << session.tests().size() << " test suites passed) ***\n";
-    }
+    std::vector<TestPtr> parents;
+    Counters counters = writeTextReport(os, session.tests(), parents);
+    os << counters.assertions << " assertions passed.\n"
+       << (counters.tests - counters.failedTests) << " tests passed.\n"
+       << counters.failedTests << " tests failed.\n";
+    if (counters.failedTests)
+        os << "--- TESTS FAILED ---\n";
     else
-    {
-        os << "*** Result: SUCCESS ("
-           << session.tests().size() << " test suites passed) ***\n";
-    }
+        os << "--- TESTS PASSED ---\n";
     os.flush();
 }
 

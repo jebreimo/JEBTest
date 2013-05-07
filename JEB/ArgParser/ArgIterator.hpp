@@ -27,6 +27,7 @@ public:
     bool ignoresOptions() const;
     void setIgnoresOptions(bool ignoresOptions);
 
+    const char* argument() const;
     const std::string& name() const;
     ArgumentType type() const;
     const std::string& value() const;

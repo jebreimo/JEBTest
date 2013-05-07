@@ -9,7 +9,8 @@
 #include "JEB/JEBDefinitions.hpp"
 
 /** @file
-  * @brief Defines various generic algorithms.
+  * @brief Defines various wrappers and extensions to the generic algorithms
+  *     in the standard library's algorithm header.
   */
 
 namespace JEB
@@ -18,64 +19,6 @@ namespace JEB
   */
 namespace Algorithms
 {
-
-template <typename FwdIt, typename Comparable>
-bool minMax(FwdIt beg, FwdIt end, Comparable& min, Comparable& max)
-{
-    if (beg == end)
-        return false;
-    min = max = *beg;
-    while (++beg != end)
-    {
-        if (*beg < min)
-            min = *beg;
-        else if (max < *beg)
-            max = *beg;
-    }
-    return true;
-}
-
-template <typename InpIt, typename UnaryFunc, typename Result>
-Result max(InpIt begin, InpIt end, UnaryFunc func, Result defaultValue)
-{
-    Result maxValue = defaultValue;
-    while (begin != end)
-    {
-        Result value = func(*begin);
-        if (value > maxValue)
-            maxValue = value;
-        begin++;
-    }
-    return maxValue;
-}
-
-/** @brief Returns the max value returned by items' "size_t size()".
-  */
-template <typename FwdIt>
-size_t maxSize(FwdIt begin, FwdIt end)
-{
-    size_t size = 0;
-    while (begin != end)
-    {
-        if (begin->size() > size)
-            size = begin->size();
-        begin++;
-    }
-    return size;
-}
-
-template <typename T>
-void swapArrays(T* a, T* b, size_t n)
-{
-    for (size_t i = 0; i < n; i++)
-        std::swap(a[i], b[i]);
-}
-
-template <typename T, size_t N>
-void swapArrays(T (&a)[N], T (&b)[N])
-{
-    swapArrays(a, b, N);
-}
 
 template <typename InpIt1, typename InpIt2>
 std::pair<InpIt1, InpIt2> mismatch(InpIt1 beg, InpIt1 end,
@@ -340,6 +283,24 @@ template <typename RndIt, typename UnaryFunc>
 void sort_by_key(RndIt beg, RndIt end, UnaryFunc keyFunc)
 {
   std::sort(beg, end, KeyComparer<UnaryFunc>(keyFunc));
+}
+
+template <typename FwdIt, typename UnaryFunc>
+FwdIt max_element_by_key(FwdIt begin, FwdIt end, UnaryFunc func)
+{
+    return std::max_element(begin, end, KeyComparer<UnaryFunc>(func));
+}
+
+template <typename FwdIt, typename UnaryFunc>
+FwdIt min_element_by_key(FwdIt begin, FwdIt end, UnaryFunc func)
+{
+    return std::min_element(begin, end, KeyComparer<UnaryFunc>(func));
+}
+
+template <typename FwdIt, typename UnaryFunc>
+std::pair<FwdIt, FwdIt> minmax_element_by_key(FwdIt begin, FwdIt end, UnaryFunc func)
+{
+    return std::minmax_element(begin, end, KeyComparer<UnaryFunc>(func));
 }
 
 }}

@@ -76,6 +76,22 @@ void ParsedArgs::addInvalidOption(const std::string& option, const std::string& 
     m_InvalidOptions.push_back(std::make_pair(option, reason));
 }
 
+std::vector<char*> ParsedArgs::unprocessedArgs() const
+{
+    std::vector<char*> tmp;
+    if (tmp.empty())
+    {
+        for (auto str = m_UnprocessedArgs.begin(); str != m_UnprocessedArgs.end(); ++str)
+            tmp.push_back(const_cast<char*>(str->c_str()));
+    }
+    return tmp;
+}
+
+void ParsedArgs::addUnprocessedArg(const std::string& arg)
+{
+    m_UnprocessedArgs.push_back(arg);
+}
+
 const std::vector<std::string>& ParsedArgs::list(const std::string& name) const
 {
     StringListMap::const_iterator it = m_ListOptions.find(name);

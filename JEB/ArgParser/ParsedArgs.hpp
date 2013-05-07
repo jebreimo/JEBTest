@@ -33,6 +33,21 @@ public:
     void invalidOption(size_t index, std::string& option, std::string& reason) const;
     void addInvalidOption(const std::string& option, const std::string& reason);
 
+    /** @brief Returns unrecognized options in a data structure suitable for
+     *      passing on to other option parsers.
+     *
+     *  Returns a vector containing any unrecognized options given to
+     *  ArgParser::parseif
+     *  ArgParser::treatUnrecognizedOptionsAsErrors is false.
+     *
+     *  @note The strings in the returned value are deleted by the
+     *      destructor of ParsedArgs. Don't try to free them or use them
+     *      after the ParsedArgs instance that returned them is deleted or
+     *      goes out of scope.
+     */
+    std::vector<char*> unprocessedArgs() const;
+    void addUnprocessedArg(const std::string& arg);
+
     const std::vector<std::string>& list(const std::string& name) const;
     void addListValue(const std::string& name, const std::string& value);
 
@@ -62,6 +77,7 @@ private:
     StringMap m_Options;
     StringListMap m_ListOptions;
     StringList m_Arguments;
+    StringList m_UnprocessedArgs;
     OptionErrorList m_InvalidOptions;
     static StringList s_EmptyStringList;
 };

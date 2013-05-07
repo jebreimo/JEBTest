@@ -130,11 +130,8 @@ void Session::testFailed(const Error& error)
         throw std::logic_error("Call to testFailed not preceded by a call to beginTest");
     print("\n");
     m_ActiveTest.back()->setError(error);
-    while (!m_ActiveTest.empty())
-    {
-        m_ActiveTest.back()->setFailed(true);
-        m_ActiveTest.pop_back();
-    }
+    m_ActiveTest.back()->setFailed(true);
+    m_ActiveTest.pop_back();
     print(std::string("    ") + error.text() + "\n");
 }
 
@@ -156,6 +153,17 @@ void Session::unhandledException(const Error& error)
     testFailed(error);
 }
 
+static size_t countFailedTests(const std::vector<TestPtr>& tests)
+{
+    size_t failed = 0;
+    for (auto it = tests.begin(); it != tests.end(); ++it)
+    {
+        if ((*it)->failed())
+            ++failed;
+        failed += countFailedTests((*it)->tests());
+    }
+    return failed;
+}
 size_t Session::numberOfFailedTests() const
 {
     size_t failures = 0;

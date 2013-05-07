@@ -147,14 +147,24 @@ size_t OptionHelpText::shortOptionWidth() const
         return 3 + m_ValueName.size();
 }
 
+template <typename FwdIt>
+size_t maxSize(FwdIt begin, FwdIt end)
+{
+    typedef decltype(*begin) T;
+    FwdIt it = Algorithms::max_element_by_key(
+            begin, end, [](T v){return v.size();});
+    return it != end ? it->size() : 0;
+}
+
 size_t OptionHelpText::longOptionWidth() const
 {
     if (m_LongOptions.empty())
         return 0;
     else if (m_ValueName.empty())
-        return Algorithms::maxSize(m_LongOptions.begin(), m_LongOptions.end());
+        return maxSize(m_LongOptions.begin(), m_LongOptions.end());
     else
-        return Algorithms::maxSize(m_LongOptions.begin(), m_LongOptions.end()) + 1 + m_ValueName.size();
+        return maxSize(m_LongOptions.begin(), m_LongOptions.end())
+               + 1 + m_ValueName.size();
 }
 
 void OptionHelpText::write(std::ostream& stream, const HelpTextColumns& columns) const

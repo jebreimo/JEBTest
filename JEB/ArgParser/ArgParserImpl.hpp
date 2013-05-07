@@ -36,11 +36,17 @@ public:
     HelpTextFormatter* helpTextFormatter();
     const HelpTextFormatter* helpTextFormatter() const;
 
+    bool ignoreArguments() const;
+    void setIgnoreArguments(bool ignoreAguments);
+
     bool optionsPrecedeArguments() const;
     void setOptionsPrecedeArguments(bool optionsPrecedeArguments);
 
     const std::string& programName() const;
     void setProgramName(const std::string& programName);
+
+    bool ignoreUnknownOptions() const;
+    void setIgnoreUnknownOptions(bool ignoreUnknownOptions);
 
     const std::string& usage() const;
 
@@ -111,12 +117,15 @@ private:
     std::auto_ptr<ArgIterator> m_ArgIt;
     std::auto_ptr<HelpTextFormatter> m_HelpTextFormatter;
 
+    bool m_IgnoreArguments;
     bool m_OptionsPrecedeArguments;
 
     typedef std::pair<OptionCallback, void*> OptionCallbackWithContext;
     std::map<std::string, OptionCallbackWithContext> m_OptionCallbacks;
 
     std::list<std::string> m_OptionCallbackContexts;
+
+    bool m_IgnoreUnknownOptions;
 
     typedef std::pair<std::string, std::string> ValueCallbackContext;
     std::list<ValueCallbackContext> m_ValueCallbackContexts;

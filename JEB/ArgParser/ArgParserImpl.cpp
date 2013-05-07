@@ -15,8 +15,10 @@ namespace JEB
 ArgParserImpl::ArgParserImpl(ArgParser* owner)
     : m_ArgIt(new ArgIterator()),
       m_HelpTextFormatter(new HelpTextFormatter()),
+      m_IgnoreArguments(false),
       m_OptionsPrecedeArguments(true),
-      m_Owner(owner)
+      m_Owner(owner),
+      m_IgnoreUnknownOptions(false)
 {
 }
 
@@ -44,6 +46,16 @@ const HelpTextFormatter* ArgParserImpl::helpTextFormatter() const
     return m_HelpTextFormatter.get();
 }
 
+bool ArgParserImpl::ignoreArguments() const
+{
+    return m_IgnoreArguments;
+}
+
+void ArgParserImpl::setIgnoreArguments(bool ignoreAguments)
+{
+    m_IgnoreArguments = ignoreAguments;
+}
+
 bool ArgParserImpl::optionsPrecedeArguments() const
 {
     return m_OptionsPrecedeArguments;
@@ -62,6 +74,17 @@ const std::string& ArgParserImpl::programName() const
 void ArgParserImpl::setProgramName(const std::string& programName)
 {
     m_HelpTextFormatter->setProgramName(programName);
+}
+
+
+bool ArgParserImpl::ignoreUnknownOptions() const
+{
+    return m_IgnoreUnknownOptions;
+}
+
+void ArgParserImpl::setIgnoreUnknownOptions(bool ignoreUnknownOptions)
+{
+    m_IgnoreUnknownOptions = ignoreUnknownOptions;
 }
 
 const std::string& ArgParserImpl::usage() const
@@ -177,9 +200,16 @@ bool ArgParserImpl::processCurrentArg(ParsedArgs& pa)
     switch (m_ArgIt->type())
     {
     case ArgIterator::Argument:
-        pa.addArgument(m_ArgIt->value());
-        if (m_OptionsPrecedeArguments && !m_ArgIt->ignoresOptions())
-            m_ArgIt->setIgnoresOptions(true);
+        if (!m_IgnoreArguments)
+        {
+            pa.addArgument(m_ArgIt->value());
+            if (m_OptionsPrecedeArguments && !m_ArgIt->ignoresOptions())
+                m_ArgIt->setIgnoresOptions(true);
+        }
+        else
+        {
+            pa.addUnprocessedArg(m_ArgIt->argument());
+        }
         return true;
     case ArgIterator::Flag:
     case ArgIterator::Option:
@@ -199,7 +229,10 @@ bool ArgParserImpl::processCurrentArg(ParsedArgs& pa)
         pa.addInvalidOption(m_ArgIt->name(), "invalid option");
         return false;
     case ArgIterator::UnknownOption:
-        pa.addInvalidOption(m_ArgIt->name(), "unknown option");
+        if (!m_IgnoreUnknownOptions)
+            pa.addInvalidOption(m_ArgIt->name(), "unknown option");
+        else
+            pa.addUnprocessedArg(m_ArgIt->argument());
         return false;
     default:
         return false;

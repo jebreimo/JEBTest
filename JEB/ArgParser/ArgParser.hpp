@@ -9,6 +9,26 @@
 
 /** @file
   * @brief Defines the ArgParser class.
+  *
+  * How to process some options and pass all unrecognized arguments on
+  * to another parser?
+  * --------------------------------------------------------------------
+  * Assuming there is a function
+  *
+  *     void otherArgumentFunction(int argc, char*[] argv);
+  *
+  * you can for instance do as follows:
+  *
+  *     ArgParser parser;
+  *     parser.setIgnoreUnknownOptions();
+  *     parser.setIgnoreArgs();
+  *
+  *     ... add the options that this parser should recognize ...
+  *
+  *     ParsedArgs args = parser.parse(argc, argv);
+  *
+  *     std::vector<char*> otherArgs = args.unprocessedArgs();
+  *     otherArgumentFunction(otherArgs.size(), &otherArgs[0]);
   */
 
 namespace JEB
@@ -40,6 +60,9 @@ public:
     HelpTextFormatter* helpTextFormatter();
     const HelpTextFormatter* helpTextFormatter() const;
 
+    bool ignoreArguments() const;
+    void setIgnoreArguments(bool ignoreAguments);
+
     ArgParserImpl* impl();
     const ArgParserImpl* impl() const;
 
@@ -48,6 +71,9 @@ public:
 
     const std::string& programName() const;
     void setProgramName(const std::string& programName);
+
+    bool ignoreUnknownOptions() const;
+    void setIgnoreUnknownOptions(bool ignoreUnknownOptions);
 
     const std::string& usage() const;
 

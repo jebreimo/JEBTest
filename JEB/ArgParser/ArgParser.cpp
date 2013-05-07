@@ -45,6 +45,16 @@ const HelpTextFormatter* ArgParser::helpTextFormatter() const
     return m_Impl->helpTextFormatter();
 }
 
+bool ArgParser::ignoreArguments() const
+{
+    return m_Impl->ignoreArguments();
+}
+
+void ArgParser::setIgnoreArguments(bool ignoreAguments)
+{
+    m_Impl->setIgnoreArguments(ignoreAguments);
+}
+
 ArgParserImpl* ArgParser::impl()
 {
     return m_Impl.get();
@@ -73,6 +83,16 @@ const std::string& ArgParser::programName() const
 void ArgParser::setProgramName(const std::string& programName)
 {
     m_Impl->setProgramName(programName);
+}
+
+bool ArgParser::ignoreUnknownOptions() const
+{
+    return m_Impl->ignoreUnknownOptions();
+}
+
+void ArgParser::setIgnoreUnknownOptions(bool ignoreUnknownOptions)
+{
+    m_Impl->setIgnoreUnknownOptions(ignoreUnknownOptions);
 }
 
 const std::string& ArgParser::usage() const

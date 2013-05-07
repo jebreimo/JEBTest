@@ -25,6 +25,13 @@ void ArgIterator::setIgnoresOptions(bool ignoresOptions)
     m_IgnoresOptions = ignoresOptions;
 }
 
+const char* ArgIterator::argument() const
+{
+    if (m_Index >= m_Argc)
+        return nullptr;
+    return m_Argv[m_Index];
+}
+
 const std::string& ArgIterator::name() const
 {
     return m_CurrentName;
