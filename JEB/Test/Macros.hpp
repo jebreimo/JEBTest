@@ -10,6 +10,7 @@
 
 #include <cmath>
 #include <exception>
+#include <functional>
 #include <iostream>
 #include <sstream>
 #include "AutoTest.hpp"
@@ -90,13 +91,14 @@
 #define JT_TESTSUITE(...) \
     static void JT_PRIV_UNIQUE_NAME(JT_suite_, __LINE__)() \
     { \
-        void (*tests[])() = {__VA_ARGS__}; \
-        std::vector<std::string> testNames = ::JEB::Test::extractTestNames(#__VA_ARGS__); \
-        for (size_t i = 0; i < testNames.size(); i++) \
+        /* Funny variable names are used to avoid conflicts with test names */ \
+        std::function<void()> tests_JT_[] = {__VA_ARGS__}; \
+        std::vector<std::string> testNames_JT_ = ::JEB::Test::extractTestNames(#__VA_ARGS__); \
+        for (size_t i_JT_ = 0; i_JT_ < testNames_JT_.size(); i_JT_++) \
         { \
-            ::JEB::Test::Session::instance().beginTest(testNames[i]); \
+            ::JEB::Test::Session::instance().beginTest(testNames_JT_[i_JT_]); \
             try { \
-                tests[i](); \
+                tests_JT_[i_JT_](); \
                 ::JEB::Test::Session::instance().endTest(); \
             } catch (const ::JEB::Test::TestFailure& ex) { \
                 ::JEB::Test::Session::instance().testFailed(ex.error()); \
