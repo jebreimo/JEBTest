@@ -32,10 +32,15 @@
 
 /** @brief Internal macro. Used by other macros to create unique variable names.
  */
-#define JT_PRIV_UNIQUE_NAME_TRICK(a, b) a##b
+#define JT_PRIV_UNIQUE_NAME_EXPANDER2(a, b) a##b
+
 /** @brief Internal macro. Used by other macros to create unique variable names.
  */
-#define JT_PRIV_UNIQUE_NAME(a, b) JT_PRIV_UNIQUE_NAME_TRICK(a, b)
+#define JT_PRIV_UNIQUE_NAME_EXPANDER1(a, b) JT_PRIV_UNIQUE_NAME_EXPANDER2(a, b)
+
+/** @brief Internal macro. Used by other macros to create unique variable names.
+ */
+#define JT_PRIV_UNIQUE_NAME(name) JT_PRIV_UNIQUE_NAME_EXPANDER1(name, __LINE__)
 
 /** @brief Starts a scope for running tests and test suites.
  *
@@ -89,9 +94,9 @@
  *  The test suite's name in reports will be the current file name.
  */
 #define JT_TESTSUITE(...) \
-    static void JT_PRIV_UNIQUE_NAME(JT_suite_, __LINE__)() \
+    static void JT_PRIV_UNIQUE_NAME(JT_suite_)() \
     { \
-        /* Funny variable names are used to avoid conflicts with test names */ \
+        /* Funny variable names make conflicts with test names unlikely */ \
         std::function<void()> tests_JT_[] = {__VA_ARGS__}; \
         std::vector<std::string> testNames_JT_ = ::JEB::Test::extractTestNames(#__VA_ARGS__); \
         for (size_t i_JT_ = 0; i_JT_ < testNames_JT_.size(); i_JT_++) \
@@ -106,7 +111,7 @@
             } \
         } \
     } \
-    static ::JEB::Test::AutoTest JT_PRIV_UNIQUE_NAME(JT_suite_instance_, __LINE__)(__FILE__, JT_PRIV_UNIQUE_NAME(JT_suite_, __LINE__))
+    static ::JEB::Test::AutoTest JT_PRIV_UNIQUE_NAME(JT_suite_instance_)(__FILE__, JT_PRIV_UNIQUE_NAME(JT_suite_))
 
 /** @brief Macro for explicitly running a test suite with arguments.
  *
