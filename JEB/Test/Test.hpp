@@ -8,6 +8,7 @@
 #ifndef JEB_TEST_TEST_HPP
 #define JEB_TEST_TEST_HPP
 
+#include <memory>
 #include <string>
 #include "Error.hpp"
 

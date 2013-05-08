@@ -14,7 +14,7 @@ const size_t MaxPath = 1024;
 
 bool isDirSeparator(uint32_t chr)
 {
-    return chr == DriveSep || chr == DirSep || chr == UnixDirSep;
+    return chr == DriveSep || chr == DirSep || chr == UnixDirSep;
 }
 
 std::string absPath(const std::string& p)
