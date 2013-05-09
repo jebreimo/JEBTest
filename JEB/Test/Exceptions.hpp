@@ -40,13 +40,22 @@ public:
     ~TestFailure();
 };
 
-class TestSuiteFailure : public AbstractFailure
+class CriticalFailure : public AbstractFailure
 {
 public:
-    TestSuiteFailure(const std::string& file,
+    CriticalFailure(const std::string& file,
                      unsigned lineNo,
                      const std::string& message);
-    ~TestSuiteFailure();
+    ~CriticalFailure();
+};
+
+class FatalFailure : public AbstractFailure
+{
+public:
+    FatalFailure(const std::string& file,
+                     unsigned lineNo,
+                     const std::string& message);
+    ~FatalFailure();
 };
 
 }}

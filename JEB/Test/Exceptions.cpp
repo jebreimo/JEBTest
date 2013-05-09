@@ -42,13 +42,22 @@ TestFailure::TestFailure(const std::string& file,
 TestFailure::~TestFailure()
 {}
 
-TestSuiteFailure::TestSuiteFailure(const std::string& file,
+CriticalFailure::CriticalFailure(const std::string& file,
                                    unsigned lineNo,
                                    const std::string& message)
     : AbstractFailure(Error(file, lineNo, message))
 {}
 
-TestSuiteFailure::~TestSuiteFailure()
+CriticalFailure::~CriticalFailure()
+{}
+
+FatalFailure::FatalFailure(const std::string& file,
+                                   unsigned lineNo,
+                                   const std::string& message)
+    : AbstractFailure(Error(file, lineNo, message))
+{}
+
+FatalFailure::~FatalFailure()
 {}
 
 }}

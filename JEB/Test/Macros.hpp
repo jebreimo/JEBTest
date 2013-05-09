@@ -20,6 +20,7 @@
 #include "MacroUtilities.hpp"
 #include "Report.hpp"
 #include "Session.hpp"
+#include "TestScope.hpp"
 
 /** @file
  *  @brief Defines all macros for tests, test suites and test setup.
@@ -96,18 +97,16 @@
 #define JT_TESTSUITE(...) \
     static void JT_PRIV_UNIQUE_NAME(JT_suite_)() \
     { \
-        /* Funny variable names make conflicts with test names unlikely */ \
+        /* Funny variable names make conflicts with test names less likely */ \
         std::function<void()> tests_JT_[] = {__VA_ARGS__}; \
         std::vector<std::string> testNames_JT_ = ::JEB::Test::extractTestNames(#__VA_ARGS__); \
         for (size_t i_JT_ = 0; i_JT_ < testNames_JT_.size(); i_JT_++) \
         { \
-            ::JEB::Test::Session::instance().beginTest(testNames_JT_[i_JT_]); \
+            ::JEB::Test::TestScope scope(testNames_JT_[i_JT_]); \
             try { \
                 tests_JT_[i_JT_](); \
-                ::JEB::Test::Session::instance().endTest(); \
             } catch (const ::JEB::Test::TestFailure& ex) { \
                 ::JEB::Test::Session::instance().testFailed(ex.error()); \
-                break; \
             } \
         } \
     } \
@@ -158,13 +157,20 @@
 #define JT_RUN_TEST(name, ...) \
     if (::JEB::Test::Session::instance().isTestEnabled(#name)) \
     { \
-        ::JEB::Test::Session::instance().beginTest(#name); \
+        ::JEB::Test::TestScope scope(testNames_JT_[i_JT_]); \
         try { \
             name(__VA_ARGS__); \
-            ::JEB::Test::Session::instance().endTest(); \
         } catch (const ::JEB::Test::TestFailure& ex) { \
             ::JEB::Test::Session::instance().testFailed(ex.error()); \
         } \
+    }
+
+#define JT_IMPL_THROWS(expr, exception, failure, file, line, msg) \
+    try { \
+        expr; \
+        throw ::JEB::Test::failure(file, line, msg); \
+    } catch (const exception&) { \
+        ::JEB::Test::Session::instance().assertPassed(); \
     }
 
 /** @brief Macro for verifying that an expression throws an exception.
@@ -176,21 +182,22 @@
  *      to throw
  */
 #define JT_THROWS(expr, exception) \
-    try { \
-        expr; \
-        throw ::JEB::Test::TestFailure(__FILE__, __LINE__, #expr " didn't throw exception \"" #exception "\""); \
-    } catch (const exception&) { \
-        ::JEB::Test::Session::instance().assertPassed(); \
-    }
+    JT_IMPL_THROWS(expr, exception, TestFailure, __FILE__, __LINE__, #expr " didn't throw exception \"" #exception "\"")
+
+#define JT_THROWS_CRITICAL(expr, exception) \
+    JT_IMPL_THROWS(expr, exception, CriticalFailure, __FILE__, __LINE__, #expr " didn't throw exception \"" #exception "\"")
+
+#define JT_THROWS_FATAL(expr, exception) \
+    JT_IMPL_THROWS(expr, exception, FatalFailure, __FILE__, __LINE__, #expr " didn't throw exception \"" #exception "\"")
 
 /** @brief Internal macro. Used by other assert macros.
  */
-#define JT_IMPL_ASSERT(cond, file, line, msg) \
+#define JT_IMPL_ASSERT(cond, failure, file, line, msg) \
     { \
         if (cond) { \
             ::JEB::Test::Session::instance().assertPassed(); \
         } else { \
-            throw ::JEB::Test::TestFailure(file, line, msg); \
+            throw ::JEB::Test::failure(file, line, msg); \
         } \
     }
 
@@ -199,7 +206,13 @@
  *  The test fails if @a cond is false.
  */
 #define JT_ASSERT(cond) \
-    JT_IMPL_ASSERT((cond), __FILE__, __LINE__, "Assertion failed: " #cond)
+    JT_IMPL_ASSERT((cond), TestFailure, __FILE__, __LINE__, "Assertion failed: " #cond)
+
+#define JT_ASSERT_CRITICAL(cond) \
+    JT_IMPL_ASSERT((cond), CriticalFailure, __FILE__, __LINE__, "Assertion failed: " #cond)
+
+#define JT_ASSERT_FATAL(cond) \
+    JT_IMPL_ASSERT((cond), FatalFailure, __FILE__, __LINE__, "Assertion failed: " #cond)
 
 /** @brief Verifies that condition @a cond is true.
  *
@@ -210,16 +223,25 @@
  *  @param msg a string that that will be include in the test report if
  *      @a cond is false.
  */
-#define JT_ASSERT_MSG(cond, msg) \
+#define JT_IMPL_ASSERT_MSG(cond, condStr, failure, file, line, msg) \
     { \
         if (cond) { \
             ::JEB::Test::Session::instance().assertPassed(); \
         } else { \
             std::ostringstream JT_os; \
-            JT_os << "Assertion failed: " #cond ". " << msg; \
-            throw ::JEB::Test::TestFailure(__FILE__, __LINE__, JT_os.str()); \
+            JT_os << "Assertion failed: " condStr ". " << msg; \
+            throw ::JEB::Test::failure(file, line, JT_os.str()); \
         } \
     }
+
+#define JT_ASSERT_MSG(cond, msg) \
+    JT_IMPL_ASSERT_MSG(cond, #cond, TestFailure, __FILE__, __LINE__, msg)
+
+#define JT_ASSERT_MSG_CRITICAL(cond, msg) \
+    JT_IMPL_ASSERT_MSG(cond, #cond, CriticalFailure, __FILE__, __LINE__, msg)
+
+#define JT_ASSERT_MSG_FATAL(cond, msg) \
+    JT_IMPL_ASSERT_MSG(cond, #cond, FatalFailure, __FILE__, __LINE__, msg)
 
 /** @brief Verifies that @a a equals @a b.
  *
@@ -231,32 +253,66 @@
  *    output operator that accepts @a b.
  */
 #define JT_EQUAL(a, b) \
-    JT_IMPL_ASSERT(::JEB::Test::compare((a), (b)), __FILE__, __LINE__, \
+    JT_IMPL_ASSERT(::JEB::Test::equal((a), (b)), \
+                   TestFailure, __FILE__, __LINE__, \
                    ::JEB::Test::formatComparison((a), #a, (b), #b, "!="))
 
-/** @brief Verifies that real number @a a is sufficiently close to @a b.
+#define JT_EQUAL_CRITICAL(a, b) \
+    JT_IMPL_ASSERT(::JEB::Test::equal((a), (b)), \
+                   CriticalFailure, __FILE__, __LINE__, \
+                   ::JEB::Test::formatComparison((a), #a, (b), #b, "!="))
+
+#define JT_EQUAL_FATAL(a, b) \
+    JT_IMPL_ASSERT(::JEB::Test::equal((a), (b)), \
+                   FatalFailure, __FILE__, __LINE__, \
+                   ::JEB::Test::formatComparison((a), #a, (b), #b, "!="))
+
+/** @brief Verifies that number @a a is sufficiently close to @a b.
  */
-#define JT_EQUAL_REALS(a, b, epsilon) \
-    JT_IMPL_ASSERT(::JEB::Test::compareReals((a), (b), (epsilon)), __FILE__, __LINE__, \
+#define JT_EQUIVALENT(a, b, epsilon) \
+    JT_IMPL_ASSERT(::JEB::Test::equivalent((a), (b), (epsilon)), \
+                   TestFailure, __FILE__, __LINE__, \
+                   ::JEB::Test::formatComparison((a), #a, (b), #b, "!="))
+
+#define JT_EQUIVALENT_CRITICAL(a, b, epsilon) \
+    JT_IMPL_ASSERT(::JEB::Test::equivalent((a), (b), (epsilon)), \
+                   CriticalFailure, __FILE__, __LINE__, \
+                   ::JEB::Test::formatComparison((a), #a, (b), #b, "!="))
+
+#define JT_EQUIVALENT_FATAL(a, b, epsilon) \
+    JT_IMPL_ASSERT(::JEB::Test::equivalent((a), (b), (epsilon)), \
+                   FatalFailure, __FILE__, __LINE__, \
                    ::JEB::Test::formatComparison((a), #a, (b), #b, "!="))
 
 /** @brief Verifies that @a a is not equal to @a b.
  *
  *  Requirements to @a a and @a b are the same as in JT_EQUAL.
  */
-#define JT_UNEQUAL(a, b) \
-    JT_IMPL_ASSERT(!::JEB::Test::compare((a), (b)), __FILE__, __LINE__, \
+#define JT_NOT_EQUAL(a, b) \
+    JT_IMPL_ASSERT(!::JEB::Test::equal((a), (b)), \
+                   TestFailure, __FILE__, __LINE__, \
+                   ::JEB::Test::formatComparison((a), #a, (b), #b, "=="))
+
+#define JT_NOT_EQUAL_CRITICAL(a, b) \
+    JT_IMPL_ASSERT(!::JEB::Test::equal((a), (b)), \
+                   CriticalFailure, __FILE__, __LINE__, \
+                   ::JEB::Test::formatComparison((a), #a, (b), #b, "=="))
+
+#define JT_NOT_EQUAL_FATAL(a, b) \
+    JT_IMPL_ASSERT(!::JEB::Test::equal((a), (b)), \
+                   FatalFailure, __FILE__, __LINE__, \
                    ::JEB::Test::formatComparison((a), #a, (b), #b, "=="))
 
 /** @brief Force a test failure with the given error message.
  */
-#define JT_FAIL(msg) \
+#define JT_FAILURE(msg) \
     throw ::JEB::Test::TestFailure(__FILE__, __LINE__, msg)
 
-/** @brief Force a test suite failure with the given error message.
- */
-// #define JT_FAIL_TESTSUITE(msg) \
-//     throw ::JEB::Test::TestSuiteFailure(__FILE__, __LINE__, msg)
+#define JT_CRITICAL_FAILURE(msg) \
+    throw ::JEB::Test::CriticalFailure(__FILE__, __LINE__, msg)
+
+#define JT_FATAL_FAILURE(msg) \
+    throw ::JEB::Test::FatalFailure(__FILE__, __LINE__, msg)
 
 /** @brief Provide extra information when calling a function from within a test.
  *

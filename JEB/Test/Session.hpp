@@ -19,13 +19,6 @@ namespace JEB { namespace Test {
 class Error;
 typedef std::shared_ptr<class Test> TestPtr;
 
-//class TestScope
-//{
-//public:
-//    TestScope(const std::string& name) {Session::instance().beginTest(name);}
-//    ~TestScope() {Session::instance().endTest();}
-//};
-
 enum ReportFormat
 {
     TextReport = 1,

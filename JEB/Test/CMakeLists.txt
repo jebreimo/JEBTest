@@ -13,7 +13,6 @@ set(JEB_DIR JEB/${PROJECT_NAME})
 set(SRC
     AutoTest.cpp
     AutoTestRunner.cpp
-    Comparers.cpp
     Error.cpp
     Exceptions.cpp
     MacroUtilities.cpp
@@ -33,6 +32,7 @@ set(PUBLIC_HEADERS
     MacroUtilities.hpp
     Report.hpp
     Session.hpp
+    TestScope.hpp
     )
 
 add_library(${PROJECT_NAME} OBJECT ${SRC})

@@ -10,6 +10,7 @@
 #include "AutoTest.hpp"
 #include "Exceptions.hpp"
 #include "Session.hpp"
+#include "TestScope.hpp"
 
 namespace JEB { namespace Test {
 
@@ -34,11 +35,10 @@ void AutoTestRunner::run()
     {
         if (Session::instance().isTestEnabled((*suite)->name()))
         {
-            Session::instance().beginTest((*suite)->name());
+            TestScope scope((*suite)->name());
             try
             {
                 (*suite)->function()();
-                Session::instance().endTest();
             }
             catch (const TestFailure& ex)
             {

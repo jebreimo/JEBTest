@@ -113,7 +113,7 @@ void Session::beginTest(const std::string& name)
     else
         m_Tests.push_back(t);
     m_ActiveTest.push_back(t);
-    print(std::string("  Running test ") + name);
+    print(std::string("\nRunning test ") + name);
 }
 
 void Session::endTest()
@@ -131,7 +131,6 @@ void Session::testFailed(const Error& error)
     print("\n");
     m_ActiveTest.back()->setError(error);
     m_ActiveTest.back()->setFailed(true);
-    m_ActiveTest.pop_back();
     print(std::string("    ") + error.text() + "\n");
 }
 

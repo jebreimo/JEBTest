@@ -92,9 +92,9 @@ void writeTextReport(std::ostream& os, const Session& session)
        << (counters.tests - counters.failedTests) << " tests passed.\n"
        << counters.failedTests << " tests failed.\n";
     if (counters.failedTests)
-        os << "--- TESTS FAILED ---\n";
+        os << "=== TESTS FAILED ===\n";
     else
-        os << "--- TESTS PASSED ---\n";
+        os << "=== TESTS PASSED ===\n";
     os.flush();
 }
 
