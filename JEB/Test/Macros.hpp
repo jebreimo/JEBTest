@@ -73,14 +73,15 @@
 #define JT_CONSOLE_MAIN() \
     int main() \
     { \
-        try \
-        { \
+        try { \
             JT_CONSOLE_BEGIN(); \
-            ::JEB::Test::AutoTestRunner::instance().run(); \
+            try { \
+                ::JEB::Test::AutoTestRunner::instance().run(); \
+            } catch (::JEB::Test::FatalFailure& /*ex*/) { \
+                /*::JEB::Test::Session::instance().fatalFailure();*/ \
+            } \
             JT_CONSOLE_END(); \
-        } \
-        catch (std::exception& ex) \
-        { \
+        } catch (std::exception& ex) { \
             std::cerr << "EXCEPTION: " << ex.what() << std::endl; \
         } \
         return (int)::JEB::Test::Session::instance().numberOfFailedTests(); \

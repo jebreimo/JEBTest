@@ -4,6 +4,8 @@ Test
 - Implement JUnit (xml) report
 - Add command line interface
 - Add redirection of cout, cerr and clog.
+- Support the new kinds of test failure
+- Add some test examples that also serves as "tests" of the test library
 
 Command line interface
 ======================

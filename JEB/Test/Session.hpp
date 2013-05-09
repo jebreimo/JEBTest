@@ -42,6 +42,9 @@ public:
     void endTest();
     void testFailed(const Error& error);
     void assertPassed();
+
+    // void criticalError(const Error& error);
+    // void fatalError(const Error& error);
     void unhandledException(const Error& error);
 
     size_t numberOfFailedTests() const;
