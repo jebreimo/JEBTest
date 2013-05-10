@@ -20,6 +20,14 @@ typedef std::shared_ptr<class Test> TestPtr;
 class Test
 {
 public:
+    enum Result
+    {
+        Unspecified,
+        Failure,
+        CriticalError,
+        FatalError
+    };
+
     Test(const std::string& name);
 
     size_t assertions() const;
@@ -29,7 +37,9 @@ public:
     void setError(const Error& error);
 
     bool failed() const;
-    void setFailed(bool failed);
+
+    Result result() const;
+    void setResult(Result result);
 
     const std::string& name() const;
 
@@ -47,11 +57,11 @@ public:
 private:
     size_t m_Assertions;
     Error m_Error;
-    bool m_Failed;
     std::string m_Name;
-    std::vector<TestPtr> m_Tests;
+    Result m_Result;
     clock_t m_StartTime;
     clock_t m_EndTime;
+    std::vector<TestPtr> m_Tests;
 };
 
 }}

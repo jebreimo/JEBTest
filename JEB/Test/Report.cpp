@@ -60,10 +60,10 @@ static Counters writeTextReport(
             counters += writeTextReport(os, (*it)->tests(), parents);
             parents.pop_back();
         }
-        if ((*it)->failed())
+        if ((*it)->result() != Test::Unspecified)
         {
             ++counters.failedTests;
-            os << testName(parents, *it) << ": FAILED (assertion no."
+            os << testName(parents, *it) << ": FAILED (assertion no. "
                << ((*it)->assertions() + 1) << ")\n"
                << "  " << (*it)->error() << "\n";
             const std::vector<Error>& context = (*it)->error().context();

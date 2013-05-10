@@ -41,19 +41,19 @@ static bool hasHigherPriority(const AutoTest* a, const AutoTest* b)
 void AutoTestRunner::run()
 {
     std::sort(m_Tests.begin(), m_Tests.end(), hasHigherPriority);
-    for (auto suite = m_Tests.begin(); suite != m_Tests.end(); ++suite)
+    for (auto test = m_Tests.begin(); test != m_Tests.end(); ++test)
     {
-        if (Session::instance().isTestEnabled((*suite)->name()))
+        if (Session::instance().isTestEnabled((*test)->name()))
         {
-            TestScope scope((*suite)->name());
+            TestScope scope((*test)->name());
             try
             {
-                (*suite)->function()();
+                (*test)->function()();
             }
-            catch (const TestFailure& ex)
-            {
-                Session::instance().testFailed(ex.error());
-            }
+            catch (const TestFailure&)
+            {}
+            catch (const CriticalFailure&)
+            {}
         }
     }
 }

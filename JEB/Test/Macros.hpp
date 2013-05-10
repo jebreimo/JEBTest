@@ -55,11 +55,7 @@
  *  All reports and messages are written to the console (command line window)
  */
 #define JT_CONSOLE_END() \
-    } catch (const std::exception& ex) { \
-        ::JEB::Test::Session::instance().unhandledException(::JEB::Test::Error(__FILE__, __LINE__, std::string("Unhandled exception: \"") + ex.what() + "\"")); \
-    } catch (...) { \
-        ::JEB::Test::Session::instance().unhandledException(::JEB::Test::Error(__FILE__, __LINE__, "Unknown exception")); \
-    } \
+    } catch (...) {} \
     ::JEB::Test::Session::instance().print(""); \
     ::JEB::Test::Session::instance().writeReports()
 
@@ -75,19 +71,16 @@
     { \
         try { \
             JT_CONSOLE_BEGIN(); \
-            try { \
-                ::JEB::Test::AutoTestRunner::instance().run(); \
-            } catch (::JEB::Test::FatalFailure& /*ex*/) { \
-                /*::JEB::Test::Session::instance().fatalFailure();*/ \
-            } \
+            ::JEB::Test::AutoTestRunner::instance().run(); \
             JT_CONSOLE_END(); \
         } catch (std::exception& ex) { \
             std::cerr << "EXCEPTION: " << ex.what() << std::endl; \
+            return 1; \
         } \
         return (int)::JEB::Test::Session::instance().numberOfFailedTests(); \
     }
 
-#define JT_TEST_WITH_PRIORITY(priority, ...) \
+#define JT_PRIORITIZED_TEST(priority, ...) \
     static void JT_PRIV_UNIQUE_NAME(JT_suite_)() \
     { \
         /* Funny variable names make conflicts with test names less likely */ \
@@ -100,6 +93,18 @@
                 tests_JT_[i_JT_](); \
             } catch (const ::JEB::Test::TestFailure& ex) { \
                 ::JEB::Test::Session::instance().testFailed(ex.error()); \
+            } catch (const ::JEB::Test::CriticalFailure& ex) { \
+                ::JEB::Test::Session::instance().criticalError(ex.error()); \
+                throw; \
+            } catch (const ::JEB::Test::FatalFailure& ex) { \
+                ::JEB::Test::Session::instance().fatalError(ex.error()); \
+                throw; \
+            } catch (const std::exception& ex) { \
+                ::JEB::Test::Session::instance().unhandledException(::JEB::Test::Error(__FILE__, __LINE__, std::string("Unhandled exception: \"") + ex.what() + "\"")); \
+                throw; \
+            } catch (...) { \
+                ::JEB::Test::Session::instance().unhandledException(::JEB::Test::Error(__FILE__, __LINE__, "Unknown exception")); \
+                throw; \
             } \
         } \
     } \
@@ -126,6 +131,18 @@
                 tests_JT_[i_JT_](); \
             } catch (const ::JEB::Test::TestFailure& ex) { \
                 ::JEB::Test::Session::instance().testFailed(ex.error()); \
+            } catch (const ::JEB::Test::CriticalFailure& ex) { \
+                ::JEB::Test::Session::instance().criticalError(ex.error()); \
+                throw; \
+            } catch (const ::JEB::Test::FatalFailure& ex) { \
+                ::JEB::Test::Session::instance().fatalError(ex.error()); \
+                throw; \
+            } catch (const std::exception& ex) { \
+                ::JEB::Test::Session::instance().unhandledException(::JEB::Test::Error(__FILE__, __LINE__, std::string("Unhandled exception: \"") + ex.what() + "\"")); \
+                throw; \
+            } catch (...) { \
+                ::JEB::Test::Session::instance().unhandledException(::JEB::Test::Error(__FILE__, __LINE__, "Unknown exception")); \
+                throw; \
             } \
         } \
     } \
@@ -149,14 +166,14 @@
  *
  *      void testsuite_Shapes() {...}
  *
- *      JT_RUN_TESTSUITE(testsuite_Shapes);
+ *      JT_RUN_TEST(testsuite_Shapes);
  *
  *  Execute a test suite function named testsuite_SvgShapes that takes a file
  *  name as argument:
  *
  *      void testsuite_SvgShapes(std::string fileName) {...}
  *
- *      JT_RUN_TESTSUITE(testsuite_SvgShapes, "my_svg_file.svg");
+ *      JT_RUN_TEST(testsuite_SvgShapes, "my_svg_file.svg");
  */
 #define JT_RUN_TEST(name, ...) \
     if (::JEB::Test::Session::instance().isTestEnabled(#name)) \
@@ -166,6 +183,18 @@
             name(__VA_ARGS__); \
         } catch (const ::JEB::Test::TestFailure& ex) { \
             ::JEB::Test::Session::instance().testFailed(ex.error()); \
+        } catch (const ::JEB::Test::CriticalFailure& ex) { \
+            ::JEB::Test::Session::instance().criticalError(ex.error()); \
+            throw; \
+        } catch (const ::JEB::Test::FatalFailure& ex) { \
+            ::JEB::Test::Session::instance().fatalError(ex.error()); \
+            throw; \
+        } catch (const std::exception& ex) { \
+            ::JEB::Test::Session::instance().unhandledException(::JEB::Test::Error(__FILE__, __LINE__, std::string("Unhandled exception: \"") + ex.what() + "\"")); \
+            throw; \
+        } catch (...) { \
+            ::JEB::Test::Session::instance().unhandledException(::JEB::Test::Error(__FILE__, __LINE__, "Unknown exception")); \
+            throw; \
         } \
     }
 

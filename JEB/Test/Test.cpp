@@ -17,8 +17,8 @@ namespace JEB { namespace Test {
 
 Test::Test(const std::string& name)
     : m_Assertions(0),
-      m_Failed(false),
       m_Name(name),
+      m_Result(Unspecified),
       m_StartTime(0),
       m_EndTime(0)
 {
@@ -34,9 +34,16 @@ void Test::incrementAssertions()
     m_Assertions++;
 }
 
-void Test::addTest(TestPtr test)
+bool Test::failed() const
 {
-    m_Tests.push_back(test);
+    if (m_Result != Unspecified)
+        return true;
+    for (auto it = m_Tests.begin(); it != m_Tests.end(); ++it)
+    {
+        if ((*it)->failed())
+            return true;
+    }
+    return false;
 }
 
 const Error& Test::error() const
@@ -49,19 +56,19 @@ void Test::setError(const Error& error)
     m_Error = error;
 }
 
-bool Test::failed() const
-{
-    return m_Failed;
-}
-
-void Test::setFailed(bool failed)
-{
-    m_Failed = failed;
-}
-
 const std::string& Test::name() const
 {
     return m_Name;
+}
+
+Test::Result Test::result() const
+{
+    return m_Result;
+}
+
+void Test::setResult(Result result)
+{
+    m_Result = result;
 }
 
 clock_t Test::startTime() const
@@ -87,6 +94,11 @@ void Test::setEndTime(clock_t endTime)
 clock_t Test::elapsedTime() const
 {
     return m_EndTime - m_StartTime;
+}
+
+void Test::addTest(TestPtr test)
+{
+    m_Tests.push_back(test);
 }
 
 std::vector<TestPtr>& Test::tests()

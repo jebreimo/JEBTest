@@ -129,12 +129,7 @@ void Session::endTest()
 
 void Session::testFailed(const Error& error)
 {
-    if (m_ActiveTest.empty())
-        throw std::logic_error("Call to testFailed not preceded by a call to beginTest");
-    print("\n");
-    m_ActiveTest.back()->setError(error);
-    m_ActiveTest.back()->setFailed(true);
-    print(std::string("    ") + error.text() + "\n");
+    setTestError(error, Test::Failure);
 }
 
 void Session::assertPassed()
@@ -148,6 +143,16 @@ void Session::assertPassed()
     m_ActiveTest.back()->incrementAssertions();
 }
 
+void Session::criticalError(const Error& error)
+{
+    setTestError(error, Test::CriticalError);
+}
+
+void Session::fatalError(const Error& error)
+{
+    setTestError(error, Test::FatalError);
+}
+
 void Session::unhandledException(const Error& error)
 {
     if (m_ActiveTest.empty())
@@ -155,17 +160,6 @@ void Session::unhandledException(const Error& error)
     testFailed(error);
 }
 
-static size_t countFailedTests(const std::vector<TestPtr>& tests)
-{
-    size_t failed = 0;
-    for (auto it = tests.begin(); it != tests.end(); ++it)
-    {
-        if ((*it)->failed())
-            ++failed;
-        failed += countFailedTests((*it)->tests());
-    }
-    return failed;
-}
 size_t Session::numberOfFailedTests() const
 {
     size_t failures = 0;
@@ -224,6 +218,16 @@ std::string Session::getTestName(const std::string& name) const
         names.push_back((*it)->name());
     names.push_back(name);
     return join(names, "/");
+}
+
+void Session::setTestError(const Error& error, Test::Result result)
+{
+    if (m_ActiveTest.empty())
+        throw std::logic_error("Call to testFailed, criticalError or fatalError was not preceded by a call to beginTest");
+    print("\n");
+    m_ActiveTest.back()->setError(error);
+    m_ActiveTest.back()->setResult(result);
+    print(std::string("    ") + error.text() + "\n");
 }
 
 }}

@@ -32,6 +32,7 @@ set(PUBLIC_HEADERS
     MacroUtilities.hpp
     Report.hpp
     Session.hpp
+    Test.hpp
     TestScope.hpp
     )
 

@@ -13,16 +13,18 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include "Test.hpp"
 
 namespace JEB { namespace Test {
 
 class Error;
-typedef std::shared_ptr<class Test> TestPtr;
+typedef std::shared_ptr<Test> TestPtr;
 
 enum ReportFormat
 {
     TextReport = 1,
-    JUnitReport = 2
+    JUnitReport = 2,
+    FullTextReport = 3
 };
 
 class Session
@@ -43,8 +45,8 @@ public:
     void testFailed(const Error& error);
     void assertPassed();
 
-    // void criticalError(const Error& error);
-    // void fatalError(const Error& error);
+    void criticalError(const Error& error);
+    void fatalError(const Error& error);
     void unhandledException(const Error& error);
 
     size_t numberOfFailedTests() const;
@@ -64,6 +66,7 @@ private:
     Session();
     ~Session();
     std::string getTestName(const std::string& name) const;
+    void setTestError(const Error& error, Test::Result result);
 
     std::vector<TestPtr> m_ActiveTest;
     bool m_AllTestsEnabled;
