@@ -7,6 +7,7 @@
  */
 #include "Session.hpp"
 
+#include <ctime>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
@@ -114,12 +115,14 @@ void Session::beginTest(const std::string& name)
         m_Tests.push_back(t);
     m_ActiveTest.push_back(t);
     print(std::string("\nRunning test ") + name);
+    m_ActiveTest.back()->setStartTime(clock());
 }
 
 void Session::endTest()
 {
     if (m_ActiveTest.empty())
         throw std::logic_error("Call to endTest not preceded by a call to beginTest");
+    m_ActiveTest.back()->setEndTime(clock());
     m_ActiveTest.pop_back();
     print("\n");
 }

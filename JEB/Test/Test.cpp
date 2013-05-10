@@ -18,7 +18,9 @@ namespace JEB { namespace Test {
 Test::Test(const std::string& name)
     : m_Assertions(0),
       m_Failed(false),
-      m_Name(name)
+      m_Name(name),
+      m_StartTime(0),
+      m_EndTime(0)
 {
 }
 
@@ -60,6 +62,31 @@ void Test::setFailed(bool failed)
 const std::string& Test::name() const
 {
     return m_Name;
+}
+
+clock_t Test::startTime() const
+{
+    return m_StartTime;
+}
+
+void Test::setStartTime(clock_t startTime)
+{
+    m_StartTime = startTime;
+}
+
+clock_t Test::endTime() const
+{
+    return m_EndTime;
+}
+
+void Test::setEndTime(clock_t endTime)
+{
+    m_EndTime = endTime;
+}
+
+clock_t Test::elapsedTime() const
+{
+    return m_EndTime - m_StartTime;
 }
 
 std::vector<TestPtr>& Test::tests()

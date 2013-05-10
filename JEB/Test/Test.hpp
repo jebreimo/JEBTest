@@ -8,6 +8,7 @@
 #ifndef JEB_TEST_TEST_HPP
 #define JEB_TEST_TEST_HPP
 
+#include <ctime>
 #include <memory>
 #include <string>
 #include "Error.hpp"
@@ -32,6 +33,14 @@ public:
 
     const std::string& name() const;
 
+    clock_t startTime() const;
+    void setStartTime(clock_t startTime);
+
+    clock_t endTime() const;
+    void setEndTime(clock_t endTime);
+
+    clock_t elapsedTime() const;
+
     void addTest(TestPtr test);
     std::vector<TestPtr>& tests();
     const std::vector<TestPtr>& tests() const;
@@ -41,6 +50,8 @@ private:
     bool m_Failed;
     std::string m_Name;
     std::vector<TestPtr> m_Tests;
+    clock_t m_StartTime;
+    clock_t m_EndTime;
 };
 
 }}

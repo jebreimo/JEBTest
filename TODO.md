@@ -6,6 +6,8 @@ Test
 - Add redirection of cout, cerr and clog.
 - Support the new kinds of test failure
 - Add some test examples that also serves as "tests" of the test library
+- Record execution time for all tests
+- Add a way to specify execution order of "test suites"
 
 Command line interface
 ======================

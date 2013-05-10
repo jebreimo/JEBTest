@@ -7,6 +7,7 @@
  */
 #include "AutoTest.hpp"
 
+#include <limits>
 #include "AutoTestRunner.hpp"
 #include "MacroUtilities.hpp"
 
@@ -14,7 +15,16 @@ namespace JEB { namespace Test {
 
 AutoTest::AutoTest(const std::string& fileName, Func suiteFunc)
     : m_Function(suiteFunc),
-      m_Name(fileName)
+      m_Name(fileName),
+      m_Priority(std::numeric_limits<int>::max())
+{
+    AutoTestRunner::instance().addTest(this);
+}
+
+AutoTest::AutoTest(const std::string& fileName, Func suiteFunc, int priority)
+    : m_Function(suiteFunc),
+      m_Name(fileName),
+      m_Priority(priority)
 {
     AutoTestRunner::instance().addTest(this);
 }
@@ -31,7 +41,12 @@ void AutoTest::setFunction(const Func& function)
 
 std::string AutoTest::name() const
 {
-    return ::JEB::Test::extractSuiteName(m_Name);
+    return JEB::Test::extractSuiteName(m_Name);
+}
+
+int AutoTest::priority() const
+{
+    return m_Priority;
 }
 
 }}

@@ -87,6 +87,24 @@
         return (int)::JEB::Test::Session::instance().numberOfFailedTests(); \
     }
 
+#define JT_TEST_WITH_PRIORITY(priority, ...) \
+    static void JT_PRIV_UNIQUE_NAME(JT_suite_)() \
+    { \
+        /* Funny variable names make conflicts with test names less likely */ \
+        std::function<void()> tests_JT_[] = {__VA_ARGS__}; \
+        std::vector<std::string> testNames_JT_ = ::JEB::Test::extractTestNames(#__VA_ARGS__); \
+        for (size_t i_JT_ = 0; i_JT_ < testNames_JT_.size(); i_JT_++) \
+        { \
+            ::JEB::Test::TestScope scope(testNames_JT_[i_JT_]); \
+            try { \
+                tests_JT_[i_JT_](); \
+            } catch (const ::JEB::Test::TestFailure& ex) { \
+                ::JEB::Test::Session::instance().testFailed(ex.error()); \
+            } \
+        } \
+    } \
+    static ::JEB::Test::AutoTest JT_PRIV_UNIQUE_NAME(JT_suite_instance_)(__FILE__, JT_PRIV_UNIQUE_NAME(JT_suite_), (priority))
+
 /** @brief Defines a test suite.
  *
  *  The arguments to this macro are the function names of the test functions.
@@ -95,7 +113,7 @@
  *
  *  The test suite's name in reports will be the current file name.
  */
-#define JT_TESTSUITE(...) \
+#define JT_TEST(...) \
     static void JT_PRIV_UNIQUE_NAME(JT_suite_)() \
     { \
         /* Funny variable names make conflicts with test names less likely */ \
@@ -113,7 +131,7 @@
     } \
     static ::JEB::Test::AutoTest JT_PRIV_UNIQUE_NAME(JT_suite_instance_)(__FILE__, JT_PRIV_UNIQUE_NAME(JT_suite_))
 
-/** @brief Macro for explicitly running a test suite with arguments.
+/** @brief Macro for explcitly running a test with arguments.
  *
  *  Normally you'll just use JT_TESTSUITE to define your test suite, but
  *  if your tests need a common set of data, for instance the contents of a
@@ -140,25 +158,10 @@
  *
  *      JT_RUN_TESTSUITE(testsuite_SvgShapes, "my_svg_file.svg");
  */
-// #define JT_RUN_TESTSUITE(name, ...) \
-//     if (::JEB::Test::Session::instance().isTestEnabled(#name)) \
-//     { \
-//         ::JEB::Test::Session::instance().beginTest( \
-//                 ::JEB::Test::extractSuiteName(#name)); \
-//         try { \
-//             name(__VA_ARGS__); \
-//             ::JEB::Test::Session::instance().endTest(); \
-//         } catch (const ::JEB::Test::TestSuiteFailure& ex) { \
-//             ::JEB::Test::Session::instance().suiteFailed(ex.error()); \
-//         } \
-//     }
-
-/** @brief Macro for explcitly running a test with arguments.
- */
 #define JT_RUN_TEST(name, ...) \
     if (::JEB::Test::Session::instance().isTestEnabled(#name)) \
     { \
-        ::JEB::Test::TestScope scope(testNames_JT_[i_JT_]); \
+        ::JEB::Test::TestScope scope(#name); \
         try { \
             name(__VA_ARGS__); \
         } catch (const ::JEB::Test::TestFailure& ex) { \
