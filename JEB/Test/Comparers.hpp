@@ -22,12 +22,16 @@ bool equal(T t, U u)
 template <>
 inline bool equal<char*, char*>(char* t, char* u)
 {
+    if (t == nullptr || u == nullptr)
+        return t == u;
     return std::strcmp(t, u) == 0;
 }
 
 template <>
 inline bool equal<const char*, const char*>(const char* t, const char* u)
 {
+    if (t == nullptr || u == nullptr)
+        return t == u;
     return std::strcmp(t, u) == 0;
 }
 

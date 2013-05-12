@@ -44,8 +44,8 @@ class CriticalFailure : public AbstractFailure
 {
 public:
     CriticalFailure(const std::string& file,
-                     unsigned lineNo,
-                     const std::string& message);
+                    unsigned lineNo,
+                    const std::string& message);
     ~CriticalFailure();
 };
 
@@ -53,8 +53,8 @@ class FatalFailure : public AbstractFailure
 {
 public:
     FatalFailure(const std::string& file,
-                     unsigned lineNo,
-                     const std::string& message);
+                 unsigned lineNo,
+                 const std::string& message);
     ~FatalFailure();
 };
 

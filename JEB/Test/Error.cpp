@@ -11,22 +11,29 @@
 namespace JEB { namespace Test {
 
 Error::Error()
-    : m_LineNo(0)
+    : m_LineNo(0),
+      m_Level(None)
 {
 }
 
 Error::Error(const std::string& file,
              unsigned lineNo,
-             const std::string& message)
+             const std::string& message,
+             Level level)
     : m_File(file),
       m_LineNo(lineNo),
-      m_Message(message)
-{
-}
+      m_Message(message),
+      m_Level(level)
+{}
 
 const std::string& Error::file() const
 {
     return m_File;
+}
+
+Error::Level Error::level() const
+{
+    return m_Level;
 }
 
 unsigned Error::lineNo() const
@@ -42,7 +49,12 @@ const std::string& Error::message() const
 std::string Error::text() const
 {
     std::ostringstream ss;
-    ss << m_File << "[" << m_LineNo << "]: " << m_Message;
+    ss << m_File << "[" << m_LineNo << "]: ";
+    if (m_Level == Critical)
+        ss << "CRITICAL ";
+    else if (m_Level == Fatal)
+        ss << "FATAL ";
+    ss << m_Message;
     return ss.str();
 }
 

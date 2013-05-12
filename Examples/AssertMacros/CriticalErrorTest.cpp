@@ -1,9 +1,9 @@
 #include "JEB/JEBTest.hpp"
 
-void testCriticalError()
+static void testFatalError()
 {
     char* foo = nullptr;
-    JT_NOT_EQUAL_CRITICAL(foo, nullptr);
+    JT_NOT_EQUAL_FATAL(foo, (char*)nullptr);
 }
 
-JT_TESTSUITE(testCriticalError);
+JT_TEST(testFatalError);

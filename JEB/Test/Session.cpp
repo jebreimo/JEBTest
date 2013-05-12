@@ -129,7 +129,11 @@ void Session::endTest()
 
 void Session::testFailed(const Error& error)
 {
-    setTestError(error, Test::Failure);
+    if (m_ActiveTest.empty())
+        throw std::logic_error("Call to testFailed, criticalError or fatalError was not preceded by a call to beginTest");
+    print("\n");
+    m_ActiveTest.back()->setError(error);
+    print(std::string("    ") + error.text() + "\n");
 }
 
 void Session::assertPassed()
@@ -141,23 +145,6 @@ void Session::assertPassed()
     else
         print(".");
     m_ActiveTest.back()->incrementAssertions();
-}
-
-void Session::criticalError(const Error& error)
-{
-    setTestError(error, Test::CriticalError);
-}
-
-void Session::fatalError(const Error& error)
-{
-    setTestError(error, Test::FatalError);
-}
-
-void Session::unhandledException(const Error& error)
-{
-    if (m_ActiveTest.empty())
-        beginTest("<unknown>");
-    testFailed(error);
 }
 
 size_t Session::numberOfFailedTests() const
@@ -218,16 +205,6 @@ std::string Session::getTestName(const std::string& name) const
         names.push_back((*it)->name());
     names.push_back(name);
     return join(names, "/");
-}
-
-void Session::setTestError(const Error& error, Test::Result result)
-{
-    if (m_ActiveTest.empty())
-        throw std::logic_error("Call to testFailed, criticalError or fatalError was not preceded by a call to beginTest");
-    print("\n");
-    m_ActiveTest.back()->setError(error);
-    m_ActiveTest.back()->setResult(result);
-    print(std::string("    ") + error.text() + "\n");
 }
 
 }}

@@ -36,7 +36,7 @@ void AbstractFailure::addContext(const std::string& file,
 TestFailure::TestFailure(const std::string& file,
                          unsigned lineNo,
                          const std::string& message)
-    : AbstractFailure(Error(file, lineNo, message))
+    : AbstractFailure(Error(file, lineNo, message, Error::Failure))
 {}
 
 TestFailure::~TestFailure()
@@ -45,7 +45,7 @@ TestFailure::~TestFailure()
 CriticalFailure::CriticalFailure(const std::string& file,
                                    unsigned lineNo,
                                    const std::string& message)
-    : AbstractFailure(Error(file, lineNo, message))
+    : AbstractFailure(Error(file, lineNo, message, Error::Critical))
 {}
 
 CriticalFailure::~CriticalFailure()
@@ -54,7 +54,7 @@ CriticalFailure::~CriticalFailure()
 FatalFailure::FatalFailure(const std::string& file,
                                    unsigned lineNo,
                                    const std::string& message)
-    : AbstractFailure(Error(file, lineNo, message))
+    : AbstractFailure(Error(file, lineNo, message, Error::Fatal))
 {}
 
 FatalFailure::~FatalFailure()

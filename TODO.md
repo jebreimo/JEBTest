@@ -1,11 +1,10 @@
 Test
 ====
-- Support the new kinds of test failure
+- Add some test examples that also serves as "tests" of the test library
 - Implement text report
 - Implement JUnit (xml) report
 - Add command line interface
 - Add redirection of cout, cerr and clog.
-- Add some test examples that also serves as "tests" of the test library
 - Record execution time for all tests
 - Add a way to specify execution order of "test suites"
 - Reduce number of public include files

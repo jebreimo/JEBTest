@@ -60,7 +60,7 @@ static Counters writeTextReport(
             counters += writeTextReport(os, (*it)->tests(), parents);
             parents.pop_back();
         }
-        if ((*it)->result() != Test::Unspecified)
+        if ((*it)->failed())
         {
             ++counters.failedTests;
             os << testName(parents, *it) << ": FAILED (assertion no. "

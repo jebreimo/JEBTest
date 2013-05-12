@@ -18,7 +18,6 @@ namespace JEB { namespace Test {
 Test::Test(const std::string& name)
     : m_Assertions(0),
       m_Name(name),
-      m_Result(Unspecified),
       m_StartTime(0),
       m_EndTime(0)
 {
@@ -36,7 +35,7 @@ void Test::incrementAssertions()
 
 bool Test::failed() const
 {
-    if (m_Result != Unspecified)
+    if (m_Error.level() != Error::None)
         return true;
     for (auto it = m_Tests.begin(); it != m_Tests.end(); ++it)
     {
@@ -59,16 +58,6 @@ void Test::setError(const Error& error)
 const std::string& Test::name() const
 {
     return m_Name;
-}
-
-Test::Result Test::result() const
-{
-    return m_Result;
-}
-
-void Test::setResult(Result result)
-{
-    m_Result = result;
 }
 
 clock_t Test::startTime() const
