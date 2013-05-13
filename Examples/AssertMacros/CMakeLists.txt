@@ -4,6 +4,7 @@ project(AssertMacros)
 
 set(SRC
     main.cpp
+    AssertMacroTest.cpp
     FatalErrorTest.cpp
     CriticalErrorTest.cpp
     )
