@@ -7,6 +7,7 @@
  */
 #include "MacroUtilities.hpp"
 
+#include <algorithm>
 #include "JEB/Sys/Path.hpp"
 #include "JEB/String/String.hpp"
 
@@ -26,7 +27,10 @@ namespace JEB { namespace Test {
 
 std::vector<std::string> extractTestNames(const std::string& names)
 {
-    return split(names, ",");
+    std::vector<std::string> result = split(names, ",", 0, SplitFlags::IgnoreEmpty);
+    for (auto it = result.begin(); it != result.end(); ++it)
+      *it = trim(*it);
+    return result;
 }
 
 std::string extractSuiteName(const std::string& path)
