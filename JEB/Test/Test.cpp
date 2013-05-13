@@ -35,7 +35,12 @@ void Test::incrementAssertions()
 
 bool Test::failed() const
 {
-    if (m_Error.level() != Error::None)
+    return m_Error.level() != Error::None;
+}
+
+bool Test::failedHierarchy() const
+{
+    if (failed())
         return true;
     for (auto it = m_Tests.begin(); it != m_Tests.end(); ++it)
     {

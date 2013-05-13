@@ -51,7 +51,7 @@ static Counters writeTextReport(
     Counters counters;
     for (auto it = tests.begin(); it != tests.end(); ++it)
     {
-        if ((*it)->tests().empty() || (*it)->assertions())
+        if ((*it)->failed() || (*it)->tests().empty() || (*it)->assertions())
             ++counters.tests;
         counters.assertions += (*it)->assertions();
         if (!(*it)->tests().empty())

@@ -96,10 +96,10 @@
                 if (ex.error().level() != ::JEB::Test::Error::Failure) \
                     throw; \
             } catch (const std::exception& ex) { \
-                ::JEB::Test::Session::instance().unhandledException(::JEB::Test::Error(__FILE__, __LINE__, std::string("Unhandled exception: \"") + ex.what() + "\"")); \
+                ::JEB::Test::Session::instance().testFailed(::JEB::Test::Error(__FILE__, __LINE__, std::string("Unhandled exception: \"") + ex.what() + "\"", ::JEB::Test::Error::Fatal)); \
                 throw; \
             } catch (...) { \
-                ::JEB::Test::Session::instance().unhandledException(::JEB::Test::Error(__FILE__, __LINE__, "Unknown exception")); \
+                ::JEB::Test::Session::instance().testFailed(::JEB::Test::Error(__FILE__, __LINE__, "Unhandled exception (not derived from std::exception)", ::JEB::Test::Error::Fatal)); \
                 throw; \
             } \
         } \

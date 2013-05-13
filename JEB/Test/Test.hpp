@@ -28,7 +28,13 @@ public:
     const Error& error() const;
     void setError(const Error& error);
 
+    /** @brief Returns true if the test failed (i.e. error() is set).
+     */
     bool failed() const;
+
+    /** @brief Returns true if the test or any of its sub-tests failed.
+     */
+    bool failedHierarchy() const;
 
     const std::string& name() const;
 

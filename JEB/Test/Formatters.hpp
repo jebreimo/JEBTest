@@ -30,6 +30,18 @@ std::string formatComparison(const T& t, const char* tName,
     return ss.str();
 }
 
+template <typename T, typename U>
+std::string formatComparison(T* t, const char* tName,
+                             U* u, const char* uName,
+                             const char* operat)
+{
+    std::ostringstream ss;
+    ss << tName << " " << operat << " " << uName
+       << "\n    Received: " << (t ? t : (void*)t)
+       << "\n    Expected: " << (u ? u : (void*)u);
+    return ss.str();
+}
+
 }}
 
 #endif

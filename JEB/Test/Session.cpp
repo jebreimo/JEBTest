@@ -151,7 +151,7 @@ size_t Session::numberOfFailedTests() const
 {
     size_t failures = 0;
     for (auto test = m_Tests.begin(); test != m_Tests.end(); ++test)
-        failures += (*test)->failed() ? 1 : 0;
+        failures += (*test)->failedHierarchy() ? 1 : 0;
     return failures;
 }
 
