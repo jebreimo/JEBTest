@@ -38,7 +38,7 @@ static std::string testName(const std::vector<TestPtr>& parents,
 {
     std::string name;
     for (auto it = parents.begin(); it != parents.end(); ++it)
-        name += (*it)->name() + ".";
+        name += (*it)->name() + "/";
     name += test->name();
     return name;
 }
@@ -63,14 +63,15 @@ static Counters writeTextReport(
         if ((*it)->failed())
         {
             ++counters.failedTests;
-            os << testName(parents, *it) << ": FAILED (assertion no. "
+            os << testName(parents, *it) << ": FAILED (assertion "
                << ((*it)->assertions() + 1) << ")\n"
-               << "  " << (*it)->error() << "\n";
+               << "    " << (*it)->error() << "\n";
             const std::vector<Error>& context = (*it)->error().context();
             if (!context.empty())
             {
+                os << "    Called from:\n";
                 for (auto c = context.begin(); c != context.end(); ++c)
-                    os << "    " << c->text() << "\n";
+                    os << "        " << c->text() << "\n";
             }
         }
     }

@@ -1,7 +1,7 @@
 Test
 ====
 - Add some test examples that also serves as "tests" of the test library
-    - Each macro in Macros.hpp should be tested at least once
+    - Add a project with macros expanded
 - Implement text report
 - Implement JUnit (xml) report
 - Add command line interface
