@@ -50,6 +50,7 @@ Options:
 - "-o:FILE" or "--output=FILE" for report file
 - "-l:FILE" or "--logfile=FILE" for redirecting cout, cerr and clog to a file.
 - "-e" or "--exclude" to exclude the tests listed after the options rather than include those tests.
+- "--host:HOST"
 
 Ideas I've considered, but don't intend to implement
 ====================================================
