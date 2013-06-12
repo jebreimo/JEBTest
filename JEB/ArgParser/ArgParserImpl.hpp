@@ -48,14 +48,15 @@ public:
     bool ignoreUnknownOptions() const;
     void setIgnoreUnknownOptions(bool ignoreUnknownOptions);
 
-    const std::string& usage() const;
-
-    /** @brief Set the "usage" part of the help text.
+    /** @brief Adds @a helpText to the help text.
       *
-      * Any instances of "%prog" in the usage text is replaced with the
-      * file name part argv[0].
+      * Use this function to add usage instructions, headings or any other
+      * you want interspersed with your options.
+      *
+      * @note Any instances of "%prog" in the @a helpText is replaced with the
+      * file name part of argv[0].
       */
-    void setUsage(const std::string& usage);
+    void addHelpText(const std::string& helpText);
 
     void addFlag(const std::string& opts,
                  bool enable,

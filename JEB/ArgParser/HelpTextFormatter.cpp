@@ -50,19 +50,14 @@ void HelpTextFormatter::setTextWidth(size_t textWidth)
     m_TextWidth = textWidth;
 }
 
-const std::string& HelpTextFormatter::usage() const
+void HelpTextFormatter::addText(const std::string& text)
 {
-    return m_Usage;
-}
-
-void HelpTextFormatter::setUsage(const std::string& usage)
-{
-    m_Usage = usage;
+    m_Text.push_back(TextElement(text));
 }
 
 void HelpTextFormatter::addOption(OptionHelpText_sp option)
 {
-    m_Options.push_back(option);
+    m_Text.push_back(TextElement(option));
 }
 
 void HelpTextFormatter::useConsoleTextWidth()
@@ -80,18 +75,17 @@ void HelpTextFormatter::useConsoleTextWidth()
 
 void HelpTextFormatter::write(std::ostream& stream) const
 {
-    writeUsage(stream);
-    writeOptions(stream);
-}
-
-bool HelpTextFormatter::writeOption(const std::string& option, std::ostream& stream) const
-{
-    OptionHelpText_sp oht = findOption(option);
-    if (!oht)
-        return false;
-
-    oht->write(stream, computeOptionColumns());
-    return true;
+    HelpTextColumns cols = computeOptionColumns();
+    for (auto it = m_Text.begin(); it != m_Text.end(); ++it)
+    {
+        if (it->option())
+            it->option()->write(stream, cols);
+        else if (m_ProgramName.empty())
+            writeText(stream, it->text());
+        else
+            writeText(stream,
+                      String::replace(it->text(), "%prog", m_ProgramName));
+    }
 }
 
 void HelpTextFormatter::writeMessage(std::ostream& stream,
@@ -118,47 +112,26 @@ void HelpTextFormatter::getFieldWidths(size_t& shortOpts, size_t& longOpts) cons
 {
     shortOpts = 0;
     longOpts = 0;
-    for (std::vector<OptionHelpText_sp>::const_iterator it = m_Options.begin();
-         it != m_Options.end();
-         ++it)
+    for (auto it = m_Text.begin(); it != m_Text.end(); ++it)
     {
-        shortOpts = std::max(shortOpts, (*it)->shortOptionWidth());
-        longOpts = std::max(longOpts, (*it)->longOptionWidth());
+        if (it->option())
+        {
+            shortOpts = std::max(shortOpts, it->option()->shortOptionWidth());
+            longOpts = std::max(longOpts, it->option()->longOptionWidth());
+        }
     }
 }
 
-void HelpTextFormatter::writeUsage(std::ostream& stream) const
+void HelpTextFormatter::writeText(std::ostream& stream, const std::string& text) const
 {
-    if (m_Usage.empty())
-        return;
-
-    stream << "USAGE\n";
     std::string usage;
-    if (m_ProgramName.empty())
-        usage = m_Usage;
-    else
-        usage = String::replace(m_Usage, "%prog", m_ProgramName);
-    TextFormatter formatter(&stream, &usage);
+    TextFormatter formatter(&stream, &text);
     formatter.setTextWidth(m_TextWidth - m_LeftMargin);
     do
     {
         stream << spaces(m_LeftMargin);
     } while (formatter.formatLine());
     stream << "\n";
-}
-
-void HelpTextFormatter::writeOptions(std::ostream& stream) const
-{
-    if (m_Options.empty())
-        return;
-    stream << "OPTIONS\n";
-    HelpTextColumns cols = computeOptionColumns();
-    for (std::vector<OptionHelpText_sp>::const_iterator it = m_Options.begin();
-         it != m_Options.end();
-         ++it)
-    {
-        (*it)->write(stream, cols);
-    }
 }
 
 HelpTextColumns HelpTextFormatter::computeOptionColumns() const
@@ -178,15 +151,34 @@ HelpTextColumns HelpTextFormatter::computeOptionColumns() const
 
 OptionHelpText_sp HelpTextFormatter::findOption(const std::string& option) const
 {
-    for (std::vector<OptionHelpText_sp>::const_iterator it = m_Options.begin();
-         it != m_Options.end();
-         ++it)
+    for (auto it = m_Text.begin(); it != m_Text.end(); ++it)
     {
-        if ((*it)->hasOption(option))
-            return *it;
+        if (it->option() && it->option()->hasOption(option))
+            return it->option();
     }
 
     return OptionHelpText_sp();
+}
+
+HelpTextFormatter::TextElement::TextElement()
+{}
+
+HelpTextFormatter::TextElement::TextElement(const std::string& text)
+    : m_Text(text)
+{}
+
+HelpTextFormatter::TextElement::TextElement(OptionHelpText_sp& option)
+    : m_Option(option)
+{}
+
+const std::string& HelpTextFormatter::TextElement::text() const
+{
+    return m_Text;
+}
+
+const OptionHelpText_sp& HelpTextFormatter::TextElement::option() const
+{
+    return m_Option;
 }
 
 }

@@ -75,14 +75,12 @@ public:
     bool ignoreUnknownOptions() const;
     void setIgnoreUnknownOptions(bool ignoreUnknownOptions);
 
-    const std::string& usage() const;
-
     /** @brief Set the "usage" part of the help text.
       *
       * Any instances of "%prog" in the usage text is replaced with the
       * file name part argv[0].
       */
-    void setUsage(const std::string& usage);
+    void addHelpText(const std::string& helpText);
 
     void addFlag(const std::string& opts,
                  bool enable,

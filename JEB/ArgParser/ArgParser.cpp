@@ -95,14 +95,9 @@ void ArgParser::setIgnoreUnknownOptions(bool ignoreUnknownOptions)
     m_Impl->setIgnoreUnknownOptions(ignoreUnknownOptions);
 }
 
-const std::string& ArgParser::usage() const
+void ArgParser::addHelpText(const std::string& helpText)
 {
-    return m_Impl->usage();
-}
-
-void ArgParser::setUsage(const std::string& usage)
-{
-    m_Impl->setUsage(usage);
+    m_Impl->addHelpText(helpText);
 }
 
 void ArgParser::addFlag(const std::string& opts,
