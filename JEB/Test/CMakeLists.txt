@@ -13,6 +13,7 @@ set(JEB_DIR JEB/${PROJECT_NAME})
 set(SRC
     AutoTest.cpp
     AutoTestRunner.cpp
+    CommandLine.cpp
     Error.cpp
     Exceptions.cpp
     MacroUtilities.cpp
@@ -24,6 +25,7 @@ set(SRC
 set(PUBLIC_HEADERS
     AutoTest.hpp
     AutoTestRunner.hpp
+    CommandLine.hpp
     Comparers.hpp
     Error.hpp
     Exceptions.hpp
