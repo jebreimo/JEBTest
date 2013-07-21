@@ -12,6 +12,7 @@
 #include <iomanip>
 #include <iostream>
 #include <stdexcept>
+#include "CommandLine.hpp"
 #include "Report.hpp"
 #include "Test.hpp"
 

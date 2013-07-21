@@ -67,9 +67,10 @@
  *  All reports and messages are written to the console (command line window)
  */
 #define JT_CONSOLE_MAIN() \
-    int main() \
+    int main(int argc, char* argv[]) \
     { \
         try { \
+            ::JEB::Test::Session::instance().parseCommandLine(argc, argv);
             JT_CONSOLE_BEGIN(); \
             ::JEB::Test::AutoTestRunner::instance().run(); \
             JT_CONSOLE_END(); \

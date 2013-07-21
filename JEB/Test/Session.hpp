@@ -31,6 +31,8 @@ class Session
 public:
     static Session& instance();
 
+    void parseCommandLine(int argc, char* argv[]);
+
     bool reportEnabled(ReportFormat format) const;
     void setReportEnabled(ReportFormat format, bool enabled);
 
