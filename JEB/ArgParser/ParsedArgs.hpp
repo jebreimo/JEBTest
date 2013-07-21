@@ -4,10 +4,9 @@
 #include <map>
 #include <string>
 #include <vector>
-#include "JEB/Collections/MapUtilities.hpp"
+#include <JEB/String/FromString.hpp>
 
-namespace JEB
-{
+namespace JEB { namespace ArgParser {
 
 class ParsedArgs
 {
@@ -51,23 +50,25 @@ public:
     const std::vector<std::string>& list(const std::string& name) const;
     void addListValue(const std::string& name, const std::string& value);
 
+    bool hasOption(const std::string& name) const;
+    const std::string& option(const std::string& name) const;
+    void setOption(const std::string& name, const std::string& value);
+
     template <typename T>
-    T option(const std::string& name, const T& defaultValue) const
+    T option(const std::string& name, T&& defaultValue) const
     {
-        return JEB::StringMap::get(m_Options, name, defaultValue);
+        T value;
+        if (!hasOption(name) || !JEB::String::fromString(option(name), value))
+            return defaultValue;
+        return value;
     }
 
     template <typename T>
     bool tryGetOption(const std::string& name, T& value) const
     {
-        return JEB::StringMap::tryGet(m_Options, name, value);
+        return hasOption(name) && JEB::String::fromString(option(name), value);
     }
 
-    template <typename T>
-    void setOption(const std::string& name, const T& value)
-    {
-        JEB::StringMap::set(m_Options, name, value);
-    }
 private:
     typedef std::map<std::string, std::string> StringMap;
     typedef std::vector<std::string> StringList;
@@ -79,9 +80,10 @@ private:
     StringList m_Arguments;
     StringList m_UnprocessedArgs;
     OptionErrorList m_InvalidOptions;
+    static std::string s_EmptyString;
     static StringList s_EmptyStringList;
 };
 
-}
+}}
 
 #endif

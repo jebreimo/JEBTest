@@ -5,8 +5,7 @@
 #include <string>
 #include "JEB/JEBDefinitions.hpp"
 
-namespace JEB
-{
+namespace JEB { namespace ArgParser {
 
 class ArgIterator
 {
@@ -55,6 +54,6 @@ private:
     int m_SubIndex;
 };
 
-}
+}}
 
 #endif

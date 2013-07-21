@@ -5,8 +5,7 @@
 #include "JEB/Collections/VectorUtilities.hpp"
 #include "JEB/Text/TextFormatter.hpp"
 
-namespace JEB
-{
+namespace JEB { namespace ArgParser {
 
 namespace internal
 {
@@ -185,4 +184,4 @@ void OptionHelpText::write(std::ostream& stream, const HelpTextColumns& columns)
         moreHelpText = !writer.writeHelpText();
 }
 
-}
+}}

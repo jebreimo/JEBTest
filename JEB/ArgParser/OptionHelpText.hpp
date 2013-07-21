@@ -7,8 +7,7 @@
 #include <vector>
 #include "JEB/JEBDefinitions.hpp"
 
-namespace JEB
-{
+namespace JEB { namespace ArgParser {
 
 struct HelpTextColumns
 {
@@ -44,6 +43,6 @@ private:
 
 typedef std::shared_ptr<OptionHelpText> OptionHelpText_sp;
 
-}
+}}
 
 #endif // OPTIONHELPTEXT_HPP

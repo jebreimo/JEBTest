@@ -2,8 +2,7 @@
 #include "JEB/Collections/SetUtilities.hpp"
 #include "JEB/String/String.hpp"
 
-namespace JEB
-{
+namespace JEB { namespace ArgParser {
 
 ArgIterator::ArgIterator()
     : m_Argc(0),
@@ -184,4 +183,4 @@ void ArgIterator::nextShortOption()
     }
 }
 
-}
+}}

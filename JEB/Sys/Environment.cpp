@@ -37,7 +37,7 @@ std::vector<std::string> splitPaths(const std::string& path)
     return String::splitWhere(path, [](uint32_t c){return c == EnvPathSep;});
 }
 
-bool tryGetPaths(const std::string& name, std::vector<std::string>& paths) 
+bool tryGetPaths(const std::string& name, std::vector<std::string>& paths)
 {
     std::string value;
     if (!tryGetValue(name, value))

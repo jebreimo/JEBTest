@@ -4,8 +4,7 @@
 #include <string>
 #include "ParsedArgs.hpp"
 
-namespace JEB
-{
+namespace JEB { namespace ArgParser {
 
 struct OptionData
 {
@@ -26,6 +25,6 @@ struct OptionData
     void* context;
 };
 
-}
+}}
 
 #endif

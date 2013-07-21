@@ -13,8 +13,7 @@
   * @brief Defines the ArgParserImpl class.
   */
 
-namespace JEB
-{
+namespace JEB { namespace ArgParser {
 
 class ArgIterator;
 class HelpTextFormatter;
@@ -58,25 +57,25 @@ public:
       */
     void addHelpText(const std::string& helpText);
 
-    void addFlag(const std::string& opts,
+    void addFlag(const std::string& name,
+                 const std::string& opts,
                  bool enable,
-                 const std::string& name,
                  const std::string& help);
-    void addValue(const std::string& opts,
+    void addValue(const std::string& name,
+                  const std::string& opts,
                   const std::string& value,
-                  const std::string& name,
                   const std::string& help);
-    void addOption(const std::string& opts,
-                   const std::string& name,
+    void addOption(const std::string& name,
+                   const std::string& opts,
                    const std::string& valueName,
                    const std::string& help);
-    void addList(const std::string& opts,
-                 const std::string& name,
+    void addList(const std::string& name,
+                 const std::string& opts,
                  const std::string& valueName,
                  const std::string& help);
-    void addListValue(const std::string& opts,
+    void addListValue(const std::string& name,
+                      const std::string& opts,
                       const std::string& value,
-                      const std::string& name,
                       const std::string& help);
     void addFlagCallback(const std::string& opts,
                          OptionCallback callback,
@@ -134,6 +133,6 @@ private:
     ArgParser* m_Owner;
 };
 
-}
+}}
 
 #endif // ARGPARSERIMPL_HPP

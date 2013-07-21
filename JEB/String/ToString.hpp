@@ -1,12 +1,12 @@
-#ifndef JEB_TOSTRING_HPP
-#define JEB_TOSTRING_HPP
+#ifndef JEB_STRING_TOSTRING_HPP
+#define JEB_STRING_TOSTRING_HPP
 
 #include <sstream>
 #include <string>
 #include <cstring>
 #include "JEB/JEBDefinitions.hpp"
 
-namespace JEB {
+namespace JEB { namespace String {
 
 template <typename T>
 std::string toString(const T& value)
@@ -48,6 +48,6 @@ inline std::wstring toWString(const std::wstring& value)
     return value;
 }
 
-}
+}}
 
 #endif

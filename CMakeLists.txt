@@ -25,7 +25,6 @@ endif (APPLE)
 
 add_subdirectory(JEB)
 add_library(JEBTest
-            $<TARGET_OBJECTS:Collections>
             $<TARGET_OBJECTS:String>
             $<TARGET_OBJECTS:Sys>
             $<TARGET_OBJECTS:Test>

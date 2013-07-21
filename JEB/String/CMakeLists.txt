@@ -5,13 +5,17 @@ project(String)
 set(JEB_DIR JEB/${PROJECT_NAME})
 
 set(PUBLIC_HEADERS
+    FromString.hpp
+    MapUtilities.hpp
     String.hpp
     StringConversion.hpp
     StringFlags.hpp
     StringPredicates.hpp
+    ToString.hpp
     )
 
 set(SRC
+    FromString.cpp
     String.cpp
     StringConversion.cpp
     StringPredicates.cpp

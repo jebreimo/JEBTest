@@ -2,8 +2,7 @@
 
 #include "ArgParserImpl.hpp"
 
-namespace JEB
-{
+namespace JEB { namespace ArgParser {
 
 ArgParser::ArgParser()
 {
@@ -100,44 +99,44 @@ void ArgParser::addHelpText(const std::string& helpText)
     m_Impl->addHelpText(helpText);
 }
 
-void ArgParser::addFlag(const std::string& opts,
+void ArgParser::addFlag(const std::string& name,
+                        const std::string& opts,
                         bool enable,
-                        const std::string& name,
                         const std::string& help)
 {
-    m_Impl->addFlag(opts, enable, name, help);
+    m_Impl->addFlag(name, opts, enable, help);
 }
 
-void ArgParser::addValue(const std::string& opts,
+void ArgParser::addValue(const std::string& name,
+                         const std::string& opts,
                          const std::string& value,
-                         const std::string& name,
                          const std::string& help)
 {
-    m_Impl->addValue(opts, value, name, help);
+    m_Impl->addValue(name, opts, value, help);
 }
 
-void ArgParser::addOption(const std::string& opts,
-                          const std::string& name,
+void ArgParser::addOption(const std::string& name,
+                          const std::string& opts,
                           const std::string& valueName,
                           const std::string& help)
 {
-    m_Impl->addOption(opts, name, valueName, help);
+    m_Impl->addOption(name, opts, valueName, help);
 }
 
-void ArgParser::addList(const std::string& opts,
-                        const std::string& name,
+void ArgParser::addList(const std::string& name,
+                        const std::string& opts,
                         const std::string& valueName,
                         const std::string& help)
 {
-    m_Impl->addList(opts, name, valueName, help);
+    m_Impl->addList(name, opts, valueName, help);
 }
 
-void ArgParser::addListValue(const std::string& opts,
+void ArgParser::addListValue(const std::string& name,
+                             const std::string& opts,
                              const std::string& value,
-                             const std::string& name,
                              const std::string& help)
 {
-    m_Impl->addListValue(opts, value, name, help);
+    m_Impl->addListValue(name, opts, value, help);
 }
 
 void ArgParser::addFlagCallback(const std::string& opts,
@@ -202,4 +201,4 @@ void ArgParser::writeMessage(std::ostream& os, const std::string& msg) const
     m_Impl->writeMessage(os, msg);
 }
 
-}
+}}

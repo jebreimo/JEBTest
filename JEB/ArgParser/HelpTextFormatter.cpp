@@ -6,8 +6,7 @@
 #include "JEB/Sys/Console.hpp"
 #include "JEB/Text/TextFormatter.hpp"
 
-namespace JEB
-{
+namespace JEB { namespace ArgParser {
 
 HelpTextFormatter::HelpTextFormatter()
     : m_LeftMargin(2),
@@ -181,4 +180,4 @@ const OptionHelpText_sp& HelpTextFormatter::TextElement::option() const
     return m_Option;
 }
 
-}
+}}

@@ -10,8 +10,7 @@
   * @brief Defines the class HelpTextFormatter.
   */
 
-namespace JEB
-{
+namespace JEB { namespace ArgParser {
 
 /** @brief Writes nicely formatted help texts.
   */
@@ -64,6 +63,6 @@ private:
     size_t m_TextWidth;
 };
 
-}
+}}
 
 #endif

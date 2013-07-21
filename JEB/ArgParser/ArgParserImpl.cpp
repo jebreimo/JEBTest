@@ -9,8 +9,7 @@
 #include "ArgIterator.hpp"
 #include "HelpTextFormatter.hpp"
 
-namespace JEB
-{
+namespace JEB { namespace ArgParser {
 
 ArgParserImpl::ArgParserImpl(ArgParser* owner)
     : m_ArgIt(new ArgIterator()),
@@ -92,17 +91,17 @@ void ArgParserImpl::addHelpText(const std::string& helpText)
     m_HelpTextFormatter->addText(helpText);
 }
 
-void ArgParserImpl::addFlag(const std::string& opts,
+void ArgParserImpl::addFlag(const std::string& name,
+                            const std::string& opts,
                             bool enable,
-                            const std::string& name,
                             const std::string& help)
 {
-    addValue(opts, enable ? "1" : "0", name, help);
+    addValue(name, opts, enable ? "1" : "0", help);
 }
 
-void ArgParserImpl::addValue(const std::string& opts,
+void ArgParserImpl::addValue(const std::string& name,
+                             const std::string& opts,
                              const std::string& value,
-                             const std::string& name,
                              const std::string& help)
 {
     m_ValueCallbackContexts.push_back(ValueCallbackContext(name, value));
@@ -112,8 +111,8 @@ void ArgParserImpl::addValue(const std::string& opts,
                     help);
 }
 
-void ArgParserImpl::addOption(const std::string& opts,
-                              const std::string& name,
+void ArgParserImpl::addOption(const std::string& name,
+                              const std::string& opts,
                               const std::string& valueName,
                               const std::string& help)
 {
@@ -125,8 +124,8 @@ void ArgParserImpl::addOption(const std::string& opts,
                       help);
 }
 
-void ArgParserImpl::addList(const std::string& opts,
-                            const std::string& name,
+void ArgParserImpl::addList(const std::string& name,
+                            const std::string& opts,
                             const std::string& valueName,
                             const std::string& help)
 {
@@ -138,9 +137,9 @@ void ArgParserImpl::addList(const std::string& opts,
                       help);
 }
 
-void ArgParserImpl::addListValue(const std::string& opts,
+void ArgParserImpl::addListValue(const std::string& name,
+                                 const std::string& opts,
                                  const std::string& value,
-                                 const std::string& name,
                                  const std::string& help)
 {
     m_ValueCallbackContexts.push_back(ValueCallbackContext(name, value));
@@ -210,7 +209,7 @@ bool ArgParserImpl::processCurrentArg(ParsedArgs& pa)
     case ArgIterator::Option:
         {
             OptionCallbackWithContext ocwc;
-            if (AnyMap::tryGet(m_OptionCallbacks, m_ArgIt->name(), ocwc))
+            if (Collections::tryGet(m_OptionCallbacks, m_ArgIt->name(), ocwc))
             {
                 OptionData od(&pa, m_ArgIt->name(), m_ArgIt->value(), ocwc.second);
                 ocwc.first(m_Owner, &od);
@@ -340,4 +339,4 @@ void ArgParserImpl::handleListValue(ArgParser* /*argParser*/,
     od->parsedArgs->addListValue(nameValue->first, nameValue->second);
 }
 
-}
+}}

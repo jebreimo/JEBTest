@@ -1,8 +1,9 @@
 #include "ParsedArgs.hpp"
+#include "JEB/String/MapUtilities.hpp"
 
-namespace JEB
-{
+namespace JEB { namespace ArgParser {
 
+std::string ParsedArgs::s_EmptyString;
 ParsedArgs::StringList ParsedArgs::s_EmptyStringList;
 
 ParsedArgs::ParsedArgs()
@@ -106,4 +107,20 @@ void ParsedArgs::addListValue(const std::string& name, const std::string& value)
     m_ListOptions[name].push_back(value);
 }
 
+bool ParsedArgs::hasOption(const std::string& name) const
+{
+    return m_Options.find(name) != m_Options.end();
 }
+
+const std::string& ParsedArgs::option(const std::string& name) const
+{
+    auto it = m_Options.find(name);
+    return it != m_Options.end() ? it->second : s_EmptyString;
+}
+
+void ParsedArgs::setOption(const std::string& name, const std::string& value)
+{
+    m_Options[name] = value;
+}
+
+}}
