@@ -142,30 +142,34 @@
 
 /** @brief Macro for explcitly running a test with arguments.
  *
- *  Normally you'll just use JT_TESTSUITE to define your test suite, but
+ *  Normally you'll just use JT_TEST to define your tests, but
  *  if your tests need a common set of data, for instance the contents of a
  *  file, it may make sense to create a "test suite function" that reads the
  *  file first, then run each test function with the contents of that file
  *  as input arguments. This function simplifies executing such a function.
  *
- *  @param name the name of the test suite function
+ *  @param name the name of the test function
  *  @param ... comma separated arguments that will be passed on to @a name.
  *
  *  Examples
  *  --------
- *  Execute a test suite function named testsuite_Shapes that takes no
+ *  Execute a test function named test_Shapes that takes no
  *  arguments:
  *
- *      void testsuite_Shapes() {...}
+ *      void test_Shapes() {...}
  *
- *      JT_RUN_TEST(testsuite_Shapes);
+ *      JT_RUN_TEST(test_Shapes);
  *
- *  Execute a test suite function named testsuite_SvgShapes that takes a file
+ *  Execute a test function named test_SvgShapes that takes a file
  *  name as argument:
  *
- *      void testsuite_SvgShapes(std::string fileName) {...}
+ *      void test_SvgShapes(std::string fileName) {...}
  *
- *      JT_RUN_TEST(testsuite_SvgShapes, "my_svg_file.svg");
+ *      void test_SvgTests()
+ *      {
+ *          JT_RUN_TEST(test_SvgShapes, "first_svg_file.svg");
+ *          JT_RUN_TEST(test_SvgShapes, "second_svg_file.svg");
+ *      }
  */
 #define JT_RUN_TEST(name, ...) \
     if (::JEB::Test::Session::instance().isTestEnabled(#name)) \
