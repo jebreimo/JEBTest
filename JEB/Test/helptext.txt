@@ -1,10 +1,10 @@
 USAGE
-%usage%
+%prog% [options] [test-name ...] <out-file>
 
 Executes unit tests.
 
 ARGUMENTS
-$ test name | maxcount: 0
+  ${test-name | count: 0..}$
     The name of the test or tests that will be run. All tests are run if no
     test names are given. If the --exclude option is used, all tests except
     the given ones are run.
@@ -13,35 +13,35 @@ $ test name | maxcount: 0
     several child-tests. To disable a parent test and all its children, just
     enter the name of the parent. To disable a spesific child enter the names
     of both the parent and the child, separated with a single "/".
-$ out-file
+  ${out-file}$
     The name of the file that some kind of output will be written to. This is a
     text file.
 
 GENERAL OPTIONS
--e --exclude
+${-e --exclude}$
     Exclude the tests whose names appear after the options and run everything
     else. This is the opposite of the default behavior.
--h --help
+${-h --help}$
     Show program help.
--l: --log-file=FILE
+${-l FILE, --log-file=FILE}$
     Redirect all the output the tests normally write to stdout or stderr to
     a file named FILE instead. (This does not affect the test reports).
--q --quiet | name: verbose | value: false
+${-q --quiet | member: verbose | value: false}$
     Don't display extra information while running tests. (Opposite of -v.)
--v --verbose
+${-v --verbose}$
     Display extra information while running tests.
 
 REPORT OPTIONS
---junit
+${--junit}$
     Produce a test report in the JUnit XML format.
---text
+${--text}$
     Produce a plain text test report that only list failed tests. This is the
     default.
---fulltext
+${--fulltext}$
     Produce a plain text test report that lists all tests.
--f: --file=FILE
+${-f FILE, --file=FILE}$
     The name of the report file. If multiple report files are produced, FILE
     will have the suitable file type extension appended to it (txt, xml etc.).
     Test reports are written to stdout if this option isn't used.
---host=HOST
+${--host=HOST}$
     Set the host name. This option has no effect on tests, it is only used in the report.
