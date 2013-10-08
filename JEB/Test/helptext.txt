@@ -1,32 +1,22 @@
 USAGE
-%prog% [options] [test-name ...] <out-file>
+%prog% [options] ${[test-name] ...}$
 
-Executes unit tests.
+Executes the unit tests in %prog%.
 
 ARGUMENTS
-  ${test-name | count: 0..}$
-    The name of the test or tests that will be run. All tests are run if no
-    test names are given. If the --exclude option is used, all tests except
-    the given ones are run.
+  test-name
+    The name of the test or tests that will be run. All tests are run if no test names are given. If the --exclude option is used, all tests except the given ones are run.
 
-    Tests are typically arranged in a two-level hierarchy with a parent and
-    several child-tests. To disable a parent test and all its children, just
-    enter the name of the parent. To disable a spesific child enter the names
-    of both the parent and the child, separated with a single "/".
-  ${out-file}$
-    The name of the file that some kind of output will be written to. This is a
-    text file.
+    Tests are typically arranged in a two-level hierarchy with a parent and several child-tests. To disable a parent test and all its children, just enter the name of the parent. To disable a spesific child enter the names of both the parent and the child, separated with a single "/".
 
 GENERAL OPTIONS
-${-e --exclude}$
-    Exclude the tests whose names appear after the options and run everything
-    else. This is the opposite of the default behavior.
 ${-h --help}$
     Show program help.
+${-e --exclude}$
+    Exclude the named tests and run everything else. This is the opposite of the default behavior.
 ${-l FILE, --log-file=FILE}$
-    Redirect all the output the tests normally write to stdout or stderr to
-    a file named FILE instead. (This does not affect the test reports).
-${-q --quiet | member: verbose | value: false}$
+    Redirect all the output the tests normally write to stdout or stderr to a file named FILE instead. (This does not affect the test reports).
+${-q --quiet | Member: verbose | Value: false}$
     Don't display extra information while running tests. (Opposite of -v.)
 ${-v --verbose}$
     Display extra information while running tests.
@@ -35,13 +25,10 @@ REPORT OPTIONS
 ${--junit}$
     Produce a test report in the JUnit XML format.
 ${--text}$
-    Produce a plain text test report that only list failed tests. This is the
-    default.
+    Produce a plain text test report that only list failed tests. This is the default.
 ${--fulltext}$
     Produce a plain text test report that lists all tests.
 ${-f FILE, --file=FILE}$
-    The name of the report file. If multiple report files are produced, FILE
-    will have the suitable file type extension appended to it (txt, xml etc.).
-    Test reports are written to stdout if this option isn't used.
+    The name of the report file. If multiple report files are produced, FILE will have the suitable file type extension appended to it (txt, xml etc.). Test reports are written to stdout if this option isn't used.
 ${--host=HOST}$
-    Set the host name. This option has no effect on tests, it is only used in the report.
+    Set the host name. This option has no effect on tests; it's only included in the test report.
