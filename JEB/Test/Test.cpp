@@ -60,6 +60,14 @@ void Test::setError(const Error& error)
     m_Error = error;
 }
 
+size_t Test::depth() const
+{
+    size_t d = 0;
+    for (auto it = begin(m_Tests); it != end(m_Tests); ++it)
+        d = std::max(d, (*it)->depth());
+    return d + 1;
+}
+
 const std::string& Test::name() const
 {
     return m_Name;

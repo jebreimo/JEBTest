@@ -5,14 +5,12 @@ project(Sys)
 set(JEB_DIR JEB/${PROJECT_NAME})
 
 set(PUBLIC_HEADERS
-    Console.hpp
     Environment.hpp
     Path.hpp
     Users.hpp
     )
 
 set(SRC
-    Console.cpp
     Environment.cpp
     EnvironmentIterator.cpp
     )

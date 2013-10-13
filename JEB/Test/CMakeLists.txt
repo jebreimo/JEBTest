@@ -13,10 +13,10 @@ set(JEB_DIR JEB/${PROJECT_NAME})
 set(SRC
     AutoTest.cpp
     AutoTestRunner.cpp
-    CommandLine.cpp
     Error.cpp
     Exceptions.cpp
     MacroUtilities.cpp
+    ParseArguments.cpp
     Report.cpp
     Session.cpp
     Test.cpp
@@ -25,13 +25,13 @@ set(SRC
 set(PUBLIC_HEADERS
     AutoTest.hpp
     AutoTestRunner.hpp
-    CommandLine.hpp
     Comparers.hpp
     Error.hpp
     Exceptions.hpp
     Formatters.hpp
     Macros.hpp
     MacroUtilities.hpp
+    ParseArguments.hpp
     Report.hpp
     Session.hpp
     TestScope.hpp

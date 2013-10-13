@@ -7,7 +7,34 @@ ARGUMENTS
   test-name
     The name of the test or tests that will be run. All tests are run if no test names are given. If the --exclude option is used, all tests except the given ones are run.
 
-    Tests are typically arranged in a two-level hierarchy with a parent and several child-tests. To disable a parent test and all its children, just enter the name of the parent. To disable a spesific child enter the names of both the parent and the child, separated with a single "/".
+    Tests are typically arranged in a two-level hierarchy with a parent and several child-tests. To disable a parent test and all its children, just enter the name of the parent. To disable a specific child, enter the names of both the parent and the child separated by a single "/".
+
+    Example:
+        If the tests are arranged like this:
+
+            test_Sys:
+                test_Path:
+                    test_splitExtension
+                    test_join
+                    test_normalize
+                test_Environment:
+                    test_read
+                    test_setValue
+            test_String:
+                test_join
+                test_split
+
+        To only run tests in test_Sys, use
+
+            %prog% test_Sys
+
+        To run all tests in test_Path, use
+
+            %prog% test_Sys/test_Path
+
+        To only run test_Join under test_Path, use
+
+            %prog% test_Sys/test_Path/test_join
 
 GENERAL OPTIONS
 ${-h --help}$
@@ -18,7 +45,7 @@ ${-l FILE, --log-file=FILE}$
     Redirect all the output the tests normally write to stdout or stderr to a file named FILE instead. (This does not affect the test reports).
 ${-q --quiet | Member: verbose | Value: false}$
     Don't display extra information while running tests. (Opposite of -v.)
-${-v --verbose}$
+${-v --verbose | Default: true}$
     Display extra information while running tests.
 
 REPORT OPTIONS

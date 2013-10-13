@@ -10,7 +10,6 @@ project(JEB)
 
 set(JEB_DIR JEB)
 
-add_subdirectory(ArgParser)
 add_subdirectory(Collections)
 add_subdirectory(String)
 add_subdirectory(Sys)

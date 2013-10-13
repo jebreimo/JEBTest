@@ -59,6 +59,9 @@ public:
 
     std::ostream* log();
     void setLog(std::ostream* log);
+
+    bool verbose() const;
+    void setVerbose(bool verbose);
 private:
     Session();
     ~Session();
@@ -71,6 +74,7 @@ private:
     std::ostream* m_Log;
     std::string m_ReportFileName;
     std::vector<TestPtr> m_Tests;
+    bool m_Verbose;
 };
 
 }}

@@ -12,7 +12,7 @@
 #include <iomanip>
 #include <iostream>
 #include <stdexcept>
-#include "CommandLine.hpp"
+#include "ParseArguments.hpp"
 #include "Report.hpp"
 #include "Test.hpp"
 
@@ -26,7 +26,8 @@ using namespace JEBTestLib::String;
 Session::Session()
     : m_AllTestsEnabled(true),
       m_EnabledReports(0),
-      m_Log(&std::cerr)
+      m_Log(&std::cerr),
+      m_Verbose(true)
 {
 }
 
@@ -38,6 +39,19 @@ Session& Session::instance()
 {
     static Session test;
     return test;
+}
+
+void Session::parseCommandLine(int argc, char* argv[])
+{
+    auto args = parse_arguments(argc, argv);
+    if (args->junit)
+        setReportEnabled(JUnitReport, true);
+    if (args->text || !args->junit)
+        setReportEnabled(TextReport, true);
+    setAllTestsEnabled(args->exclude || args->test_name.empty());
+    for (auto it = begin(args->test_name); it != end(args->test_name); ++it)
+        setTestEnabled(*it, !args->exclude);
+    setVerbose(args->verbose);
 }
 
 bool Session::reportEnabled(ReportFormat format) const
@@ -151,7 +165,7 @@ void Session::assertPassed()
 size_t Session::numberOfFailedTests() const
 {
     size_t failures = 0;
-    for (auto test = m_Tests.begin(); test != m_Tests.end(); ++test)
+    for (auto test = begin(m_Tests); test != end(m_Tests); ++test)
         failures += (*test)->failedHierarchy() ? 1 : 0;
     return failures;
 }
@@ -168,10 +182,10 @@ void Session::setAllTestsEnabled(bool enable)
 
 bool Session::isTestEnabled(const std::string& name) const
 {
-    if (m_EnabledTests.empty())
-        return m_AllTestsEnabled;
+    // if (m_EnabledTests.empty())
+    //     return m_AllTestsEnabled;
     auto match = m_EnabledTests.find(getTestName(name));
-    return match == m_EnabledTests.end() ? m_AllTestsEnabled : match->second;
+    return match == end(m_EnabledTests) ? m_AllTestsEnabled : match->second;
 }
 
 void Session::setTestEnabled(const std::string& name, bool enable)
@@ -199,10 +213,20 @@ void Session::setLog(std::ostream* log)
     m_Log = log;
 }
 
+bool Session::verbose() const
+{
+    return m_Verbose;
+}
+
+void Session::setVerbose(bool verbose)
+{
+    m_Verbose = verbose;
+}
+
 std::string Session::getTestName(const std::string& name) const
 {
     std::vector<std::string> names;
-    for (auto it = m_ActiveTest.begin(); it != m_ActiveTest.end(); ++it)
+    for (auto it = begin(m_ActiveTest); it != end(m_ActiveTest); ++it)
         names.push_back((*it)->name());
     names.push_back(name);
     return join(names, "/");

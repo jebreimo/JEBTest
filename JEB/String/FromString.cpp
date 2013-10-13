@@ -37,13 +37,6 @@ bool fromString(const std::string& s, double value)
     return end != s.c_str() && (*end == '\0' || std::isspace(*end));
 }
 
-bool fromString(const std::wstring& s, double value)
-{
-    wchar_t* end;
-    value = std::wcstod(s.c_str(), &end);
-    return end != s.c_str() && (*end == '\0' || std::isspace(*end));
-}
-
 bool fromString(const std::string& s, std::string& value)
 {
     value = s;
@@ -66,6 +59,13 @@ bool fromString(std::wstring&& s, std::wstring& value)
 {
     value = std::move(s);
     return true;
+}
+
+bool fromString(const std::wstring& s, double value)
+{
+    wchar_t* end;
+    value = std::wcstod(s.c_str(), &end);
+    return end != s.c_str() && (*end == '\0' || std::isspace(*end));
 }
 
 bool fromString(const std::string& s, long& value, int base)

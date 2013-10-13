@@ -86,7 +86,7 @@ template <typename FwdIt1, typename FwdIt2, typename BinaryPredicate>
 std::pair<FwdIt1, FwdIt1> search_last_impl(FwdIt1 beg, FwdIt1 end,
                                            FwdIt2 cmpBeg, FwdIt2 cmpEnd,
                                            BinaryPredicate pred,
-                                           const std::forward_iterator_tag&)
+                                           std::forward_iterator_tag)
 {
     std::pair<FwdIt1, FwdIt1> result(end, end);
     if (cmpBeg == cmpEnd)
@@ -107,7 +107,7 @@ template <typename BiIt, typename FwdIt, typename BinaryPredicate>
 std::pair<BiIt, BiIt> search_last_impl(BiIt beg, BiIt end,
                                        FwdIt cmpBeg, FwdIt cmpEnd,
                                        BinaryPredicate pred,
-                                       const std::bidirectional_iterator_tag&)
+                                       std::bidirectional_iterator_tag)
 {
     if (cmpBeg == cmpEnd)
         return std::make_pair(end, end);
@@ -179,7 +179,7 @@ std::pair<FwdIt1, FwdIt1> search_nth_last(FwdIt1 beg, FwdIt1 end,
 template <typename FwdIt, typename UnaryFunc>
 FwdIt find_last_if_impl(FwdIt beg, FwdIt end,
                         UnaryFunc predicate,
-                        const std::forward_iterator_tag&)
+                        std::forward_iterator_tag)
 {
     FwdIt it = end;
     while (beg != end)
@@ -194,7 +194,7 @@ FwdIt find_last_if_impl(FwdIt beg, FwdIt end,
 template <typename BiIt, typename UnaryFunc>
 BiIt find_last_if_impl(BiIt beg, BiIt end,
                        UnaryFunc predicate,
-                       const std::bidirectional_iterator_tag&)
+                       std::bidirectional_iterator_tag)
 {
     BiIt it = end;
     while (beg != it)
@@ -258,6 +258,15 @@ RndIt upper_bound(RndIt beg, RndIt end, const T& value, UnaryFunc keyFunc)
             beg = mid + 1;
     }
     return beg;
+}
+
+template <typename RndIt, typename T, typename UnaryFunc>
+RndIt binary_find(RndIt beg, RndIt end, const T& value, UnaryFunc keyFunc)
+{
+    RndIt it = Algorithms::lower_bound(beg, end, value, keyFunc);
+    if (it == end || value != keyFunc(*it))
+      return end;
+    return it;
 }
 
 template <typename RndIt, typename T, typename UnaryFunc>

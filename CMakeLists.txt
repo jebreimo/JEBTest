@@ -28,7 +28,9 @@ add_library(JEBTest
             $<TARGET_OBJECTS:String>
             $<TARGET_OBJECTS:Sys>
             $<TARGET_OBJECTS:Test>
+            $<TARGET_OBJECTS:Text>
             $<TARGET_OBJECTS:Unicode>
+            $<TARGET_OBJECTS:Xml>
             )
 add_subdirectory(Examples)
 

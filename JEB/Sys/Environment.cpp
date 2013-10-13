@@ -1,7 +1,6 @@
 #include "Environment.hpp"
 
 #include <cstdlib>
-#include "JEB/Collections/MapUtilities.hpp"
 #include "EnvironmentIterator.hpp"
 
 #if defined(__APPLE__)

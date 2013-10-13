@@ -9,13 +9,15 @@
 
 #include <iomanip>
 #include <iostream>
-#include "Session.hpp"
-#include "Test.hpp"
-
 #include "JEB/Xml/XmlWriter.hpp"
 #undef JEB
 
+#include "Session.hpp"
+#include "Test.hpp"
+
 namespace JEB { namespace Test {
+
+using namespace JEBTestLib::Xml;
 
 struct Counters
 {
@@ -100,6 +102,11 @@ void writeTextReport(std::ostream& os, const Session& session)
 }
 
 void writeXmlReport(std::ostream& os, const Session& session)
-{}
+{
+    XmlWriter writer(os);
+    writer.beginElement("testsuites");
+
+    writer.endElement();
+}
 
 }}
