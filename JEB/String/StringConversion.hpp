@@ -45,10 +45,10 @@ private:
     StringConverter(NextCodePointFunc nextCodePoint, EncodeFunc encode,
                     Encoding_t srcEncoding, Encoding_t dstEncoding);
 
-    Encoding_t m_DestinationEncoding;
-    Encoding_t m_SourceEncoding;
     NextCodePointFunc m_NextCodePoint;
     EncodeFunc m_Encode;
+    Encoding_t m_SourceEncoding;
+    Encoding_t m_DestinationEncoding;
     ErrorMethod m_ErrorMethod;
     uint32_t m_InvalidCharacterSubstitute;
 };

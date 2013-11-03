@@ -33,9 +33,9 @@ public:
     std::pair<BiIt, BiIt> range() const;
 private:
     BiIt m_CharStart;
+    mutable BiIt m_CharEnd;
     BiIt m_Begin;
     BiIt m_End;
-    mutable BiIt m_CharEnd;
     mutable uint32_t m_Value;
 };
 

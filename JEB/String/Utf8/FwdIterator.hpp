@@ -28,8 +28,8 @@ public:
     FwdIt endCodePoint() const;
 private:
     FwdIt m_CharStart;
-    FwdIt m_End;
     mutable FwdIt m_CharEnd;
+    FwdIt m_End;
     mutable uint32_t m_Value;
 };
 

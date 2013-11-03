@@ -77,7 +77,6 @@ struct Arguments
       * are read.
       */
     Result parse_arguments_result;
-
 };
 
 /** @brief Parses the arguments in @a argv.

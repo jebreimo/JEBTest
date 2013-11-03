@@ -1,7 +1,7 @@
 USAGE
-%prog% [options] ${[test-name] ...}$
+$prog$ [options] ${[test-name] ...}$
 
-Executes the unit tests in %prog%.
+Executes the unit tests in $prog$.
 
 ARGUMENTS
   test-name
@@ -26,26 +26,26 @@ ARGUMENTS
 
         To only run tests in test_Sys, use
 
-            %prog% test_Sys
+            $prog$ test_Sys
 
         To run all tests in test_Path, use
 
-            %prog% test_Sys/test_Path
+            $prog$ test_Sys/test_Path
 
         To only run test_Join under test_Path, use
 
-            %prog% test_Sys/test_Path/test_join
+            $prog$ test_Sys/test_Path/test_join
 
 GENERAL OPTIONS
-${-h --help}$
+${-h, --help}$
     Show program help.
-${-e --exclude}$
+${-e, --exclude}$
     Exclude the named tests and run everything else. This is the opposite of the default behavior.
 ${-l FILE, --log-file=FILE}$
     Redirect all the output the tests normally write to stdout or stderr to a file named FILE instead. (This does not affect the test reports).
-${-q --quiet | Member: verbose | Value: false}$
+${-q, --quiet| Member: verbose | Value: false}$
     Don't display extra information while running tests. (Opposite of -v.)
-${-v --verbose | Default: true}$
+${-v, --verbose| Default: true}$
     Display extra information while running tests.
 
 REPORT OPTIONS

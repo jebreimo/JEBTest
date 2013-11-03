@@ -16,16 +16,21 @@
 #include "Report.hpp"
 #include "Test.hpp"
 
+#include "JEB/Algorithms/Algorithms.hpp"
 #include "JEB/String/String.hpp"
+#include "JEB/Sys/PathFilter.hpp"
 #undef JEB
 
 namespace JEB { namespace Test {
 
+using namespace JEBTestLib::Algorithms;
 using namespace JEBTestLib::String;
+using namespace JEBTestLib::Sys;
 
 Session::Session()
     : m_AllTestsEnabled(true),
       m_EnabledReports(0),
+      m_TestFilter(new PathFilter),
       m_Log(&std::cerr),
       m_Verbose(true)
 {
@@ -85,7 +90,8 @@ void writeFileReport(ReportFunc func,
 {
     std::ofstream file(fileName);
     if (!file)
-        throw std::runtime_error(FORMAT_STRING("Can't create report file: " << fileName));
+        throw std::runtime_error(FORMAT_STRING("Can't create report file: "
+                                               << fileName));
     func(file, session);
 }
 
@@ -100,7 +106,8 @@ void writeReport(ReportFunc func,
         func(std::cout, session);
     }
     else if (!forceExtension ||
-             endsWith(fileName, fileNameExtension, FindFlags::CaseInsensitive))
+             endsWith(fileName, fileNameExtension,
+                      FindFlags::CaseInsensitive))
     {
         writeFileReport(func, fileName, session);
     }
@@ -129,6 +136,7 @@ void Session::beginTest(const std::string& name)
     else
         m_Tests.push_back(t);
     m_ActiveTest.push_back(t);
+    m_TestFilter->descend(name);
     print(std::string("\nRunning test ") + name);
     m_ActiveTest.back()->setStartTime(clock());
 }
@@ -136,16 +144,20 @@ void Session::beginTest(const std::string& name)
 void Session::endTest()
 {
     if (m_ActiveTest.empty())
-        throw std::logic_error("Call to endTest not preceded by a call to beginTest");
+        throw std::logic_error("Call to endTest not preceded by a call "
+                               "to beginTest");
     m_ActiveTest.back()->setEndTime(clock());
     m_ActiveTest.pop_back();
+    m_TestFilter->ascend();
     print("\n");
 }
 
 void Session::testFailed(const Error& error)
 {
     if (m_ActiveTest.empty())
-        throw std::logic_error("Call to testFailed, criticalError or fatalError was not preceded by a call to beginTest");
+        throw std::logic_error("Call to testFailed, criticalError or "
+                               "fatalError was not preceded by a call "
+                               "to beginTest");
     print("\n");
     m_ActiveTest.back()->setError(error);
     print(std::string("    ") + error.text() + "\n");
@@ -154,7 +166,8 @@ void Session::testFailed(const Error& error)
 void Session::assertPassed()
 {
     if (m_ActiveTest.empty())
-        throw std::logic_error("Call to assertPassed not preceded by a call to beginTest");
+        throw std::logic_error("Call to assertPassed not preceded by a "
+                               "call to beginTest");
     if (m_ActiveTest.back()->assertions() == 0)
         print(" .");
     else
@@ -177,20 +190,20 @@ bool Session::areAllTestsEnabled() const
 
 void Session::setAllTestsEnabled(bool enable)
 {
-    m_AllTestsEnabled = enable;
+    m_TestFilter->setType(enable ? InclusiveFilter : ExclusiveFilter);
 }
 
 bool Session::isTestEnabled(const std::string& name) const
 {
-    // if (m_EnabledTests.empty())
-    //     return m_AllTestsEnabled;
-    auto match = m_EnabledTests.find(getTestName(name));
-    return match == end(m_EnabledTests) ? m_AllTestsEnabled : match->second;
+    return m_TestFilter->shouldDescend(name);
 }
 
 void Session::setTestEnabled(const std::string& name, bool enable)
 {
-    m_EnabledTests[name] = enable;
+    if (enable)
+        m_TestFilter->includePath(name);
+    else
+        m_TestFilter->excludePath(name);
 }
 
 const std::vector<TestPtr>& Session::tests() const

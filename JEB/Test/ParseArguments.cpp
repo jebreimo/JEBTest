@@ -13,9 +13,9 @@ namespace
     std::string programName;
     std::string helpText =
         "USAGE\n"
-        "%prog% [options] [test-name] ...\n"
+        "$prog$ [options] [test-name] ...\n"
         "\n"
-        "Executes the unit tests in %prog%.\n"
+        "Executes the unit tests in $prog$.\n"
         "\n"
         "ARGUMENTS\n"
         "  test-name\n"
@@ -25,8 +25,8 @@ namespace
         "\n"
         "    Tests are typically arranged in a two-level hierarchy with a parent and\n"
         "    several child-tests. To disable a parent test and all its children, just\n"
-        "    enter the name of the parent. To disable a spesific child enter the names\n"
-        "    of both the parent and the child, separated with a single \"/\".\n"
+        "    enter the name of the parent. To disable a specific child, enter the names\n"
+        "    of both the parent and the child separated by a single \"/\".\n"
         "\n"
         "    Example:\n"
         "        If the tests are arranged like this:\n"
@@ -45,28 +45,28 @@ namespace
         "\n"
         "        To only run tests in test_Sys, use\n"
         "\n"
-        "            %prog% test_Sys\n"
+        "            $prog$ test_Sys\n"
         "\n"
         "        To run all tests in test_Path, use\n"
         "\n"
-        "            %prog% test_Sys/test_Path\n"
+        "            $prog$ test_Sys/test_Path\n"
         "\n"
         "        To only run test_Join under test_Path, use\n"
         "\n"
-        "            %prog% test_Sys/test_Path/test_join\n"
+        "            $prog$ test_Sys/test_Path/test_join\n"
         "\n"
         "GENERAL OPTIONS\n"
-        "-h --help\n"
+        "-h, --help\n"
         "    Show program help.\n"
-        "-e --exclude\n"
+        "-e, --exclude\n"
         "    Exclude the named tests and run everything else. This is the opposite of\n"
         "    the default behavior.\n"
         "-l FILE, --log-file=FILE\n"
         "    Redirect all the output the tests normally write to stdout or stderr to a\n"
         "    file named FILE instead. (This does not affect the test reports).\n"
-        "-q --quiet\n"
+        "-q, --quiet\n"
         "    Don't display extra information while running tests. (Opposite of -v.)\n"
-        "-v --verbose\n"
+        "-v, --verbose\n"
         "    Display extra information while running tests.\n"
         "\n"
         "REPORT OPTIONS\n"
@@ -88,7 +88,7 @@ namespace
 
     void writeHelp()
     {
-        std::string s = "%prog%";
+        std::string s = "$prog$";
         auto first = begin(helpText);
         while (first != end(helpText))
         {
@@ -258,7 +258,9 @@ namespace
                              ArgumentIterator& argIt,
                              Arguments& result)
     {
-        return getValue(result.file, flag, argIt, result);
+        if (!getValue(result.file, flag, argIt, result))
+            return false;
+        return true;
     }
     
     bool process_fulltext_option(const std::string& flag,
@@ -285,7 +287,9 @@ namespace
                              ArgumentIterator& argIt,
                              Arguments& result)
     {
-        return getValue(result.host, flag, argIt, result);
+        if (!getValue(result.host, flag, argIt, result))
+            return false;
+        return true;
     }
     
     bool process_junit_option(const std::string& flag,
@@ -302,7 +306,9 @@ namespace
                                  ArgumentIterator& argIt,
                                  Arguments& result)
     {
-        return getValue(result.log_file, flag, argIt, result);
+        if (!getValue(result.log_file, flag, argIt, result))
+            return false;
+        return true;
     }
     
     bool process_quiet_option(const std::string& flag,
@@ -381,7 +387,6 @@ Arguments::Arguments()
       verbose(true),
       parse_arguments_result(RESULT_OK)
 {
-
 }
 
 Arguments::~Arguments()

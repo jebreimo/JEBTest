@@ -63,6 +63,7 @@ private:
     clock_t m_StartTime;
     clock_t m_EndTime;
     std::vector<TestPtr> m_Tests;
+    std::vector<std::pair<std::string, std::string>> m_Filter;
 };
 
 }}

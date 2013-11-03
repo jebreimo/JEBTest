@@ -87,7 +87,12 @@ public:
 
     size_t count() const {return m_Count;}
     clock_t accTime() const {return m_AccTime;}
-    clock_t avgTime() const {return m_Count == 0 ? 0 : m_AccTime / m_Count;}
+
+    clock_t avgTime() const
+    {
+        return m_Count == 0 ? clock_t(0) : clock_t(m_AccTime / m_Count);
+    }
+
     clock_t minTime() const {return m_MinTime;}
     clock_t maxTime() const {return m_MaxTime;}
 private:

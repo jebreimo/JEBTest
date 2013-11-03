@@ -15,6 +15,12 @@
 #include <vector>
 #include "Error.hpp"
 
+namespace JEBTestLib { namespace Sys {
+
+class PathFilter;
+
+}}
+
 namespace JEB { namespace Test {
 
 typedef std::shared_ptr<class Test> TestPtr;
@@ -69,8 +75,9 @@ private:
 
     std::vector<TestPtr> m_ActiveTest;
     bool m_AllTestsEnabled;
+    bool m_ExcludeFilter;
     unsigned m_EnabledReports;
-    std::map<std::string, bool> m_EnabledTests;
+    std::unique_ptr<JEBTestLib::Sys::PathFilter> m_TestFilter;
     std::ostream* m_Log;
     std::string m_ReportFileName;
     std::vector<TestPtr> m_Tests;

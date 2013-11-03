@@ -13,6 +13,7 @@ set(PUBLIC_HEADERS
 set(SRC
     Environment.cpp
     EnvironmentIterator.cpp
+    PathFilter.cpp
     )
 
 if (WIN32)
