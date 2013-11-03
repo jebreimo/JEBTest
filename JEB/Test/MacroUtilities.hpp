@@ -8,14 +8,19 @@
 #ifndef JEB_MACRO_UTILITIES_HPP
 #define JEB_MACRO_UTILITIES_HPP
 
-#include <string>
-#include <vector>
+#include <functional>
 
 namespace JEB { namespace Test {
 
-std::vector<std::string> extractTestNames(const std::string& names);
-// std::string extractTestName(const std::string& name);
-std::string extractSuiteName(const std::string& path);
+void runTests(const char* file, int line, const char* testNamesString,
+              std::function<void()>* testFuncs, size_t testFuncSize);
+
+template <size_t N>
+void runTests(const char* file, int line, const char* testNamesString,
+              std::function<void()> (&testFuncs)[N])
+{
+    runTests(file, line, testNamesString, testFuncs, N);
+}
 
 }}
 

@@ -8,10 +8,24 @@
 #include "AutoTest.hpp"
 
 #include <limits>
+#include "JEB/Sys/Path.hpp"
+
+#undef JEB
+
 #include "AutoTestRunner.hpp"
 #include "MacroUtilities.hpp"
 
 namespace JEB { namespace Test {
+
+using namespace JEBTestLib::Sys;
+
+namespace
+{
+    std::string extractSuiteName(const std::string& path)
+    {
+        return Path::baseName(Path::removeExtension(path));
+    }
+}
 
 AutoTest::AutoTest(const std::string& fileName, Func suiteFunc)
     : m_Function(suiteFunc),

@@ -8,34 +8,63 @@
 #include "MacroUtilities.hpp"
 
 #include <algorithm>
+#include <cassert>
 #include "JEB/Sys/Path.hpp"
 #include "JEB/String/String.hpp"
 
 #undef JEB
 
-using namespace JEBTestLib::String;
-using namespace JEBTestLib::Sys;
+#include "Exceptions.hpp"
+#include "Session.hpp"
+#include "TestScope.hpp"
 
 namespace JEB { namespace Test {
 
-// std::string extractTestName(const std::string& name)
-// {
-//     if (startsWith(name, "test_", FindFlags::CaseInsensitive))
-//         return name.substr(5);
-//     return name;
-// }
+using namespace JEBTestLib::String;
 
-std::vector<std::string> extractTestNames(const std::string& names)
+namespace
 {
-    std::vector<std::string> result = split(names, ",", 0, SplitFlags::IgnoreEmpty);
-    for (auto it = result.begin(); it != result.end(); ++it)
-      *it = trim(*it);
-    return result;
+    std::vector<std::string> extractTestNames(const std::string& names)
+    {
+        std::vector<std::string> result = split(names, ",", 0, SplitFlags::IgnoreEmpty);
+        for (auto it = result.begin(); it != result.end(); ++it)
+          *it = trim(*it);
+        return result;
+    }
 }
 
-std::string extractSuiteName(const std::string& path)
+void runTests(const char* file, int line, const char* testNamesString,
+              std::function<void()>* testFuncs, size_t testFuncsSize)
 {
-    return Path::baseName(Path::removeExtension(path));
+    std::vector<std::string> testNames = extractTestNames(testNamesString);
+    assert(testNames.size() == testFuncsSize);
+    for (size_t i = 0; i < testNames.size(); i++)
+    {
+        if (Session::instance().isTestEnabled(testNames[i]))
+        {
+            TestScope scope(testNames[i]);
+            try
+            {
+                testFuncs[i]();
+            }
+            catch (const AbstractFailure& ex)
+            {
+                Session::instance().testFailed(ex.error());
+                if (ex.error().level() != Error::Failure)
+                    throw;
+            }
+            catch (const std::exception& ex)
+            {
+                Session::instance().testFailed(Error(file, line, std::string("Unhandled exception: \"") + ex.what() + "\"", Error::Fatal));
+                throw;
+            }
+            catch (...)
+            {
+                Session::instance().testFailed(Error(file, line, "Unhandled exception (not derived from std::exception)", Error::Fatal));
+                throw;
+            }
+        }
+    }
 }
 
 }}

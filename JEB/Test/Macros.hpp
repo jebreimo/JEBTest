@@ -10,7 +10,6 @@
 
 #include <cmath>
 #include <exception>
-#include <functional>
 #include <iostream>
 #include <sstream>
 #include "AutoTest.hpp"
@@ -86,24 +85,7 @@
     { \
         /* Funny variable names make conflicts with test names less likely */ \
         std::function<void()> tests_JT_[] = {__VA_ARGS__}; \
-        std::vector<std::string> testNames_JT_ = ::JEB::Test::extractTestNames(#__VA_ARGS__); \
-        for (size_t i_JT_ = 0; i_JT_ < testNames_JT_.size(); i_JT_++) \
-        { \
-            ::JEB::Test::TestScope scope(testNames_JT_[i_JT_]); \
-            try { \
-                tests_JT_[i_JT_](); \
-            } catch (const ::JEB::Test::AbstractFailure& ex) { \
-                ::JEB::Test::Session::instance().testFailed(ex.error()); \
-                if (ex.error().level() != ::JEB::Test::Error::Failure) \
-                    throw; \
-            } catch (const std::exception& ex) { \
-                ::JEB::Test::Session::instance().testFailed(::JEB::Test::Error(__FILE__, __LINE__, std::string("Unhandled exception: \"") + ex.what() + "\"", ::JEB::Test::Error::Fatal)); \
-                throw; \
-            } catch (...) { \
-                ::JEB::Test::Session::instance().testFailed(::JEB::Test::Error(__FILE__, __LINE__, "Unhandled exception (not derived from std::exception)", ::JEB::Test::Error::Fatal)); \
-                throw; \
-            } \
-        } \
+        ::JEB::Test::runTests(__FILE__, __LINE__, #__VA_ARGS__, tests_JT_); \
     } \
     static ::JEB::Test::AutoTest JT_PRIV_UNIQUE_NAME(JT_suite_instance_)(__FILE__, JT_PRIV_UNIQUE_NAME(JT_suite_), (priority))
 
@@ -120,27 +102,7 @@
     { \
         /* Funny variable names make conflicts with test names less likely */ \
         std::function<void()> tests_JT_[] = {__VA_ARGS__}; \
-        std::vector<std::string> testNames_JT_ = ::JEB::Test::extractTestNames(#__VA_ARGS__); \
-        for (size_t i_JT_ = 0; i_JT_ < testNames_JT_.size(); i_JT_++) \
-        { \
-            if (::JEB::Test::Session::instance().isTestEnabled(testNames_JT_[i_JT_])) \
-            { \
-                ::JEB::Test::TestScope scope(testNames_JT_[i_JT_]); \
-                try { \
-                    tests_JT_[i_JT_](); \
-                } catch (const ::JEB::Test::AbstractFailure& ex) { \
-                    ::JEB::Test::Session::instance().testFailed(ex.error()); \
-                    if (ex.error().level() != ::JEB::Test::Error::Failure) \
-                        throw; \
-                } catch (const std::exception& ex) { \
-                    ::JEB::Test::Session::instance().testFailed(::JEB::Test::Error(__FILE__, __LINE__, std::string("Unhandled exception: \"") + ex.what() + "\"", ::JEB::Test::Error::Fatal)); \
-                    throw; \
-                } catch (...) { \
-                    ::JEB::Test::Session::instance().testFailed(::JEB::Test::Error(__FILE__, __LINE__, "Unhandled exception (not derived from std::exception)", ::JEB::Test::Error::Fatal)); \
-                    throw; \
-                } \
-            } \
-        } \
+        ::JEB::Test::runTests(__FILE__, __LINE__, #__VA_ARGS__, tests_JT_); \
     } \
     static ::JEB::Test::AutoTest JT_PRIV_UNIQUE_NAME(JT_suite_instance_)(__FILE__, JT_PRIV_UNIQUE_NAME(JT_suite_))
 
