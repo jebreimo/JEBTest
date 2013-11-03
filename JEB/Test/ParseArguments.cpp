@@ -386,12 +386,10 @@ Arguments::Arguments()
       text(false),
       verbose(true),
       parse_arguments_result(RESULT_OK)
-{
-}
+{}
 
 Arguments::~Arguments()
-{
-}
+{}
 
 std::unique_ptr<Arguments> parse_arguments(int argc, char* argv[])
 {
