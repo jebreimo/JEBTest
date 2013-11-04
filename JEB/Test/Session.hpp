@@ -62,6 +62,7 @@ public:
     const std::vector<TestPtr>& tests() const;
 
     void print(const std::string& text);
+    void printInfo(const std::string& text);
 
     std::ostream* log();
     void setLog(std::ostream* log);
@@ -72,6 +73,7 @@ private:
     Session();
     ~Session();
     std::string getTestName(const std::string& name) const;
+    void setLogFile(const std::string& fileName);
 
     std::vector<TestPtr> m_ActiveTest;
     bool m_AllTestsEnabled;
@@ -79,7 +81,6 @@ private:
     std::unique_ptr<JEBTestLib::Sys::PathFilter> m_TestFilter;
     std::ostream* m_Log;
     std::unique_ptr<std::ostream> m_LogFilePtr;
-    // std::string m_LogFileName;
     std::string m_ReportFileName;
     std::vector<TestPtr> m_Tests;
     bool m_Verbose;

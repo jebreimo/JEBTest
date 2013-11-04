@@ -27,6 +27,15 @@ using namespace JEBTestLib::Algorithms;
 using namespace JEBTestLib::String;
 using namespace JEBTestLib::Sys;
 
+class StreamRedirector
+{
+public:
+    StreamRedirector(std::ios& stream, std::ios& replacement);
+private:
+    std::ios& m_Stream;
+    std::streambuf* m_Buffer;
+};
+
 Session::Session()
     : m_AllTestsEnabled(true),
       m_EnabledReports(0),
@@ -60,10 +69,11 @@ bool Session::parseCommandLine(int argc, char* argv[])
         m_LogFilePtr.reset(new std::ofstream(args->logfile));
         m_Log = m_LogFilePtr.get();
     }
+    m_ReportFileName = args->report;
     setAllTestsEnabled(args->exclude || args->test_name.empty());
     for (auto it = begin(args->test_name); it != end(args->test_name); ++it)
         setTestEnabled(*it, !args->exclude);
-    setVerbose(args->verbose);
+    m_Verbose = args->verbose;
     return true;
 }
 
@@ -145,7 +155,7 @@ void Session::beginTest(const std::string& name)
         m_Tests.push_back(t);
     m_ActiveTest.push_back(t);
     m_TestFilter->descend(name);
-    print(std::string("\nRunning test ") + name);
+    printInfo(std::string("\nRunning test ") + name);
     m_ActiveTest.back()->setStartTime(clock());
 }
 
@@ -157,7 +167,7 @@ void Session::endTest()
     m_ActiveTest.back()->setEndTime(clock());
     m_ActiveTest.pop_back();
     m_TestFilter->ascend();
-    print("\n");
+    printInfo("\n");
 }
 
 void Session::testFailed(const Error& error)
@@ -166,9 +176,9 @@ void Session::testFailed(const Error& error)
         throw std::logic_error("Call to testFailed, criticalError or "
                                "fatalError was not preceded by a call "
                                "to beginTest");
-    print("\n");
+    printInfo("\n");
     m_ActiveTest.back()->setError(error);
-    print(std::string("    ") + error.text() + "\n");
+    printInfo(std::string("    ") + error.text() + "\n");
 }
 
 void Session::assertPassed()
@@ -177,9 +187,9 @@ void Session::assertPassed()
         throw std::logic_error("Call to assertPassed not preceded by a "
                                "call to beginTest");
     if (m_ActiveTest.back()->assertions() == 0)
-        print(" .");
+        printInfo(" .");
     else
-        print(".");
+        printInfo(".");
     m_ActiveTest.back()->incrementAssertions();
 }
 
@@ -224,6 +234,12 @@ void Session::print(const std::string& text)
     *m_Log << text;
 }
 
+void Session::printInfo(const std::string& text)
+{
+    if (m_Verbose)
+        *m_Log << text;
+}
+
 std::ostream* Session::log()
 {
     return m_Log;
@@ -251,6 +267,12 @@ std::string Session::getTestName(const std::string& name) const
         names.push_back((*it)->name());
     names.push_back(name);
     return join(names, "/");
+}
+
+void Session::setLogFile(const std::string& fileName)
+{
+    m_LogFilePtr.reset(new std::ofstream(args->logfile));
+    m_Log = m_LogFilePtr.get();
 }
 
 }}
