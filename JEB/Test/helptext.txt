@@ -41,7 +41,7 @@ ${-h, --help}$
     Show program help.
 ${-e, --exclude}$
     Exclude the named tests and run everything else. This is the opposite of the default behavior.
-${-l FILE, --log-file=FILE}$
+${-l FILE, --logfile=FILE}$
     Redirect all the output the tests normally write to stdout or stderr to a file named FILE instead. (This does not affect the test reports).
 ${-q, --quiet| Member: verbose | Value: false}$
     Don't display extra information while running tests. (Opposite of -v.)
@@ -55,7 +55,7 @@ ${--text}$
     Produce a plain text test report that only list failed tests. This is the default.
 ${--fulltext}$
     Produce a plain text test report that lists all tests.
-${-f FILE, --file=FILE}$
+${-f report, --report=FILE}$
     The name of the report file. If multiple report files are produced, FILE will have the suitable file type extension appended to it (txt, xml etc.). Test reports are written to stdout if this option isn't used.
 ${--host=HOST}$
     Set the host name. This option has no effect on tests; it's only included in the test report.

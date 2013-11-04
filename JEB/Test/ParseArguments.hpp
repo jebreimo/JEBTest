@@ -9,8 +9,6 @@
   * Defines the function parse_arguments and its result Arguments.
   */
 
-namespace JEB { namespace Test {
-
 /** @brief The result of parse_arguments
   */
 struct Arguments
@@ -25,9 +23,6 @@ struct Arguments
     /** @brief Member for options: -e, --exclude
       */
     bool exclude;
-    /** @brief Member for options: -f, --file
-      */
-    std::string file;
     /** @brief Member for options: --fulltext
       */
     bool fulltext;
@@ -40,9 +35,12 @@ struct Arguments
     /** @brief Member for options: --junit
       */
     bool junit;
-    /** @brief Member for options: -l, --log-file
+    /** @brief Member for options: -l, --logfile
       */
-    std::string log_file;
+    std::string logfile;
+    /** @brief Member for options: -f, --report
+      */
+    std::string report;
     /** @brief Member for arguments: test_name
       */
     std::vector<std::string> test_name;
@@ -88,7 +86,5 @@ struct Arguments
   *     returned value is a nullptr.
   */
 std::unique_ptr<Arguments> parse_arguments(int argc, char* argv[]);
-
-}}
 
 #endif

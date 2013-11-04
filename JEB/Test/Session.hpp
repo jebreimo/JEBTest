@@ -77,8 +77,9 @@ private:
     bool m_AllTestsEnabled;
     unsigned m_EnabledReports;
     std::unique_ptr<JEBTestLib::Sys::PathFilter> m_TestFilter;
-    // std::string
     std::ostream* m_Log;
+    std::unique_ptr<std::ostream> m_LogFilePtr;
+    // std::string m_LogFileName;
     std::string m_ReportFileName;
     std::vector<TestPtr> m_Tests;
     bool m_Verbose;

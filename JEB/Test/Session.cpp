@@ -55,6 +55,11 @@ bool Session::parseCommandLine(int argc, char* argv[])
         setReportEnabled(JUnitReport, true);
     if (args->text || !args->junit)
         setReportEnabled(TextReport, true);
+    if (!args->logfile.empty())
+    {
+        m_LogFilePtr.reset(new std::ofstream(args->logfile));
+        m_Log = m_LogFilePtr.get();
+    }
     setAllTestsEnabled(args->exclude || args->test_name.empty());
     for (auto it = begin(args->test_name); it != end(args->test_name); ++it)
         setTestEnabled(*it, !args->exclude);

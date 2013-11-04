@@ -6,8 +6,6 @@
 #include <iterator>
 #include <sstream>
 
-namespace JEB { namespace Test {
-
 namespace
 {
     std::string programName;
@@ -61,7 +59,7 @@ namespace
         "-e, --exclude\n"
         "    Exclude the named tests and run everything else. This is the opposite of\n"
         "    the default behavior.\n"
-        "-l FILE, --log-file=FILE\n"
+        "-l FILE, --logfile=FILE\n"
         "    Redirect all the output the tests normally write to stdout or stderr to a\n"
         "    file named FILE instead. (This does not affect the test reports).\n"
         "-q, --quiet\n"
@@ -77,7 +75,7 @@ namespace
         "    default.\n"
         "--fulltext\n"
         "    Produce a plain text test report that lists all tests.\n"
-        "-f FILE, --file=FILE\n"
+        "-f report, --report=FILE\n"
         "    The name of the report file. If multiple report files are produced, FILE\n"
         "    will have the suitable file type extension appended to it (txt, xml etc.).\n"
         "    Test reports are written to stdout if this option isn't used.\n"
@@ -206,19 +204,6 @@ namespace
         return true;
     }
 
-    template <typename T>
-    std::string toString(const T& value)
-    {
-        std::ostringstream stream;
-        stream << value;
-        return stream.str();
-    }
-
-    std::string toString(const std::string& value)
-    {
-        return value;
-    }
-
     bool error(const std::string& flag,
                Arguments& result,
                const std::string& errorMsg)
@@ -253,16 +238,7 @@ namespace
             return error(flag, result, "option does not take a value.");
         return true;
     }
-    
-    bool process_file_option(const std::string& flag,
-                             ArgumentIterator& argIt,
-                             Arguments& result)
-    {
-        if (!getValue(result.file, flag, argIt, result))
-            return false;
-        return true;
-    }
-    
+
     bool process_fulltext_option(const std::string& flag,
                                  ArgumentIterator& argIt,
                                  Arguments& result)
@@ -272,7 +248,7 @@ namespace
             return error(flag, result, "option does not take a value.");
         return true;
     }
-    
+
     bool process_help_option(const std::string& flag,
                              ArgumentIterator& argIt,
                              Arguments& result)
@@ -282,7 +258,7 @@ namespace
         result.parse_arguments_result = Arguments::RESULT_HELP;
         return false;
     }
-    
+
     bool process_host_option(const std::string& flag,
                              ArgumentIterator& argIt,
                              Arguments& result)
@@ -291,7 +267,7 @@ namespace
             return false;
         return true;
     }
-    
+
     bool process_junit_option(const std::string& flag,
                               ArgumentIterator& argIt,
                               Arguments& result)
@@ -301,16 +277,16 @@ namespace
             return error(flag, result, "option does not take a value.");
         return true;
     }
-    
-    bool process_log_file_option(const std::string& flag,
-                                 ArgumentIterator& argIt,
-                                 Arguments& result)
+
+    bool process_logfile_option(const std::string& flag,
+                                ArgumentIterator& argIt,
+                                Arguments& result)
     {
-        if (!getValue(result.log_file, flag, argIt, result))
+        if (!getValue(result.logfile, flag, argIt, result))
             return false;
         return true;
     }
-    
+
     bool process_quiet_option(const std::string& flag,
                               ArgumentIterator& argIt,
                               Arguments& result)
@@ -320,7 +296,16 @@ namespace
             return error(flag, result, "option does not take a value.");
         return true;
     }
-    
+
+    bool process_report_option(const std::string& flag,
+                               ArgumentIterator& argIt,
+                               Arguments& result)
+    {
+        if (!getValue(result.report, flag, argIt, result))
+            return false;
+        return true;
+    }
+
     bool process_text_option(const std::string& flag,
                              ArgumentIterator& argIt,
                              Arguments& result)
@@ -330,7 +315,7 @@ namespace
             return error(flag, result, "option does not take a value.");
         return true;
     }
-    
+
     bool process_verbose_option(const std::string& flag,
                                 ArgumentIterator& argIt,
                                 Arguments& result)
@@ -349,17 +334,17 @@ namespace
     OptionProcessor optionProcessors[] = {
         OptionProcessor("-e", process_exclude_option),
         OptionProcessor("--exclude", process_exclude_option),
-        OptionProcessor("-f", process_file_option),
-        OptionProcessor("--file", process_file_option),
         OptionProcessor("--fulltext", process_fulltext_option),
         OptionProcessor("-h", process_help_option),
         OptionProcessor("--help", process_help_option),
         OptionProcessor("--host", process_host_option),
         OptionProcessor("--junit", process_junit_option),
-        OptionProcessor("-l", process_log_file_option),
-        OptionProcessor("--log-file", process_log_file_option),
+        OptionProcessor("-l", process_logfile_option),
+        OptionProcessor("--logfile", process_logfile_option),
         OptionProcessor("-q", process_quiet_option),
         OptionProcessor("--quiet", process_quiet_option),
+        OptionProcessor("-f", process_report_option),
+        OptionProcessor("--report", process_report_option),
         OptionProcessor("--text", process_text_option),
         OptionProcessor("-v", process_verbose_option),
         OptionProcessor("--verbose", process_verbose_option)
@@ -386,10 +371,12 @@ Arguments::Arguments()
       text(false),
       verbose(true),
       parse_arguments_result(RESULT_OK)
-{}
+{
+}
 
 Arguments::~Arguments()
-{}
+{
+}
 
 std::unique_ptr<Arguments> parse_arguments(int argc, char* argv[])
 {
@@ -438,4 +425,3 @@ std::unique_ptr<Arguments> parse_arguments(int argc, char* argv[])
     return result;
 }
 
-}}
