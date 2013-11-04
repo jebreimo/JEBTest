@@ -37,7 +37,7 @@ class Session
 public:
     static Session& instance();
 
-    void parseCommandLine(int argc, char* argv[]);
+    bool parseCommandLine(int argc, char* argv[]);
 
     bool reportEnabled(ReportFormat format) const;
     void setReportEnabled(ReportFormat format, bool enabled);
@@ -75,9 +75,9 @@ private:
 
     std::vector<TestPtr> m_ActiveTest;
     bool m_AllTestsEnabled;
-    bool m_ExcludeFilter;
     unsigned m_EnabledReports;
     std::unique_ptr<JEBTestLib::Sys::PathFilter> m_TestFilter;
+    // std::string
     std::ostream* m_Log;
     std::string m_ReportFileName;
     std::vector<TestPtr> m_Tests;

@@ -2,7 +2,7 @@
 
 namespace JEB { namespace Unicode {
 
-static CompactCharMapping CompactLowerCaseMappings[] =
+CompactCharMapping CompactLowerCaseMappings[] =
 {
     {0x000040, 0x00000020, 0x07FFFFFE, 0xF8000001},
     {0x0000C0, 0x00000020, 0x7F7FFFFF, 0x80800000},
@@ -72,7 +72,7 @@ static CompactCharMapping CompactLowerCaseMappings[] =
     {0x010420, 0x00000028, 0x000000FF, 0xFFFFFF00}
 };
 
-static CharMapping LowerCaseMappings[] =
+CharMapping LowerCaseMappings[] =
 {
     {0x000130, 0x000069},
     {0x000178, 0x0000FF},

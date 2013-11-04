@@ -69,7 +69,8 @@
     int main(int argc, char* argv[]) \
     { \
         try { \
-            ::JEB::Test::Session::instance().parseCommandLine(argc, argv); \
+            if (!::JEB::Test::Session::instance().parseCommandLine(argc, argv)) \
+                return 1; \
             JT_CONSOLE_BEGIN(); \
             ::JEB::Test::AutoTestRunner::instance().run(); \
             JT_CONSOLE_END(); \

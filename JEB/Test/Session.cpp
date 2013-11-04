@@ -46,9 +46,11 @@ Session& Session::instance()
     return test;
 }
 
-void Session::parseCommandLine(int argc, char* argv[])
+bool Session::parseCommandLine(int argc, char* argv[])
 {
     auto args = parse_arguments(argc, argv);
+    if (args->parse_arguments_result != Arguments::RESULT_OK)
+        return false;
     if (args->junit)
         setReportEnabled(JUnitReport, true);
     if (args->text || !args->junit)
@@ -57,6 +59,7 @@ void Session::parseCommandLine(int argc, char* argv[])
     for (auto it = begin(args->test_name); it != end(args->test_name); ++it)
         setTestEnabled(*it, !args->exclude);
     setVerbose(args->verbose);
+    return true;
 }
 
 bool Session::reportEnabled(ReportFormat format) const

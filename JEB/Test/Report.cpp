@@ -88,7 +88,6 @@ void writeTextReport(std::ostream& os, const Session& session)
         return;
     }
     os << "\n=== Test Report ===\n";
-    size_t testSuiteFailures = 0;
     std::vector<TestPtr> parents;
     Counters counters = writeTextReport(os, session.tests(), parents);
     os << counters.assertions << " assertions passed.\n"

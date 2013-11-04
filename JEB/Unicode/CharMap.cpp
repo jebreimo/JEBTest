@@ -2,9 +2,6 @@
 
 #include <cassert>
 #include "JEB/Algorithms/Algorithms.hpp"
-#include "StandardLowerCase.hpp"
-#include "StandardTitleCase.hpp"
-#include "StandardUpperCase.hpp"
 
 namespace JEB { namespace Unicode {
 

@@ -32,7 +32,7 @@ private:
 
 template <size_t M, size_t N>
 CharMap::CharMap(const CompactCharMapping (&compactMappings)[M],
-                                 const CharMapping (&mappings)[N])
+                 const CharMapping (&mappings)[N])
     : m_CompactMappings(compactMappings),
       m_Mappings(mappings),
       m_CompactMappingsSize(M),

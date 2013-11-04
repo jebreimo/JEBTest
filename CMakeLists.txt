@@ -16,7 +16,7 @@ include_directories(${CMAKE_SOURCE_DIR})
 add_definitions(-DJEB_USE_UNIT_TEST_NAMESPACE)
 
 if (APPLE)
-    set(CMAKE_CXX_FLAGS "-std=c++11 -stdlib=libc++")
+    set(CMAKE_CXX_FLAGS "-std=c++11 -stdlib=libc++ -Wall")
     set(CMAKE_INSTALL_PREFIX "/Users/janeb/usr/local")
 elseif (WIN32)
     add_definitions(-D_SCL_SECURE_NO_WARNINGS)

@@ -11,8 +11,8 @@
 namespace JEB { namespace Test {
 
 Error::Error()
-    : m_LineNo(0),
-      m_Level(None)
+    : m_Level(None),
+      m_LineNo(0)
 {
 }
 
@@ -21,9 +21,9 @@ Error::Error(const std::string& file,
              const std::string& message,
              Level level)
     : m_File(file),
+      m_Level(level),
       m_LineNo(lineNo),
-      m_Message(message),
-      m_Level(level)
+      m_Message(message)
 {}
 
 const std::string& Error::file() const
