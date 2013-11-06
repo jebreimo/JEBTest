@@ -7,6 +7,7 @@ set(JEB_DIR JEB/${PROJECT_NAME})
 set(PUBLIC_HEADERS
     Environment.hpp
     Path.hpp
+    StreamRedirection.hpp
     Users.hpp
     )
 
@@ -14,6 +15,7 @@ set(SRC
     Environment.cpp
     EnvironmentIterator.cpp
     PathFilter.cpp
+    StreamRedirection.cpp
     )
 
 if (WIN32)

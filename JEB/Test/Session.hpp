@@ -8,16 +8,18 @@
 #ifndef JEB_SESSION_HPP
 #define JEB_SESSION_HPP
 
-#include <iosfwd>
+#include <fstream>
 #include <map>
 #include <memory>
 #include <string>
 #include <vector>
+
 #include "Error.hpp"
 
 namespace JEBTestLib { namespace Sys {
 
 class PathFilter;
+class StreamRedirection;
 
 }}
 
@@ -79,8 +81,9 @@ private:
     bool m_AllTestsEnabled;
     unsigned m_EnabledReports;
     std::unique_ptr<JEBTestLib::Sys::PathFilter> m_TestFilter;
+    std::vector<JEBTestLib::Sys::StreamRedirection> m_Redirections;
     std::ostream* m_Log;
-    std::unique_ptr<std::ostream> m_LogFilePtr;
+    std::ofstream m_LogFile;
     std::string m_ReportFileName;
     std::vector<TestPtr> m_Tests;
     bool m_Verbose;

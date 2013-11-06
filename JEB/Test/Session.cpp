@@ -8,7 +8,6 @@
 #include "Session.hpp"
 
 #include <ctime>
-#include <fstream>
 #include <iomanip>
 #include <iostream>
 #include <stdexcept>
@@ -19,6 +18,7 @@
 #include "JEB/Algorithms/Algorithms.hpp"
 #include "JEB/String/String.hpp"
 #include "JEB/Sys/PathFilter.hpp"
+#include "JEB/Sys/StreamRedirection.hpp"
 #undef JEB
 
 namespace JEB { namespace Test {
@@ -26,15 +26,6 @@ namespace JEB { namespace Test {
 using namespace JEBTestLib::Algorithms;
 using namespace JEBTestLib::String;
 using namespace JEBTestLib::Sys;
-
-class StreamRedirector
-{
-public:
-    StreamRedirector(std::ios& stream, std::ios& replacement);
-private:
-    std::ios& m_Stream;
-    std::streambuf* m_Buffer;
-};
 
 Session::Session()
     : m_AllTestsEnabled(true),
@@ -65,10 +56,7 @@ bool Session::parseCommandLine(int argc, char* argv[])
     if (args->text || !args->junit)
         setReportEnabled(TextReport, true);
     if (!args->logfile.empty())
-    {
-        m_LogFilePtr.reset(new std::ofstream(args->logfile));
-        m_Log = m_LogFilePtr.get();
-    }
+        setLogFile(args->logfile);
     m_ReportFileName = args->report;
     setAllTestsEnabled(args->exclude || args->test_name.empty());
     for (auto it = begin(args->test_name); it != end(args->test_name); ++it)
@@ -271,8 +259,11 @@ std::string Session::getTestName(const std::string& name) const
 
 void Session::setLogFile(const std::string& fileName)
 {
-    m_LogFilePtr.reset(new std::ofstream(args->logfile));
-    m_Log = m_LogFilePtr.get();
+    m_LogFile.open(fileName);
+    m_Log = &m_LogFile;
+    m_Redirections.push_back(StreamRedirection(std::cout, m_LogFile));
+    m_Redirections.push_back(StreamRedirection(std::cerr, m_LogFile));
+    m_Redirections.push_back(StreamRedirection(std::clog, m_LogFile));
 }
 
 }}

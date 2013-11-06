@@ -20,6 +20,26 @@ namespace
                       std::vector<std::string>& next);
 }
 
+class FilterState
+{
+public:
+    FilterState(const std::string& name = std::string());
+
+    FilterState descend(const std::string& name);
+    bool shouldDescend(const std::string& name);
+
+    void excludePath(const std::string& path);
+    void includePath(const std::string& path);
+
+    PathFilterType type() const;
+    void setType(PathFilterType type);
+private:
+    std::vector<std::string> m_Exclude;
+    std::vector<std::string> m_Include;
+    std::string m_Name;
+    PathFilterType m_Type;
+};
+
 FilterState::FilterState(const std::string& name)
     : m_Name(name),
       m_Type(InclusiveFilter)
@@ -71,6 +91,9 @@ void FilterState::setType(PathFilterType type)
 
 PathFilter::PathFilter()
     : m_States(1)
+{}
+
+PathFilter::~PathFilter()
 {}
 
 bool PathFilter::descend(const std::string& name)

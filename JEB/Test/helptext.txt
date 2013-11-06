@@ -10,31 +10,31 @@ ARGUMENTS
     Tests are typically arranged in a two-level hierarchy with a parent and several child-tests. To disable a parent test and all its children, just enter the name of the parent. To disable a specific child, enter the names of both the parent and the child separated by a single "/".
 
     Example:
-        If the tests are arranged like this:
+    If the tests are arranged like this:
 
-            test_Sys:
-                test_Path:
-                    test_splitExtension
-                    test_join
-                    test_normalize
-                test_Environment:
-                    test_read
-                    test_setValue
-            test_String:
-                test_join
-                test_split
+        Test1:
+            Subtest1:
+                Subsubtest1
+                Subsubtest2
+                Subsubtest3
+            Subtest2:
+                Subsubtest1
+                Subsubtest2
+        Test2:
+            Subtest1
+            Subtest2
 
-        To only run tests in test_Sys, use
+    To only run the tests in Test1 and below, use
 
-            $prog$ test_Sys
+        $prog$ Test
 
-        To run all tests in test_Path, use
+    To only run Subsubtest2 under Subtest3, use
 
-            $prog$ test_Sys/test_Path
+        $prog$ Test1/Subtest2/Subsubtest3
 
-        To only run test_Join under test_Path, use
+    To run all tests except Subtest3, use
 
-            $prog$ test_Sys/test_Path/test_join
+        $prog$ --exclude Test1/Subtest2/Subsubtest3
 
 GENERAL OPTIONS
 ${-h, --help}$

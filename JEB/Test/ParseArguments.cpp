@@ -6,6 +6,8 @@
 #include <iterator>
 #include <sstream>
 
+namespace JEB { namespace Test {
+
 namespace
 {
     std::string programName;
@@ -27,31 +29,31 @@ namespace
         "    of both the parent and the child separated by a single \"/\".\n"
         "\n"
         "    Example:\n"
-        "        If the tests are arranged like this:\n"
+        "    If the tests are arranged like this:\n"
         "\n"
-        "            test_Sys:\n"
-        "                test_Path:\n"
-        "                    test_splitExtension\n"
-        "                    test_join\n"
-        "                    test_normalize\n"
-        "                test_Environment:\n"
-        "                    test_read\n"
-        "                    test_setValue\n"
-        "            test_String:\n"
-        "                test_join\n"
-        "                test_split\n"
+        "        Test1:\n"
+        "            Subtest1:\n"
+        "                Subsubtest1\n"
+        "                Subsubtest2\n"
+        "                Subsubtest3\n"
+        "            Subtest2:\n"
+        "                Subsubtest1\n"
+        "                Subsubtest2\n"
+        "        Test2:\n"
+        "            Subtest1\n"
+        "            Subtest2\n"
         "\n"
-        "        To only run tests in test_Sys, use\n"
+        "    To only run the tests in Test1 and below, use\n"
         "\n"
-        "            $prog$ test_Sys\n"
+        "        $prog$ Test\n"
         "\n"
-        "        To run all tests in test_Path, use\n"
+        "    To only run Subsubtest2 under Subtest3, use\n"
         "\n"
-        "            $prog$ test_Sys/test_Path\n"
+        "        $prog$ Test1/Subtest2/Subsubtest3\n"
         "\n"
-        "        To only run test_Join under test_Path, use\n"
+        "    To run all tests except Subtest3, use\n"
         "\n"
-        "            $prog$ test_Sys/test_Path/test_join\n"
+        "        $prog$ --exclude Test1/Subtest2/Subsubtest3\n"
         "\n"
         "GENERAL OPTIONS\n"
         "-h, --help\n"
@@ -425,3 +427,4 @@ std::unique_ptr<Arguments> parse_arguments(int argc, char* argv[])
     return result;
 }
 
+}}

@@ -9,6 +9,8 @@
   * Defines the function parse_arguments and its result Arguments.
   */
 
+namespace JEB { namespace Test {
+
 /** @brief The result of parse_arguments
   */
 struct Arguments
@@ -86,5 +88,7 @@ struct Arguments
   *     returned value is a nullptr.
   */
 std::unique_ptr<Arguments> parse_arguments(int argc, char* argv[]);
+
+}}
 
 #endif
