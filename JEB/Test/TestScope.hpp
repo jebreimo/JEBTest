@@ -15,15 +15,29 @@ namespace JEB { namespace Test {
 class TestScope
 {
 public:
+    TestScope()
+        : m_Count(0)
+    {}
+
     TestScope(const std::string& name)
+        : m_Count(1)
     {
         Session::instance().beginTest(name);
     }
 
     ~TestScope()
     {
-        Session::instance().endTest();
+        while (m_Count--)
+            Session::instance().endTest();
     }
+
+    void push(const std::string& name)
+    {
+        Session::instance().beginTest(name);
+        ++m_Count;
+    }
+private:
+    int m_Count;
 };
 
 }}

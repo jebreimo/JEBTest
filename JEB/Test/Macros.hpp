@@ -81,15 +81,6 @@
         return (int)::JEB::Test::Session::instance().numberOfFailedTests(); \
     }
 
-#define JT_PRIORITIZED_TEST(priority, ...) \
-    static void JT_PRIV_UNIQUE_NAME(JT_suite_)() \
-    { \
-        /* Funny variable names make conflicts with test names less likely */ \
-        std::function<void()> tests_JT_[] = {__VA_ARGS__}; \
-        ::JEB::Test::runTests(__FILE__, __LINE__, #__VA_ARGS__, tests_JT_); \
-    } \
-    static ::JEB::Test::AutoTest JT_PRIV_UNIQUE_NAME(JT_suite_instance_)(__FILE__, JT_PRIV_UNIQUE_NAME(JT_suite_), (priority))
-
 /** @brief Defines a test suite.
  *
  *  The arguments to this macro are the function names of the test functions.
@@ -101,11 +92,34 @@
 #define JT_TEST(...) \
     static void JT_PRIV_UNIQUE_NAME(JT_suite_)() \
     { \
-        /* Funny variable names make conflicts with test names less likely */ \
         std::function<void()> tests_JT_[] = {__VA_ARGS__}; \
         ::JEB::Test::runTests(__FILE__, __LINE__, #__VA_ARGS__, tests_JT_); \
     } \
     static ::JEB::Test::AutoTest JT_PRIV_UNIQUE_NAME(JT_suite_instance_)(__FILE__, JT_PRIV_UNIQUE_NAME(JT_suite_))
+
+#define JT_SUBTEST(path, ...) \
+    static void JT_PRIV_UNIQUE_NAME(JT_suite_)() \
+    { \
+        std::function<void()> tests_JT_[] = {__VA_ARGS__}; \
+        ::JEB::Test::runTests(__FILE__, __LINE__, #__VA_ARGS__, tests_JT_); \
+    } \
+    static ::JEB::Test::AutoTest JT_PRIV_UNIQUE_NAME(JT_suite_instance_)(__FILE__, JT_PRIV_UNIQUE_NAME(JT_suite_), (path))
+
+#define JT_PRIORITIZED_TEST(priority, ...) \
+    static void JT_PRIV_UNIQUE_NAME(JT_suite_)() \
+    { \
+        std::function<void()> tests_JT_[] = {__VA_ARGS__}; \
+        ::JEB::Test::runTests(__FILE__, __LINE__, #__VA_ARGS__, tests_JT_); \
+    } \
+    static ::JEB::Test::AutoTest JT_PRIV_UNIQUE_NAME(JT_suite_instance_)(__FILE__, JT_PRIV_UNIQUE_NAME(JT_suite_), "", (priority))
+
+#define JT_PRIORITIZED_SUBTEST(priority, path, ...) \
+    static void JT_PRIV_UNIQUE_NAME(JT_suite_)() \
+    { \
+        std::function<void()> tests_JT_[] = {__VA_ARGS__}; \
+        ::JEB::Test::runTests(__FILE__, __LINE__, #__VA_ARGS__, tests_JT_); \
+    } \
+    static ::JEB::Test::AutoTest JT_PRIV_UNIQUE_NAME(JT_suite_instance_)(__FILE__, JT_PRIV_UNIQUE_NAME(JT_suite_), (path), (priority))
 
 /** @brief Macro for explcitly running a test with arguments.
  *

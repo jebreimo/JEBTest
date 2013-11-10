@@ -136,12 +136,17 @@ void Session::writeReports()
 
 void Session::beginTest(const std::string& name)
 {
-    TestPtr t(new Test(name));
+    TestPtr test; //(new Test(name));
     if (!m_ActiveTest.empty())
-        m_ActiveTest.back()->addTest(t);
+    {
+        test = m_ActiveTest.back()->findTest(name);
+        m_ActiveTest.back()->addTest(test);
+    }
     else
-        m_Tests.push_back(t);
-    m_ActiveTest.push_back(t);
+    {
+        m_Tests.push_back(test);
+    }
+    m_ActiveTest.push_back(test);
     m_TestFilter->descend(name);
     printInfo(std::string("\nRunning test ") + name);
     m_ActiveTest.back()->setStartTime(clock());

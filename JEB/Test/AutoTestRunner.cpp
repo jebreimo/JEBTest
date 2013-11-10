@@ -43,9 +43,18 @@ void AutoTestRunner::run()
     std::sort(m_Tests.begin(), m_Tests.end(), hasHigherPriority);
     for (auto test = m_Tests.begin(); test != m_Tests.end(); ++test)
     {
-        if (Session::instance().isTestEnabled((*test)->name()))
+        TestScope scope;
+        auto& session = Session::instance();
+        auto& path = (*test)->path();
+        auto name = begin(path);
+        for (; name != end(path); ++name)
         {
-            TestScope scope((*test)->name());
+            if (session.isTestEnabled(*name))
+                scope.push(*name);
+        }
+        if (name == end(path) && session.isTestEnabled((*test)->name()))
+        {
+            scope.push((*test)->name());
             try
             {
                 (*test)->function()();

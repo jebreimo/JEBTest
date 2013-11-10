@@ -8,6 +8,7 @@
 #include "AutoTest.hpp"
 
 #include <limits>
+#include "JEB/String/String.hpp"
 #include "JEB/Sys/Path.hpp"
 
 #undef JEB
@@ -17,6 +18,7 @@
 
 namespace JEB { namespace Test {
 
+using namespace JEBTestLib::String;
 using namespace JEBTestLib::Sys;
 
 namespace
@@ -27,21 +29,30 @@ namespace
     }
 }
 
-AutoTest::AutoTest(const std::string& fileName, Func suiteFunc)
-    : m_Function(suiteFunc),
+AutoTest::AutoTest(const std::string& fileName, Func func,
+                   const std::string& path)
+    : m_Function(func),
       m_Name(fileName),
       m_Priority(std::numeric_limits<int>::max())
 {
+    if (!path.empty())
+        m_Path = splitToken(path, '/');
     AutoTestRunner::instance().addTest(this);
 }
 
-AutoTest::AutoTest(const std::string& fileName, Func suiteFunc, int priority)
-    : m_Function(suiteFunc),
+AutoTest::AutoTest(const std::string& fileName, Func func,
+                   const std::string& path, int priority)
+    : m_Function(func),
       m_Name(fileName),
       m_Priority(priority)
 {
+    if (!path.empty())
+        m_Path = splitToken(path, '/');
     AutoTestRunner::instance().addTest(this);
 }
+
+AutoTest::~AutoTest()
+{}
 
 const AutoTest::Func& AutoTest::function() const
 {
@@ -56,6 +67,11 @@ void AutoTest::setFunction(const Func& function)
 std::string AutoTest::name() const
 {
     return JEB::Test::extractSuiteName(m_Name);
+}
+
+const std::vector<std::string>& AutoTest::path() const
+{
+    return m_Path;
 }
 
 int AutoTest::priority() const

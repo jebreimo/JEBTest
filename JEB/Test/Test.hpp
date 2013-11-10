@@ -56,6 +56,7 @@ public:
     void addTest(TestPtr test);
     std::vector<TestPtr>& tests();
     const std::vector<TestPtr>& tests() const;
+    TestPtr findTest(const std::string& name) const;
 private:
     size_t m_Assertions;
     Error m_Error;

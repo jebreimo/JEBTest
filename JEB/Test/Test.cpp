@@ -113,4 +113,14 @@ const std::vector<TestPtr>& Test::tests() const
     return m_Tests;
 }
 
+TestPtr Test::findTest(const std::string& name) const
+{
+    auto it = find_if(begin(m_Tests), end(m_Tests),
+                      [&](const TestPtr& t){return t->name() == name;});
+    if (it != end(m_Tests))
+        return *it;
+    else
+        return TestPtr();
+}
+
 }}
