@@ -17,6 +17,7 @@ namespace JEB { namespace Test {
 
 Test::Test(const std::string& name)
     : m_Assertions(0),
+      //m_Failed(false),
       m_Name(name),
       m_StartTime(0),
       m_EndTime(0)
@@ -35,7 +36,7 @@ void Test::incrementAssertions()
 
 bool Test::failed() const
 {
-    return m_Error.level() != Error::None;
+    return !m_Errors.empty() || m_Errors.back().level() != Error::None;
 }
 
 bool Test::failedHierarchy() const
@@ -50,14 +51,19 @@ bool Test::failedHierarchy() const
     return false;
 }
 
-const Error& Test::error() const
+const std::vector<Error>& Test::errors() const
 {
-    return m_Error;
+    return m_Errors;
 }
 
-void Test::setError(const Error& error)
+void Test::addError(const Error& error)
 {
-    m_Error = error;
+    m_Errors.push_back(error);
+}
+
+void Test::addError(Error&& error)
+{
+    m_Errors.push_back(std::move(error));
 }
 
 size_t Test::depth() const

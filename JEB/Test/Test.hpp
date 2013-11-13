@@ -32,8 +32,9 @@ public:
       */
     size_t depth() const;
 
-    const Error& error() const;
-    void setError(const Error& error);
+    const std::vector<Error>& errors() const;
+    void addError(const Error& error);
+    void addError(Error&& error);
 
     /** @brief Returns true if the test failed (i.e. error() is set).
       */
@@ -59,7 +60,7 @@ public:
     TestPtr findTest(const std::string& name) const;
 private:
     size_t m_Assertions;
-    Error m_Error;
+    std::vector<Error> m_Errors;
     std::string m_Name;
     clock_t m_StartTime;
     clock_t m_EndTime;

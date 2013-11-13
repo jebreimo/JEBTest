@@ -21,10 +21,11 @@ using namespace JEBTestLib::Xml;
 
 struct Counters
 {
-    Counters() : assertions(0), tests(0), failedTests(0) {}
+    Counters() : assertions(), tests(), failedTests(), errors() {}
     size_t assertions;
     size_t tests;
     size_t failedTests;
+    size_t errors;
 };
 
 Counters& operator+=(Counters& lhs, const Counters& rhs)
@@ -62,13 +63,22 @@ static Counters writeTextReport(
             counters += writeTextReport(os, (*it)->tests(), parents);
             parents.pop_back();
         }
+        auto& errors = (*it)->errors();
         if ((*it)->failed())
         {
             ++counters.failedTests;
             os << testName(parents, *it) << ": FAILED (assertion "
-               << ((*it)->assertions() + 1) << ")\n"
-               << "    " << (*it)->error() << "\n";
-            const std::vector<Error>& context = (*it)->error().context();
+               << ((*it)->assertions()) << ")\n";
+        }
+        else if (!errors.empty())
+        {
+            os << testName(parents, *it) << ": SUCCEEDED WITH WARNINGS\n";
+        }
+        for (auto err = begin(errors); err != end(errors); ++err)
+        {
+            ++counters.errors;
+            os << "    " << *err << "\n";
+            const std::vector<Error>& context = err->context();
             if (!context.empty())
             {
                 os << "    Called from:\n";
@@ -100,11 +110,53 @@ void writeTextReport(std::ostream& os, const Session& session)
     os.flush();
 }
 
+void writeXmlTestCase(XmlWriter& writer, const Test& test)
+{
+    writer.beginElement("testcase");
+    auto testCases = test.tests();
+    for (auto it = begin(testCases); it != end(testCases); ++it)
+    {
+        writeXmlTestCase(writer, **it);
+    }
+    writer.endElement();
+}
+
+void addTestCases(std::vector<TestPtr>& testCases, const TestPtr& test)
+{
+    if (test->assertions() > 0 || test->failed())
+        testCases.push_back(test);
+    auto subtests = test->tests();
+    for (auto it = begin(subtests); it != end(subtests); ++it)
+        addTestCases(testCases, *it);
+}
+
+std::vector<TestPtr> getTestCases(const std::vector<TestPtr>& tests)
+{
+    std::vector<TestPtr> testCases;
+    for (auto it = begin(tests); it != end(tests); ++it)
+        addTestCases(testCases, *it);
+    return testCases;
+}
+
+void writeXmlTestSuite(XmlWriter& writer, const Test& test)
+{
+    writer.beginElement("testsuite");
+    auto testCases = test.tests();
+    for (auto it = begin(testCases); it != end(testCases); ++it)
+    {
+        writeXmlTestCase(writer, **it);
+    }
+    writer.endElement();
+}
+
 void writeXmlReport(std::ostream& os, const Session& session)
 {
+    auto testCases = getTestCases(session.tests());
     XmlWriter writer(os);
     writer.beginElement("testsuites");
-
+    auto testSuites = session.tests();
+    for (auto it = begin(testSuites); it != end(testSuites); ++it)
+        addTestCases(testCases, *it);
     writer.endElement();
 }
 

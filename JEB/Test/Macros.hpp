@@ -163,10 +163,16 @@
             if (ex.error().level() != ::JEB::Test::Error::Failure) \
                 throw; \
         } catch (const std::exception& ex) { \
-            ::JEB::Test::Session::instance().testFailed(::JEB::Test::Error(__FILE__, __LINE__, std::string("Unhandled exception: \"") + ex.what() + "\"", ::JEB::Test::Error::Fatal)); \
+            ::JEB::Test::Session::instance().testFailed(::JEB::Test::Error( \
+                    __FILE__, __LINE__, \
+                    std::string("Unhandled exception: \"") + ex.what() + "\"", \
+                    ::JEB::Test::Error::Fatal)); \
             throw; \
         } catch (...) { \
-            ::JEB::Test::Session::instance().testFailed(::JEB::Test::Error(__FILE__, __LINE__, "Unhandled exception (not derived from std::exception)", ::JEB::Test::Error::Fatal)); \
+            ::JEB::Test::Session::instance().testFailed(::JEB::Test::Error( \
+                    __FILE__, __LINE__, \
+                    "Unhandled exception (not derived from std::exception)", \
+                    ::JEB::Test::Error::Fatal)); \
             throw; \
         } \
     }
@@ -188,13 +194,47 @@
  *      to throw
  */
 #define JT_THROWS(expr, exception) \
-    JT_IMPL_THROWS(expr, exception, TestFailure, __FILE__, __LINE__, #expr " didn't throw exception \"" #exception "\"")
+    JT_IMPL_THROWS(expr, exception, TestFailure, __FILE__, __LINE__, \
+                   #expr " didn't throw exception \"" #exception "\"")
 
 #define JT_THROWS_CRITICAL(expr, exception) \
-    JT_IMPL_THROWS(expr, exception, CriticalFailure, __FILE__, __LINE__, #expr " didn't throw exception \"" #exception "\"")
+    JT_IMPL_THROWS(expr, exception, CriticalFailure, __FILE__, __LINE__, \
+                   #expr " didn't throw exception \"" #exception "\"")
 
 #define JT_THROWS_FATAL(expr, exception) \
-    JT_IMPL_THROWS(expr, exception, FatalFailure, __FILE__, __LINE__, #expr " didn't throw exception \"" #exception "\"")
+    JT_IMPL_THROWS(expr, exception, FatalFailure, __FILE__, __LINE__, \
+                   #expr " didn't throw exception \"" #exception "\"")
+
+#define JT_IMPL_EXPECT(cond, file, line, msg) \
+    { \
+        if (cond) { \
+            ::JEB::Test::Session::instance().assertPassed(); \
+        } else { \
+            ::JEB::Test::Session::instance().testFailed(::JEB::Test::Error( \
+                    file, line, msg, ::JEB::Test::Error::Warning)); \
+        } \
+    }
+
+#define JT_EXPECT(cond) \
+    JT_IMPL_EXPECT((cond), __FILE__, __LINE__, "Error: " #cond)
+
+#define JT_EXPECT_EQUAL(a, b) \
+    JT_IMPL_EXPECT(::JEB::Test::equal((a), (b)), \
+                   __FILE__, __LINE__, \
+                   ::JEB::Test::formatComparison((a), #a, (b), #b, "!="))
+
+#define JT_EXPECT_MSG(cond, msg) \
+    { \
+        if (cond) { \
+            ::JEB::Test::Session::instance().assertPassed(); \
+        } else { \
+            std::ostringstream JT_os; \
+            JT_os << "Error: " #cond ". " << msg; \
+            ::JEB::Test::Session::instance().testFailed(::JEB::Test::Error( \
+                    __FILE__, __LINE__, JT_os.str(), ::JEB::Test::Error::Warning)); \
+        } \
+    }
+
 
 /** @brief Internal macro. Used by other assert macros.
  */
@@ -220,15 +260,6 @@
 #define JT_ASSERT_FATAL(cond) \
     JT_IMPL_ASSERT((cond), FatalFailure, __FILE__, __LINE__, "Assertion failed: " #cond)
 
-/** @brief Verifies that condition @a cond is true.
- *
- *  Use this macro to provide extra information about the condition if it
- *  fails.
- *
- *  @param cond the condition
- *  @param msg a string that that will be include in the test report if
- *      @a cond is false.
- */
 #define JT_IMPL_ASSERT_MSG(cond, condStr, failure, file, line, msg) \
     { \
         if (cond) { \
@@ -240,6 +271,15 @@
         } \
     }
 
+/** @brief Verifies that condition @a cond is true.
+ *
+ *  Use this macro to provide extra information about the condition if it
+ *  fails.
+ *
+ *  @param cond the condition
+ *  @param msg a string that that will be include in the test report if
+ *      @a cond is false.
+ */
 #define JT_ASSERT_MSG(cond, msg) \
     JT_IMPL_ASSERT_MSG(cond, #cond, TestFailure, __FILE__, __LINE__, msg)
 

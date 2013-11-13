@@ -63,8 +63,8 @@ public:
 
     const std::vector<TestPtr>& tests() const;
 
-    void print(const std::string& text);
-    void printInfo(const std::string& text);
+    void print(const std::string& text, bool startOnNewLine = true);
+    void printInfo(const std::string& text, bool startOnNewLine = true);
 
     std::ostream* log();
     void setLog(std::ostream* log);
@@ -80,11 +80,12 @@ private:
     std::vector<TestPtr> m_ActiveTest;
     bool m_AllTestsEnabled;
     unsigned m_EnabledReports;
-    std::unique_ptr<JEBTestLib::Sys::PathFilter> m_TestFilter;
-    std::vector<JEBTestLib::Sys::StreamRedirection> m_Redirections;
     std::ostream* m_Log;
     std::ofstream m_LogFile;
+    std::vector<JEBTestLib::Sys::StreamRedirection> m_Redirections;
     std::string m_ReportFileName;
+    bool m_StartOfLine;
+    std::unique_ptr<JEBTestLib::Sys::PathFilter> m_TestFilter;
     std::vector<TestPtr> m_Tests;
     bool m_Verbose;
 };

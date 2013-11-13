@@ -30,8 +30,9 @@ using namespace JEBTestLib::Sys;
 Session::Session()
     : m_AllTestsEnabled(true),
       m_EnabledReports(0),
-      m_TestFilter(new PathFilter),
       m_Log(&std::cerr),
+      m_StartOfLine(true),
+      m_TestFilter(new PathFilter),
       m_Verbose(true)
 {
 }
@@ -136,7 +137,7 @@ void Session::writeReports()
 
 void Session::beginTest(const std::string& name)
 {
-    TestPtr test; //(new Test(name));
+    TestPtr test;
     if (!m_ActiveTest.empty())
     {
         test = m_ActiveTest.back()->findTest(name);
@@ -148,7 +149,7 @@ void Session::beginTest(const std::string& name)
     }
     m_ActiveTest.push_back(test);
     m_TestFilter->descend(name);
-    printInfo(std::string("\nRunning test ") + name);
+    printInfo(std::string("Running test ") + name);
     m_ActiveTest.back()->setStartTime(clock());
 }
 
@@ -160,17 +161,15 @@ void Session::endTest()
     m_ActiveTest.back()->setEndTime(clock());
     m_ActiveTest.pop_back();
     m_TestFilter->ascend();
-    printInfo("\n");
 }
 
 void Session::testFailed(const Error& error)
 {
     if (m_ActiveTest.empty())
-        throw std::logic_error("Call to testFailed, criticalError or "
-                               "fatalError was not preceded by a call "
-                               "to beginTest");
-    printInfo("\n");
-    m_ActiveTest.back()->setError(error);
+        throw std::logic_error("Call to testFailed was not preceded by "
+                               "a call to beginTest.");
+    m_ActiveTest.back()->addError(error);
+    m_ActiveTest.back()->incrementAssertions();
     printInfo(std::string("    ") + error.text() + "\n");
 }
 
@@ -178,11 +177,11 @@ void Session::assertPassed()
 {
     if (m_ActiveTest.empty())
         throw std::logic_error("Call to assertPassed not preceded by a "
-                               "call to beginTest");
+                               "call to beginTest.");
     if (m_ActiveTest.back()->assertions() == 0)
-        printInfo(" .");
+        printInfo(" .", false);
     else
-        printInfo(".");
+        printInfo(".", false);
     m_ActiveTest.back()->incrementAssertions();
 }
 
@@ -222,15 +221,22 @@ const std::vector<TestPtr>& Session::tests() const
   return m_Tests;
 }
 
-void Session::print(const std::string& text)
+void Session::print(const std::string& text, bool startOnNewLine)
 {
+    if (startOnNewLine && !m_StartOfLine)
+        *m_Log << '\n';
     *m_Log << text;
+    m_StartOfLine = text.empty() ? m_StartOfLine : text.back() == '\n';
 }
 
-void Session::printInfo(const std::string& text)
+void Session::printInfo(const std::string& text, bool startOnNewLine)
 {
-    if (m_Verbose)
-        *m_Log << text;
+    if (!m_Verbose)
+        return;
+    if (startOnNewLine && !m_StartOfLine)
+        *m_Log << '\n';
+    *m_Log << text;
+    m_StartOfLine = text.empty() ? m_StartOfLine : text.back() == '\n';
 }
 
 std::ostream* Session::log()
