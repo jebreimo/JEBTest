@@ -74,6 +74,7 @@ public:
 private:
     Session();
     ~Session();
+    TestPtr findTest(const std::string& name);
     std::string getTestName(const std::string& name) const;
     void setLogFile(const std::string& fileName);
 

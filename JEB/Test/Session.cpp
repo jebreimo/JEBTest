@@ -139,13 +139,16 @@ void Session::beginTest(const std::string& name)
 {
     TestPtr test;
     if (!m_ActiveTest.empty())
-    {
         test = m_ActiveTest.back()->findTest(name);
-        m_ActiveTest.back()->addTest(test);
-    }
     else
+        test = findTest(name);
+    if (!test)
     {
-        m_Tests.push_back(test);
+        test = TestPtr(new Test(name));
+        if (!m_ActiveTest.empty())
+            m_ActiveTest.back()->addTest(test);
+        else
+            m_Tests.push_back(test);
     }
     m_ActiveTest.push_back(test);
     m_TestFilter->descend(name);
@@ -257,6 +260,17 @@ bool Session::verbose() const
 void Session::setVerbose(bool verbose)
 {
     m_Verbose = verbose;
+}
+
+TestPtr Session::findTest(const std::string& name)
+{
+    auto it = std::find_if(
+            begin(m_Tests), end(m_Tests),
+            [&](const TestPtr& t){return t->name() == name;});
+    if (it != end(m_Tests))
+        return *it;
+    else
+        return TestPtr();
 }
 
 std::string Session::getTestName(const std::string& name) const

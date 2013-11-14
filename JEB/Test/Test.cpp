@@ -6,6 +6,7 @@
  * License text is included with the source distribution.
  */
 #include "Test.hpp"
+#include <algorithm>
 #include <iostream>
 #include <stdexcept>
 
@@ -36,7 +37,7 @@ void Test::incrementAssertions()
 
 bool Test::failed() const
 {
-    return !m_Errors.empty() || m_Errors.back().level() != Error::None;
+    return !m_Errors.empty() && m_Errors.back().level() > Error::Warning;
 }
 
 bool Test::failedHierarchy() const
@@ -121,8 +122,9 @@ const std::vector<TestPtr>& Test::tests() const
 
 TestPtr Test::findTest(const std::string& name) const
 {
-    auto it = find_if(begin(m_Tests), end(m_Tests),
-                      [&](const TestPtr& t){return t->name() == name;});
+    auto it = std::find_if(
+            begin(m_Tests), end(m_Tests),
+            [&](const TestPtr& t){return t->name() == name;});
     if (it != end(m_Tests))
         return *it;
     else
