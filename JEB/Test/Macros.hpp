@@ -166,13 +166,13 @@
             ::JEB::Test::Session::instance().testFailed(::JEB::Test::Error( \
                     __FILE__, __LINE__, \
                     std::string("Unhandled exception: \"") + ex.what() + "\"", \
-                    ::JEB::Test::Error::Fatal)); \
+                    ::JEB::Test::Error::System)); \
             throw; \
         } catch (...) { \
             ::JEB::Test::Session::instance().testFailed(::JEB::Test::Error( \
                     __FILE__, __LINE__, \
                     "Unhandled exception (not derived from std::exception)", \
-                    ::JEB::Test::Error::Fatal)); \
+                    ::JEB::Test::Error::System)); \
             throw; \
         } \
     }

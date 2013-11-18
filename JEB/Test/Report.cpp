@@ -110,17 +110,6 @@ void writeTextReport(std::ostream& os, const Session& session)
     os.flush();
 }
 
-void writeXmlTestCase(XmlWriter& writer, const Test& test)
-{
-    writer.beginElement("testcase");
-    auto testCases = test.tests();
-    for (auto it = begin(testCases); it != end(testCases); ++it)
-    {
-        writeXmlTestCase(writer, **it);
-    }
-    writer.endElement();
-}
-
 void addTestCases(std::vector<TestPtr>& testCases, const TestPtr& test)
 {
     if (test->assertions() > 0 || test->failed())
@@ -138,9 +127,37 @@ std::vector<TestPtr> getTestCases(const std::vector<TestPtr>& tests)
     return testCases;
 }
 
-void writeXmlTestSuite(XmlWriter& writer, const Test& test)
+// void writeXmlTestSuite(XmlWriter& writer, const Test& test)
+// {
+//     writer.beginElement("testsuite");
+//     auto testCases = test.tests();
+//     for (auto it = begin(testCases); it != end(testCases); ++it)
+//     {
+//         writeXmlTestCase(writer, **it);
+//     }
+//     writer.endElement();
+// }
+
+void writeXmlTestCase(XmlWriter& writer, const Test& test)
 {
-    writer.beginElement("testsuite");
+    writer.beginElement("testcase");
+    writer.attribute("name", test.name());
+    if (test.assertions() != 0)
+    {
+        writer.attribute("assertions", test.assertions());
+        writer.attribute("name", "NONE");
+        writer.attribute("time", test.elapsedTime());
+        auto& errors = test.errors();
+        for (auto it = begin(errors); it != end(errors); ++it)
+        {
+            if (it->level() == Error::Warning)
+                writer.beginElement("error");
+            else
+                writer.beginElement("fatal");
+            writer.attribute("message", it->message());
+            writer.endElement();
+        }
+    }
     auto testCases = test.tests();
     for (auto it = begin(testCases); it != end(testCases); ++it)
     {
