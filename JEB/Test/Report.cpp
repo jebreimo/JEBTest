@@ -110,37 +110,51 @@ void writeTextReport(std::ostream& os, const Session& session)
     os.flush();
 }
 
-void writeXmlTestCase(XmlWriter& writer, const Test& test)
+void addTestCases(std::map<std::string, std::vector<TestPtr>>& testCases,
+                  std::string path, TestPtr test)
 {
-    writer.beginElement("testcase");
-    auto testCases = test.tests();
-    for (auto it = begin(testCases); it != end(testCases); ++it)
-    {
-        writeXmlTestCase(writer, **it);
-    }
-    writer.endElement();
-}
-
-void addTestCases(std::vector<TestPtr>& testCases, const TestPtr& test)
-{
-    if (test->assertions() > 0 || test->failed())
-        testCases.push_back(test);
+    if (test->assertions() > 0)
+        testCases[path].push_back(test);
     auto subtests = test->tests();
-    for (auto it = begin(subtests); it != end(subtests); ++it)
-        addTestCases(testCases, *it);
+    if (!subtests.empty())
+    {
+        path += "/";
+        path += test->name();
+        auto subtests = test->tests();
+        for (auto it = begin(subtests); it != end(subtests); ++it)
+            addTestCases(testCases, path, *it);
+    }
 }
 
-std::vector<TestPtr> getTestCases(const std::vector<TestPtr>& tests)
+std::map<std::string, std::vector<TestPtr>> getTestCases(
+        const std::vector<TestPtr>& tests)
 {
-    std::vector<TestPtr> testCases;
+    std::map<std::string, std::vector<TestPtr>> testCases;
     for (auto it = begin(tests); it != end(tests); ++it)
-        addTestCases(testCases, *it);
+        addTestCases(testCases, std::string(), *it);
     return testCases;
 }
 
-void writeXmlTestSuite(XmlWriter& writer, const Test& test)
+void writeXmlTestCase(XmlWriter& writer, const Test& test)
 {
-    writer.beginElement("testsuite");
+    writer.beginElement("testcase");
+    writer.attribute("name", test.name());
+    if (test.assertions() != 0)
+    {
+        writer.attribute("assertions", (int64_t)test.assertions());
+        writer.attribute("name", "NONE");
+        writer.attribute("time", test.elapsedTime());
+        auto& errors = test.errors();
+        for (auto it = begin(errors); it != end(errors); ++it)
+        {
+            if (it->level() == Error::System)
+                writer.beginElement("error");
+            else
+                writer.beginElement("failure");
+            writer.attribute("message", it->message());
+            writer.endElement();
+        }
+    }
     auto testCases = test.tests();
     for (auto it = begin(testCases); it != end(testCases); ++it)
     {
@@ -153,10 +167,20 @@ void writeXmlReport(std::ostream& os, const Session& session)
 {
     auto testCases = getTestCases(session.tests());
     XmlWriter writer(os);
+    writer.setFormatting(XmlWriter::IndentElements);
     writer.beginElement("testsuites");
-    auto testSuites = session.tests();
-    for (auto it = begin(testSuites); it != end(testSuites); ++it)
-        addTestCases(testCases, *it);
+    //auto testSuites = session.tests();
+    for (auto it = begin(testCases); it != end(testCases); ++it)
+    {
+        //addTestCases(testCases, *it);
+        writer.beginElement("testsuite");
+        writer.attribute("name", it->first);
+        for (auto t = begin(it->second); t != end(it->second); ++t)
+        {
+            writeXmlTestCase(writer, **t);
+        }
+        writer.endElement();
+    }
     writer.endElement();
 }
 

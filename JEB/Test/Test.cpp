@@ -18,7 +18,6 @@ namespace JEB { namespace Test {
 
 Test::Test(const std::string& name)
     : m_Assertions(0),
-      //m_Failed(false),
       m_Name(name),
       m_StartTime(0),
       m_EndTime(0)
@@ -37,7 +36,7 @@ void Test::incrementAssertions()
 
 bool Test::failed() const
 {
-    return !m_Errors.empty() && m_Errors.back().level() > Error::Warning;
+    return !m_Errors.empty() && m_Errors.back().level() != Error::None;
 }
 
 bool Test::failedHierarchy() const
@@ -100,9 +99,9 @@ void Test::setEndTime(clock_t endTime)
     m_EndTime = endTime;
 }
 
-clock_t Test::elapsedTime() const
+double Test::elapsedTime() const
 {
-    return m_EndTime - m_StartTime;
+    return double(m_EndTime - m_StartTime) / CLOCKS_PER_SEC;
 }
 
 void Test::addTest(TestPtr test)

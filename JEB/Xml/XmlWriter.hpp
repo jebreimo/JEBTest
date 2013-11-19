@@ -1,6 +1,7 @@
 #ifndef JEB_XMLWRITER_HPP
 #define JEB_XMLWRITER_HPP
 
+#include <cstdint>
 #include <iosfwd>
 #include <memory>
 #include <string>
@@ -58,15 +59,15 @@ public:
 
     void attributeValue(const std::string& value);
     void attributeValue(const std::wstring& value);
-    void attributeValue(int value);
-    void attributeValue(long long value);
+    void attributeValue(int32_t value);
+    void attributeValue(int64_t value);
     void attributeValue(double value);
     void attributeValue(double value, int precision);
 
     void attribute(const std::string& name, const std::string& value);
     void attribute(const std::string& name, const std::wstring& value);
-    void attribute(const std::string& name, int value);
-    void attribute(const std::string& name, long long value);
+    void attribute(const std::string& name, int32_t value);
+    void attribute(const std::string& name, int64_t value);
     void attribute(const std::string& name, double value);
     void attribute(const std::string& name, double value, int precision);
 
@@ -75,8 +76,8 @@ public:
 
     void element(const std::string& name, const std::string& charData);
     void element(const std::string& name, const std::wstring& charData);
-    void element(const std::string& name, int value);
-    void element(const std::string& name, long long value);
+    void element(const std::string& name, int32_t value);
+    void element(const std::string& name, int64_t value);
     void element(const std::string& name, double value);
     void element(const std::string& name, double value, int precision);
 
@@ -84,8 +85,8 @@ public:
 
     void characterData(const std::string& charData);
     void characterData(const std::wstring& charData);
-    void characterData(int value);
-    void characterData(long long value);
+    void characterData(int32_t value);
+    void characterData(int64_t value);
     void characterData(double value);
     void characterData(double value, int precision);
 

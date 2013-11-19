@@ -166,13 +166,13 @@
             ::JEB::Test::Session::instance().testFailed(::JEB::Test::Error( \
                     __FILE__, __LINE__, \
                     std::string("Unhandled exception: \"") + ex.what() + "\"", \
-                    ::JEB::Test::Error::Fatal)); \
+                    ::JEB::Test::Error::System)); \
             throw; \
         } catch (...) { \
             ::JEB::Test::Session::instance().testFailed(::JEB::Test::Error( \
                     __FILE__, __LINE__, \
                     "Unhandled exception (not derived from std::exception)", \
-                    ::JEB::Test::Error::Fatal)); \
+                    ::JEB::Test::Error::System)); \
             throw; \
         } \
     }
@@ -211,12 +211,12 @@
             ::JEB::Test::Session::instance().assertPassed(); \
         } else { \
             ::JEB::Test::Session::instance().testFailed(::JEB::Test::Error( \
-                    file, line, msg, ::JEB::Test::Error::Warning)); \
+                    file, line, msg, ::JEB::Test::Error::Failure)); \
         } \
     }
 
 #define JT_EXPECT(cond) \
-    JT_IMPL_EXPECT((cond), __FILE__, __LINE__, "Error: " #cond)
+    JT_IMPL_EXPECT((cond), __FILE__, __LINE__, "Assertion failed: " #cond)
 
 #define JT_EXPECT_EQUAL(a, b) \
     JT_IMPL_EXPECT(::JEB::Test::equal((a), (b)), \
@@ -231,7 +231,7 @@
             std::ostringstream JT_os; \
             JT_os << "Error: " #cond ". " << msg; \
             ::JEB::Test::Session::instance().testFailed(::JEB::Test::Error( \
-                    __FILE__, __LINE__, JT_os.str(), ::JEB::Test::Error::Warning)); \
+                    __FILE__, __LINE__, JT_os.str(), ::JEB::Test::Error::Failure)); \
         } \
     }
 
@@ -372,7 +372,7 @@
  *  assert that failed, which may not provide much information if this
  *  assertion is executed many times. This macro helps solving that problem.
  */
-#define JT_SUB(expr) \
+#define JT_CALL(expr) \
     try \
     { \
         expr; \

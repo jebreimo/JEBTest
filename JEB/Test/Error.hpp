@@ -20,10 +20,10 @@ public:
     enum Level
     {
         None,
-        Warning,
         Failure,
         Critical,
-        Fatal
+        Fatal,
+        System
     };
 
     Error();

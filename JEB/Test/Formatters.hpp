@@ -24,9 +24,9 @@ std::string formatComparison(const T& t, const char* tName,
                              const char* operat)
 {
     std::ostringstream ss;
+    ss.precision(17);
     ss << tName << " " << operat << " " << uName
-       << "\n    Received: " << t
-       << "\n    Expected: " << u;
+       << ".  Expected \"" << t << "\", but received \"" << u << "\"";
     return ss.str();
 }
 
@@ -37,8 +37,8 @@ std::string formatComparison(T* t, const char* tName,
 {
     std::ostringstream ss;
     ss << tName << " " << operat << " " << uName
-       << "\n    Received: " << (t ? t : (void*)t)
-       << "\n    Expected: " << (u ? u : (void*)u);
+       << ".  Expected \"" << (u ? u : (void*)u)
+       << "\", but received \"" << (t ? t : (void*)t) << "\"";
     return ss.str();
 }
 
