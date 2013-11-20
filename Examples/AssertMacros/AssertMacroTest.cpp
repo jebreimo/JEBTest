@@ -100,16 +100,16 @@ static void subtest(const std::string& s, char c, size_t count)
 
 static void subSuccessful()
 {
-    JT_SUB(subtest("abcdabcdabcd", 'a', 3));
-    JT_SUB(subtest("abcdabcdabcd", 'b', 3));
-    JT_SUB(subtest("abcdabcdabcd", 'f', 0));
+    JT_CALL(subtest("abcdabcdabcd", 'a', 3));
+    JT_CALL(subtest("abcdabcdabcd", 'b', 3));
+    JT_CALL(subtest("abcdabcdabcd", 'f', 0));
 }
 
 static void subUnsuccessful()
 {
-    JT_SUB(subtest("abcdabcdabcd", 'a', 3));
-    JT_SUB(subtest("abcdabcdabcd", 'b', 3));
-    JT_SUB(subtest("abcdabcdabcd", 'f', 3)); // This test fails
+    JT_CALL(subtest("abcdabcdabcd", 'a', 3));
+    JT_CALL(subtest("abcdabcdabcd", 'b', 3));
+    JT_CALL(subtest("abcdabcdabcd", 'f', 3)); // This test fails
 }
 
 JT_TEST(throwsSuccessful,

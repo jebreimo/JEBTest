@@ -52,7 +52,7 @@ public:
     clock_t endTime() const;
     void setEndTime(clock_t endTime);
 
-    clock_t elapsedTime() const;
+    double elapsedTime() const;
 
     void addTest(TestPtr test);
     std::vector<TestPtr>& tests();

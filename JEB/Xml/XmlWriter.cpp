@@ -1,5 +1,7 @@
 #include "XmlWriter.hpp"
 
+#include <algorithm>
+#include <cassert>
 #include <fstream>
 #include <iostream>
 #include <stdexcept>
@@ -26,6 +28,37 @@ namespace
     bool oneOf(T value, T cand1, T cand2, T cand3)
     {
         return oneOf(value, cand1, cand2) || value == cand3;
+    }
+
+    bool isBadAttributeTextCharacter(char c)
+    {
+        return (unsigned char)c < 32 ||
+               c == '<' || c == '>' || c == '"' || c == '&';
+    }
+
+    bool isBadElementTextCharacter(char c)
+    {
+        return ((unsigned char)c < 32 && c != '\t' && c != '\n' &&
+                                         c != '\r') ||
+               c == '<' || c == '>' || c == '&';
+    }
+
+    void writeControlChar(std::ostream& os, char c)
+    {
+        assert(static_cast<unsigned char>(c) < 32);
+        if (static_cast<unsigned char>(c) < 10)
+        {
+            char buf[5] = "&#_;";
+            buf[2] = static_cast<char>('0' + c);
+            os.write(buf, 4);
+        }
+        else
+        {
+            char buf[6] = "&#__;";
+            buf[2] = static_cast<char>('0' + (c / 10));
+            buf[3] = static_cast<char>('0' + (c % 10));
+            os.write(buf, 5);
+        }
     }
 }
 
@@ -76,8 +109,9 @@ XmlWriter::XmlWriter(XmlWriter&& rhs)
       m_PrevStreamPos(rhs.m_PrevStreamPos),
       m_States(std::move(rhs.m_States)),
       m_Stream(rhs.m_Stream),
-      m_StreamPtr(rhs.releaseStream())
+      m_StreamPtr(std::move(rhs.m_StreamPtr))
 {
+    rhs.m_Stream = nullptr;
 }
 
 XmlWriter::~XmlWriter()
@@ -92,13 +126,11 @@ XmlWriter& XmlWriter::operator=(XmlWriter&& rhs)
     m_Indentation = std::move(rhs.m_Indentation);
 
     m_Stream = rhs.m_Stream;
-    m_StreamPtr.reset(rhs.releaseStream());
+    rhs.m_Stream = nullptr;
+    m_StreamPtr = std::move(rhs.m_StreamPtr);
 
-    m_States.clear();
-    m_States.swap(rhs.m_States);
-
-    m_Context.clear();
-    m_Context.swap(rhs.m_Context);
+    m_States = std::move(rhs.m_States);
+    m_Context = std::move(rhs.m_Context);
 
     return *this;
 }
@@ -130,7 +162,7 @@ void XmlWriter::xmlDeclaration(bool standalone,
 
 void XmlWriter::beginAttribute(const string& name)
 {
-    PRECONDITION(m_Stream, "stream is NULL");
+    PRECONDITION(m_Stream, "stream is nullptr");
     tagContext();
     writeAttributeSeparator();
     write(name);
@@ -158,13 +190,13 @@ void XmlWriter::attributeValue(const std::wstring& value)
     attributeValue(String::toUtf8(value, String::Encoding::Utf16));
 }
 
-void XmlWriter::attributeValue(int value)
+void XmlWriter::attributeValue(int32_t value)
 {
     PRECONDITION(m_States.back() == AttributeValue, "attribute value without name");
     *m_Stream << value;
 }
 
-void XmlWriter::attributeValue(long long value)
+void XmlWriter::attributeValue(int64_t value)
 {
     PRECONDITION(m_States.back() == AttributeValue, "attribute value without name");
     *m_Stream << value;
@@ -196,14 +228,14 @@ void XmlWriter::attribute(const std::string& name, const std::wstring& value)
     attribute(name, String::toUtf8(value, String::Encoding::Utf16));
 }
 
-void XmlWriter::attribute(const std::string& name, int value)
+void XmlWriter::attribute(const std::string& name, int32_t value)
 {
     beginAttribute(name);
     attributeValue(value);
     endAttribute();
 }
 
-void XmlWriter::attribute(const std::string& name, long long value)
+void XmlWriter::attribute(const std::string& name, int64_t value)
 {
     beginAttribute(name);
     attributeValue(value);
@@ -280,14 +312,14 @@ void XmlWriter::element(const std::string& name, const std::wstring& charData)
     element(name, String::toUtf8(charData, String::Encoding::Utf16));
 }
 
-void XmlWriter::element(const std::string& name, int value)
+void XmlWriter::element(const std::string& name, int32_t value)
 {
     beginElement(name);
     characterData(value);
     endElement();
 }
 
-void XmlWriter::element(const std::string& name, long long value)
+void XmlWriter::element(const std::string& name, int64_t value)
 {
     beginElement(name);
     characterData(value);
@@ -320,14 +352,14 @@ void XmlWriter::characterData(const std::wstring& charData)
     characterData(String::toUtf8(charData, String::Encoding::Utf16));
 }
 
-void XmlWriter::characterData(int value)
+void XmlWriter::characterData(int32_t value)
 {
     textContext();
     *m_Stream << value;
     m_FormattingState = AfterText;
 }
 
-void XmlWriter::characterData(long long value)
+void XmlWriter::characterData(int64_t value)
 {
     textContext();
     *m_Stream << value;
@@ -357,7 +389,7 @@ void XmlWriter::rawCharacterData(const string& rawData)
 
 void XmlWriter::beginSpecialTag(const string& start, const string& end)
 {
-    PRECONDITION(m_Stream, "stream is NULL");
+    PRECONDITION(m_Stream, "stream is nullptr");
     textContext();
     if ((m_Formatting & IndentElements) != 0 &&
         oneOf(m_FormattingState, StartOfLine, AfterBraces, AfterEndTag))
@@ -610,41 +642,55 @@ void XmlWriter::ensureNewline()
 
 void XmlWriter::writeAttributeText(const string& s)
 {
-    size_t start = 0;
-    size_t end = s.find_first_of("<>\"&");
-    while (end != string::npos)
+    auto first = begin(s);
+    auto last = find_if(begin(s), end(s), isBadAttributeTextCharacter);
+    while (last != end(s))
     {
-        write(s.begin() + start, s.begin() + end);
-        switch (s[end])
+        write(first, last);
+        if (static_cast<unsigned char>(*last) < 32)
         {
-        case '<': m_Stream->write("&lt;", 4); break;
-        case '>': m_Stream->write("&gt;", 4); break;
-        case '"': m_Stream->write("&quot;", 6); break;
-        case '&': m_Stream->write("&amp;", 5); break;
+            writeControlChar(*m_Stream, *last);
         }
-        start = end + 1;
-        end = s.find_first_of("<>\"&", start);
+        else
+        {
+            switch (*last)
+            {
+            case '<': m_Stream->write("&lt;", 4); break;
+            case '>': m_Stream->write("&gt;", 4); break;
+            case '"': m_Stream->write("&quot;", 6); break;
+            case '&': m_Stream->write("&amp;", 5); break;
+            }
+        }
+        first = next(last);
+        last = find_if(first, end(s), isBadAttributeTextCharacter);
     }
-    write(s.begin() + start, s.end());
+    write(first, end(s));
 }
 
 void XmlWriter::writeElementText(const std::string& s)
 {
-    size_t start = 0;
-    size_t end = s.find_first_of("<>&");
-    while (end != string::npos)
+    auto first = begin(s);
+    auto last = find_if(begin(s), end(s), isBadElementTextCharacter);
+    while (last != end(s))
     {
-        write(s.begin() + start, s.begin() + end);
-        switch (s[end])
+        write(first, last);
+        if (static_cast<unsigned char>(*last) < 32)
         {
-        case '<': m_Stream->write("&lt;", 4); break;
-        case '>': m_Stream->write("&gt;", 4); break;
-        case '&': m_Stream->write("&amp;", 5); break;
+            writeControlChar(*m_Stream, *last);
         }
-        start = end + 1;
-        end = s.find_first_of("<>&", start);
+        else
+        {
+            switch (*last)
+            {
+            case '<': m_Stream->write("&lt;", 4); break;
+            case '>': m_Stream->write("&gt;", 4); break;
+            case '&': m_Stream->write("&amp;", 5); break;
+            }
+        }
+        first = next(last);
+        last = find_if(first, end(s), isBadElementTextCharacter);
     }
-    write(s.begin() + start, s.end());
+    write(first, end(s));
 }
 
 void XmlWriter::write(const std::string& s)
@@ -658,6 +704,8 @@ void XmlWriter::write(const std::string& s)
 void XmlWriter::write(std::string::const_iterator beg,
                       std::string::const_iterator end)
 {
+    if (beg == end)
+        return;
     m_LinePos += (size_t)m_Stream->tellp() - m_PrevStreamPos +
                  String::distance(beg, end);
     m_Stream->write(&*beg, end - beg);

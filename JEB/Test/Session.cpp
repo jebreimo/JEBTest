@@ -131,7 +131,7 @@ void Session::writeReports()
         writeReport(writeTextReport, m_ReportFileName, ".txt",
                     (m_EnabledReports & ~TextReport) != 0, *this);
     if (reports & JUnitReport)
-        writeReport(writeTextReport, m_ReportFileName, ".xml",
+        writeReport(writeXmlReport, m_ReportFileName, ".xml",
                     (m_EnabledReports & ~JUnitReport) != 0, *this);
 }
 
