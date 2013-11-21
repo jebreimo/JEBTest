@@ -70,6 +70,19 @@ const std::vector<Error>& Error::context() const
     return m_Context;
 }
 
+const char* Error::levelName(Level level)
+{
+    switch (level)
+    {
+    case Failure: return "Failure";
+    case Critical: return "Critical";
+    case Fatal: return "Fatal";
+    case System: return "System";
+    default: break;
+    }
+    return "None";
+}
+
 std::ostream& operator<<(std::ostream& os, const Error& e)
 {
     return os << e.text();

@@ -135,6 +135,24 @@ std::map<std::string, std::vector<TestPtr>> getTestCases(
     return testCases;
 }
 
+void writeXmlError(XmlWriter& writer, const Error& error)
+{
+    if (error.level() == Error::System)
+        writer.beginElement("error");
+    else
+        writer.beginElement("failure");
+    writer.attribute("message", error.message());
+    writer.attribute("type", Error::levelName(error.level()));
+    writer.characterData(error.text());
+    auto& context = error.context();
+    for (auto c = begin(context); c != end(context); ++c)
+    {
+        writer.characterData("\n");
+        writer.characterData(c->text());
+    }
+    writer.endElement();
+}
+
 void writeXmlTestCase(XmlWriter& writer, const Test& test)
 {
     writer.beginElement("testcase");
@@ -146,19 +164,7 @@ void writeXmlTestCase(XmlWriter& writer, const Test& test)
         writer.attribute("time", test.elapsedTime());
         auto& errors = test.errors();
         for (auto it = begin(errors); it != end(errors); ++it)
-        {
-            if (it->level() == Error::System)
-                writer.beginElement("error");
-            else
-                writer.beginElement("failure");
-            writer.attribute("message", it->message());
-            writer.endElement();
-        }
-    }
-    auto testCases = test.tests();
-    for (auto it = begin(testCases); it != end(testCases); ++it)
-    {
-        writeXmlTestCase(writer, **it);
+            writeXmlError(writer, *it);
     }
     writer.endElement();
 }

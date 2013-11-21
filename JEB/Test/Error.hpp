@@ -42,6 +42,8 @@ public:
                     unsigned lineNo,
                     const std::string& message);
     const std::vector<Error>& context() const;
+    
+    static const char* levelName(Level level);
 private:
     std::string m_File;
     Level m_Level;
