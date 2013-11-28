@@ -3,9 +3,6 @@ TODO
 - Add some test examples that also serves as "tests" of the test library
     - Add a project with macros expanded
 - Implement text report
-- Implement JUnit (xml) report
-- Add redirection of cout, cerr and clog.
-- Record execution time for all tests
 - Reduce number of public include files
 - Make name clashes less likely by changing certain names used in macros (add a JT prefix to for instance TestFailure, CriticalFailure and FatalFailure)
 - Handle the host option
@@ -13,6 +10,9 @@ TODO
 DONE
 ====
 - Add a way to specify execution order of "test suites"
+- Implement JUnit (xml) report
+- Record execution time for all tests
+- Add redirection of cout, cerr and clog.
 
 Ideas I've considered, but don't intend to implement
 ====================================================

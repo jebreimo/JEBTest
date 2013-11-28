@@ -50,17 +50,21 @@ void runTests(const char* file, int line, const char* testNamesString,
             catch (const AbstractFailure& ex)
             {
                 Session::instance().testFailed(ex.error());
-                if (ex.error().level() != Error::Failure)
+                if (ex.error().type() != Error::Failure)
                     throw;
             }
             catch (const std::exception& ex)
             {
-                Session::instance().testFailed(Error(file, line, std::string("Unhandled exception: \"") + ex.what() + "\"", Error::Fatal));
+                Session::instance().testFailed(Error(file, line,
+                    std::string("Unhandled exception: \"") + ex.what() + "\"",
+                    Error::Fatal));
                 throw;
             }
             catch (...)
             {
-                Session::instance().testFailed(Error(file, line, "Unhandled exception (not derived from std::exception)", Error::Fatal));
+                Session::instance().testFailed(Error(file, line,
+                    "Unhandled exception (not derived from std::exception)",
+                    Error::Fatal));
                 throw;
             }
         }

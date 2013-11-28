@@ -36,7 +36,7 @@ void Test::incrementAssertions()
 
 bool Test::failed() const
 {
-    return !m_Errors.empty() && m_Errors.back().level() != Error::None;
+    return !m_Errors.empty() && m_Errors.back().type() != Error::None;
 }
 
 bool Test::failedHierarchy() const

@@ -137,13 +137,16 @@ std::map<std::string, std::vector<TestPtr>> getTestCases(
 
 void writeXmlError(XmlWriter& writer, const Error& error)
 {
-    if (error.level() == Error::System)
+    if (error.type() == Error::System)
         writer.beginElement("error");
     else
         writer.beginElement("failure");
     writer.attribute("message", error.message());
-    writer.attribute("type", Error::levelName(error.level()));
-    writer.characterData(error.text());
+    writer.attribute("type", Error::levelName(error.type()));
+    writer.characterData(error.file());
+    writer.characterData("[");
+    writer.characterData((int)error.lineNo());
+    writer.characterData("]");
     auto& context = error.context();
     for (auto c = begin(context); c != end(context); ++c)
     {
@@ -175,10 +178,8 @@ void writeXmlReport(std::ostream& os, const Session& session)
     XmlWriter writer(os);
     writer.setFormatting(XmlWriter::IndentElements);
     writer.beginElement("testsuites");
-    //auto testSuites = session.tests();
     for (auto it = begin(testCases); it != end(testCases); ++it)
     {
-        //addTestCases(testCases, *it);
         writer.beginElement("testsuite");
         writer.attribute("name", it->first);
         for (auto t = begin(it->second); t != end(it->second); ++t)

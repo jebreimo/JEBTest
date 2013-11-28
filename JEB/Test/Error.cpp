@@ -11,7 +11,7 @@
 namespace JEB { namespace Test {
 
 Error::Error()
-    : m_Level(None),
+    : m_Type(None),
       m_LineNo(0)
 {
 }
@@ -19,9 +19,9 @@ Error::Error()
 Error::Error(const std::string& file,
              unsigned lineNo,
              const std::string& message,
-             Level level)
+             Type type)
     : m_File(file),
-      m_Level(level),
+      m_Type(type),
       m_LineNo(lineNo),
       m_Message(message)
 {}
@@ -31,9 +31,9 @@ const std::string& Error::file() const
     return m_File;
 }
 
-Error::Level Error::level() const
+Error::Type Error::type() const
 {
-    return m_Level;
+    return m_Type;
 }
 
 unsigned Error::lineNo() const
@@ -50,9 +50,9 @@ std::string Error::text() const
 {
     std::ostringstream ss;
     ss << m_File << "[" << m_LineNo << "]: ";
-    if (m_Level == Critical)
+    if (m_Type == Critical)
         ss << "CRITICAL ";
-    else if (m_Level == Fatal)
+    else if (m_Type == Fatal)
         ss << "FATAL ";
     ss << m_Message;
     return ss.str();
@@ -70,9 +70,9 @@ const std::vector<Error>& Error::context() const
     return m_Context;
 }
 
-const char* Error::levelName(Level level)
+const char* Error::levelName(Type type)
 {
-    switch (level)
+    switch (type)
     {
     case Failure: return "Failure";
     case Critical: return "Critical";

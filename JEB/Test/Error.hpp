@@ -17,7 +17,7 @@ namespace JEB { namespace Test {
 class Error
 {
 public:
-    enum Level
+    enum Type
     {
         None,
         Failure,
@@ -30,10 +30,12 @@ public:
     Error(const std::string& file,
           unsigned lineNo,
           const std::string& message,
-          Level level = None);
+          Type level = None);
 
+    /** @brief The file where the error occurred.
+      */
     const std::string& file() const;
-    Level level() const;
+    Type type() const;
     unsigned lineNo() const;
     const std::string& message() const;
     std::string text() const;
@@ -42,11 +44,11 @@ public:
                     unsigned lineNo,
                     const std::string& message);
     const std::vector<Error>& context() const;
-    
-    static const char* levelName(Level level);
+
+    static const char* levelName(Type level);
 private:
     std::string m_File;
-    Level m_Level;
+    Type m_Type;
     unsigned m_LineNo;
     std::string m_Message;
     std::vector<Error> m_Context;
