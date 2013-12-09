@@ -11,9 +11,10 @@
 #include <iomanip>
 #include <iostream>
 #include <stdexcept>
+#include "JUnitReport.hpp"
 #include "ParseArguments.hpp"
-#include "Report.hpp"
 #include "Test.hpp"
+#include "TextReport.hpp"
 
 #include "JEB/Algorithms/Algorithms.hpp"
 #include "JEB/String/String.hpp"
@@ -131,7 +132,7 @@ void Session::writeReports()
         writeReport(writeTextReport, m_ReportFileName, ".txt",
                     (m_EnabledReports & ~TextReport) != 0, *this);
     if (reports & JUnitReport)
-        writeReport(writeXmlReport, m_ReportFileName, ".xml",
+        writeReport(writeJUnitReport, m_ReportFileName, ".xml",
                     (m_EnabledReports & ~JUnitReport) != 0, *this);
 }
 

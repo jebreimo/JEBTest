@@ -57,14 +57,14 @@ void runTests(const char* file, int line, const char* testNamesString,
             {
                 Session::instance().testFailed(Error(file, line,
                     std::string("Unhandled exception: \"") + ex.what() + "\"",
-                    Error::Fatal));
+                    Error::UnhandledException));
                 throw;
             }
             catch (...)
             {
                 Session::instance().testFailed(Error(file, line,
                     "Unhandled exception (not derived from std::exception)",
-                    Error::Fatal));
+                    Error::UnhandledException));
                 throw;
             }
         }

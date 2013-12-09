@@ -49,10 +49,10 @@ const std::string& Error::message() const
 std::string Error::text() const
 {
     std::ostringstream ss;
-    ss << m_File << "[" << m_LineNo << "]: ";
-    if (m_Type == Critical)
+    ss << m_File << ":" << m_LineNo << ": ";
+    if (m_Type == CriticalFailure)
         ss << "CRITICAL ";
-    else if (m_Type == Fatal)
+    else if (m_Type == FatalFailure)
         ss << "FATAL ";
     ss << m_Message;
     return ss.str();
@@ -75,9 +75,9 @@ const char* Error::levelName(Type type)
     switch (type)
     {
     case Failure: return "Failure";
-    case Critical: return "Critical";
-    case Fatal: return "Fatal";
-    case System: return "System";
+    case CriticalFailure: return "Critical Failure";
+    case FatalFailure: return "Fatal Failure";
+    case UnhandledException: return "Unhandled Exception";
     default: break;
     }
     return "None";

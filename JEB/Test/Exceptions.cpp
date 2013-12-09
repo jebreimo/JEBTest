@@ -43,18 +43,18 @@ TestFailure::~TestFailure()
 {}
 
 CriticalFailure::CriticalFailure(const std::string& file,
-                                   unsigned lineNo,
-                                   const std::string& message)
-    : AbstractFailure(Error(file, lineNo, message, Error::Critical))
+                                 unsigned lineNo,
+                                 const std::string& message)
+    : AbstractFailure(Error(file, lineNo, message, Error::CriticalFailure))
 {}
 
 CriticalFailure::~CriticalFailure()
 {}
 
 FatalFailure::FatalFailure(const std::string& file,
-                                   unsigned lineNo,
-                                   const std::string& message)
-    : AbstractFailure(Error(file, lineNo, message, Error::Fatal))
+                           unsigned lineNo,
+                           const std::string& message)
+    : AbstractFailure(Error(file, lineNo, message, Error::FatalFailure))
 {}
 
 FatalFailure::~FatalFailure()

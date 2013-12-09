@@ -21,9 +21,9 @@ public:
     {
         None,
         Failure,
-        Critical,
-        Fatal,
-        System
+        CriticalFailure,
+        FatalFailure,
+        UnhandledException
     };
 
     Error();

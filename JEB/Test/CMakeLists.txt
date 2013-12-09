@@ -15,11 +15,12 @@ set(SRC
     AutoTestRunner.cpp
     Error.cpp
     Exceptions.cpp
+    JUnitReport.cpp
     MacroUtilities.cpp
     ParseArguments.cpp
-    Report.cpp
     Session.cpp
     Test.cpp
+    TextReport.cpp
     )
 
 set(PUBLIC_HEADERS
@@ -32,7 +33,6 @@ set(PUBLIC_HEADERS
     Macros.hpp
     MacroUtilities.hpp
     ParseArguments.hpp
-    Report.hpp
     Session.hpp
     TestScope.hpp
     )
