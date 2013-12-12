@@ -186,12 +186,14 @@
     }
 
 #define JT_IMPL_THROWS(expr, exception, failure, file, line, msg) \
-    try { \
-        expr; \
-        throw ::JEB::Test::failure(file, line, msg); \
-    } catch (const exception&) { \
-        ::JEB::Test::Session::instance().assertPassed(); \
-    }
+    do { \
+        try { \
+            expr; \
+            throw ::JEB::Test::failure(file, line, msg); \
+        } catch (const exception&) { \
+            ::JEB::Test::Session::instance().assertPassed(); \
+        } \
+    } while (false)
 
 /** @brief Macro for verifying that an expression throws an exception.
   *
@@ -215,14 +217,14 @@
                    #expr " didn't throw exception \"" #exception "\"")
 
 #define JT_IMPL_EXPECT(cond, file, line, msg) \
-    { \
+    do { \
         if (cond) { \
             ::JEB::Test::Session::instance().assertPassed(); \
         } else { \
             ::JEB::Test::Session::instance().testFailed(::JEB::Test::Error( \
                     file, line, msg, ::JEB::Test::Error::Failure)); \
         } \
-    }
+    } while (false)
 
 #define JT_EXPECT(cond) \
     JT_IMPL_EXPECT((cond), __FILE__, __LINE__, "Assertion failed: " #cond)
@@ -233,7 +235,7 @@
                    ::JEB::Test::formatComparison((a), #a, (b), #b, "!="))
 
 #define JT_EXPECT_MSG(cond, msg) \
-    { \
+    do { \
         if (cond) { \
             ::JEB::Test::Session::instance().assertPassed(); \
         } else { \
@@ -243,19 +245,19 @@
                     __FILE__, __LINE__, JT_os.str(), \
                     ::JEB::Test::Error::Failure)); \
         } \
-    }
+    } while (false)
 
 
 /** @brief Internal macro. Used by other assert macros.
   */
 #define JT_IMPL_ASSERT(cond, failure, file, line, msg) \
-    { \
+    do { \
         if (cond) { \
             ::JEB::Test::Session::instance().assertPassed(); \
         } else { \
             throw ::JEB::Test::failure(file, line, msg); \
         } \
-    }
+    } while (false)
 
 /** @brief Verifies that condition @a cond is true.
   *
@@ -274,7 +276,7 @@
                    "Assertion failed: " #cond)
 
 #define JT_IMPL_ASSERT_MSG(cond, condStr, failure, file, line, msg) \
-    { \
+    do { \
         if (cond) { \
             ::JEB::Test::Session::instance().assertPassed(); \
         } else { \
@@ -282,7 +284,7 @@
             JT_os << "Assertion failed: " condStr ". " << msg; \
             throw ::JEB::Test::failure(file, line, JT_os.str()); \
         } \
-    }
+    } while (false)
 
 /** @brief Verifies that condition @a cond is true.
   *
@@ -387,14 +389,16 @@
   *  assertion is executed many times. This macro helps solving that problem.
   */
 #define JT_CALL(expr) \
-    try \
-    { \
-        expr; \
-    } \
-    catch (::JEB::Test::TestFailure& ex) \
-    { \
-        ex.addContext(__FILE__, __LINE__, #expr); \
-        throw ex; \
-    }
+    do { \
+        try \
+        { \
+            expr; \
+        } \
+        catch (::JEB::Test::TestFailure& ex) \
+        { \
+            ex.addContext(__FILE__, __LINE__, #expr); \
+            throw ex; \
+        } \
+    } while (false)
 
 #endif
