@@ -26,7 +26,7 @@ std::string formatComparison(const T& t, const char* tName,
     std::ostringstream ss;
     ss.precision(17);
     ss << tName << " " << operat << " " << uName
-       << ".  Expected \"" << t << "\", but received \"" << u << "\"";
+       << ".  Expected \"" << u << "\", but received \"" << t << "\"";
     return ss.str();
 }
 
