@@ -9,6 +9,9 @@
 #define JEB_TEST_FORMATTERS_HPP
 
 #include <sstream>
+#include "JEB/String/StringConversion.hpp"
+
+#undef JEB
 
 namespace JEB { namespace Test {
 
@@ -17,6 +20,9 @@ std::ostream& operator<<(std::ostream& os, const std::pair<T, U>& p)
 {
     return os << "{" << p.first << ", " << p.second << "}";
 }
+
+std::ostream& operator<<(std::ostream& os, const std::wstring& s);
+std::ostream& operator<<(std::ostream& os, const wchar_t* s);
 
 template <typename T, typename U>
 std::string formatComparison(const T& t, const char* tName,

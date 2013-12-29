@@ -15,6 +15,7 @@ set(SRC
     AutoTestRunner.cpp
     Error.cpp
     Exceptions.cpp
+    Formatters.cpp
     JUnitReport.cpp
     MacroUtilities.cpp
     ParseArguments.cpp
