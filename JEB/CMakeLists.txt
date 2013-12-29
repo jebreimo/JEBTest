@@ -10,7 +10,7 @@ project(JEB)
 
 set(JEB_DIR JEB)
 
-add_subdirectory(Collections)
+add_subdirectory(Containers)
 add_subdirectory(String)
 add_subdirectory(Sys)
 add_subdirectory(Test)

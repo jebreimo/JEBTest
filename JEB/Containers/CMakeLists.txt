@@ -1,12 +1,11 @@
 cmake_minimum_required(VERSION 2.8)
 
-project(Collections)
+project(Containers)
 
 set(JEB_DIR JEB/${PROJECT_NAME})
 
 set(PUBLIC_HEADERS
     Interval.hpp
-    MapUtilities.hpp
     SetUtilities.hpp
     VectorUtilities.hpp
     )
