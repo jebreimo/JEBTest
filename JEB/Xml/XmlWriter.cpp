@@ -6,7 +6,7 @@
 #include <iostream>
 #include <stdexcept>
 #include "JEB/String/String.hpp"
-#include "JEB/String/StringPredicates.hpp"
+#include "JEB/Unicode/UnicodePredicates.hpp"
 
 #define PRECONDITION(cond, msg) \
     if (!(cond)) \
@@ -396,7 +396,7 @@ void XmlWriter::beginSpecialTag(const string& start, const string& end)
         ensureNewline();
     write(start);
     m_Context.push_back(end);
-    if (String::isAlphaNumeric(String::chr(start, -1)))
+    if (Unicode::isAlphaNumeric(String::chr(start, -1)))
     {
         m_FormattingState = FirstAttribute;
     }

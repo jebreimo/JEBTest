@@ -108,7 +108,8 @@ public:
     {}
 
     template <typename FwdIterator>
-    std::pair<FwdIterator, FwdIterator> operator()(FwdIterator begin, FwdIterator end) const
+    std::pair<FwdIterator, FwdIterator> operator()(FwdIterator begin,
+                                                   FwdIterator end) const
     {
         FwdIterator it = std::find_if(begin, end, m_Predicate);
         FwdIterator itStart = (it != end ? it++ : it);
@@ -133,7 +134,8 @@ public:
     {}
 
     template <typename FwdIterator>
-    std::pair<FwdIterator, FwdIterator> operator()(FwdIterator begin, FwdIterator end) const
+    std::pair<FwdIterator, FwdIterator> operator()(FwdIterator begin,
+                                                   FwdIterator end) const
     {
         FwdIterator itEnd = Algorithms::find_last_if(begin, end, m_Predicate);
         if (itEnd == end)

@@ -1,12 +1,13 @@
 #ifndef JEB_STRING_UNICODE_HPP
 #define JEB_STRING_UNICODE_HPP
 
+#include <algorithm>
+#include <cassert>
 #include <cstdint>
 #include <iterator>
 #include <stdexcept>
 #include <utility>
-#include "CharClass.hpp"
-#include "UnicodeChars.hpp"
+#include "UnicodePredicates.hpp"
 
 /** @file
   * @brief Defines several functions for identifying Unicode code points.
@@ -19,110 +20,93 @@ namespace Unicode
 {
 
 template <typename BiIt>
-BiIt startOfCharacter(BiIt begin, BiIt end)
+BiIt prevCharacter(BiIt first, BiIt last)
 {
-    if (begin == end)
-        return end;
-
-    while (end != begin)
+    while (last != first)
     {
-        if ((charClass(*(--end)) & CharClass::Mark) == 0)
-            return end;
+        --last;
+        if (!isMark(*last))
+            break;
     }
-
-    throw std::runtime_error("Invalid unicode character; it starts with a combining mark");
-    return end;
+    return last;
 }
 
 template <typename FwdIt>
-FwdIt endOfCharacter(FwdIt begin, FwdIt end)
+FwdIt nextCharacter(FwdIt first, FwdIt last)
 {
-    if (begin == end)
-        return end;
+    if (first == last)
+        return last;
 
-    ++begin;
-    while (begin != end && (charClass(*begin) & CharClass::Mark) != 0)
-        ++begin;
-    return begin;
+    return std::find_if(++first, last, [](uint32_t c){return !isMark(c);});
 }
 
-
 template <typename FwdIt>
-FwdIt advanceCharacters(FwdIt begin, FwdIt end, size_t n)
+FwdIt nextCharacter(FwdIt first, FwdIt last, size_t n)
 {
-    while (n != 0 && begin != end)
+    while (n != 0 && first != last)
     {
-        begin = Unicode::endOfCharacter(begin, end);
+        first = nextCharacter(first, last);
         --n;
     }
-    return begin;
+    return first;
 }
 
 template <typename BiIt>
-BiIt retreatCharacters(BiIt begin, BiIt end,
-                        size_t n)
+BiIt prevCharacter(BiIt first, BiIt last, size_t n,
+                   std::bidirectional_iterator_tag)
 {
-    while (n != 0 && begin != end)
+    while (n != 0 && first != last)
     {
-        end = Unicode::startOfCharacter(begin, end);
+        last = prevCharacter(first, last);
         --n;
     }
-    return end;
+    return last;
 }
 
 template <typename FwdIt>
-std::pair<FwdIt, FwdIt> characterRange(FwdIt begin, FwdIt end, long pos)
+FwdIt prevCharacter(FwdIt first, FwdIt last, size_t n,
+                    std::forward_iterator_tag)
+{
+    FwdIt it = first;
+    for (; n != 0; n--)
+    {
+        if (first == last)
+            return first;
+        first = nextCharacter(first, last);
+    }
+    for (; first != last; first = nextCharacter(first, last))
+        it = nextCharacter(it, last);
+    return it;
+}
+
+template <typename FwdIt>
+FwdIt prevCharacter(FwdIt first, FwdIt last, size_t n)
+{
+    return prevCharacter(first, last, n,
+            typename std::iterator_traits<FwdIt>::iterator_category());
+}
+
+template <typename FwdIt>
+std::pair<FwdIt, FwdIt> characterRange(FwdIt first, FwdIt last, long pos)
 {
     if (pos >= 0)
     {
-        begin = advanceCharacters(begin, end, pos);
-        end = Unicode::endOfCharacter(begin, end);
+        first = nextCharacter(first, last, pos);
+        last = nextCharacter(first, last);
     }
     else
     {
-        end = retreatCharacters(begin, end, -pos);
-        begin = Unicode::startOfCharacter(begin, end);
+        last = prevCharacter(first, last, -pos);
+        first = prevCharacter(first, last);
     }
-    return std::make_pair(end, end);
+    return std::make_pair(last, last);
 }
 
 template <typename FwdIt>
-size_t numberOfCharacters(FwdIt begin, FwdIt end)
+size_t numberOfCharacters(FwdIt first, FwdIt last)
 {
-    size_t len = 0;
-    for (; begin != end; ++begin)
-    {
-        if ((charClass(*begin) & CharClass::Mark) == 0)
-            ++len;
-    }
-    return len;
+    return std::count_if(first, last, [](uint32_t c){return !isMark(c);});
 }
-
-// template <typename FwdIt>
-// FwdIt skipNewline(FwdIt begin, FwdIt end)
-// {
-//     if (begin != end)
-//         return begin;
-
-//     switch (*begin)
-//     {
-//     case '\n':
-//     case '\v':
-//     case '\f':
-//     case JEB_CHAR_NEXT_LINE:
-//     case JEB_CHAR_LINE_SEPARATOR:
-//     case JEB_CHAR_PARAGRAPH_SEPARATOR:
-//         ++begin;
-//         break;
-//     case '\r':
-//         if (++begin != end && *begin == '\n')
-//             ++begin;
-//         break;
-//     default:
-//         break;
-//     }
-//     return begin;
-// }
 
 }}
 

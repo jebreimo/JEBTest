@@ -6,7 +6,7 @@
 #include <utility>
 #include "JEB/JEBDefinitions.hpp"
 
-namespace JEB {
+namespace JEB { namespace Iterators {
 
 template <typename T>
 class PairBackInsertIterator : std::iterator<std::output_iterator_tag, void, void, void, void>
@@ -72,6 +72,6 @@ PairFrontInsertIterator<T> frontInserter(std::pair<T, T>& pair)
     return PairFrontInsertIterator<T>(pair);
 }
 
-}
+}}
 
 #endif

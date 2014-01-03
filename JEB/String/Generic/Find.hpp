@@ -84,7 +84,7 @@ FwdIt findFirstWhereNot(FwdIt begin, FwdIt end,
 template <typename BiIt, typename UnaryFunc>
 BiIt findLastWhere(BiIt begin, BiIt end,
                    UnaryFunc predicate,
-                   const std::bidirectional_iterator_tag&)
+                   std::bidirectional_iterator_tag)
 {
     BiIt initialEnd = end;
     while (begin != end)
@@ -99,7 +99,7 @@ BiIt findLastWhere(BiIt begin, BiIt end,
 template <typename FwdIt, typename UnaryFunc>
 FwdIt findLastWhere(FwdIt begin, FwdIt end,
                     UnaryFunc predicate,
-                    const std::input_iterator_tag&)
+                    std::input_iterator_tag)
 {
     FwdIt lastMatch = end;
     while (begin != end)
@@ -124,7 +124,7 @@ FwdIt findLastWhere(FwdIt begin, FwdIt end,
 template <typename BiIt, typename UnaryFunc>
 BiIt findLastWhereNot(BiIt begin, BiIt end,
                       UnaryFunc predicate,
-                      const std::bidirectional_iterator_tag&)
+                      std::bidirectional_iterator_tag)
 {
     BiIt initialEnd = end;
     while (begin != end)
@@ -139,7 +139,7 @@ BiIt findLastWhereNot(BiIt begin, BiIt end,
 template <typename FwdIt, typename UnaryFunc>
 FwdIt findLastWhereNot(FwdIt begin, FwdIt end,
                        UnaryFunc predicate,
-                       const std::input_iterator_tag&)
+                       std::input_iterator_tag)
 {
     FwdIt lastMatch = end;
     while (begin != end)
@@ -217,11 +217,11 @@ FwdIt1 findLastNotOf(FwdIt1 begin, FwdIt1 end,
         return findLastWhereNot(begin, end, isOneOf(cmpBegin, cmpEnd));
 }
 
-template <typename FwdIt1, typename FwdIt2, typename BinaryFunc>
-bool endsWith(FwdIt1 begin, FwdIt1 end,
-              FwdIt2 cmpBegin, FwdIt2 cmpEnd,
+template <typename BiIt1, typename BiIt2, typename BinaryFunc>
+bool endsWith(BiIt1 begin, BiIt1 end,
+              BiIt2 cmpBegin, BiIt2 cmpEnd,
               BinaryFunc predicate,
-              const std::bidirectional_iterator_tag&)
+              std::bidirectional_iterator_tag)
 {
     while (end != begin && cmpEnd != cmpBegin)
     {
@@ -235,7 +235,7 @@ template <typename FwdIt1, typename FwdIt2, typename BinaryFunc>
 bool endsWith(FwdIt1 begin, FwdIt1 end,
               FwdIt2 cmpBegin, FwdIt2 cmpEnd,
               BinaryFunc predicate,
-              const std::input_iterator_tag&)
+              std::input_iterator_tag)
 {
     size_t len = std::distance(cmpBegin, cmpEnd);
     FwdIt1 it = begin;

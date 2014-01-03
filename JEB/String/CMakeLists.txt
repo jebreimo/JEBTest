@@ -18,7 +18,6 @@ set(SRC
     FromString.cpp
     String.cpp
     StringConversion.cpp
-    StringPredicates.cpp
     Generic/CharRangeSet.cpp
     Generic/WildCardMatcher.cpp
     Generic/WildCardWord.cpp

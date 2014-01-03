@@ -8,14 +8,14 @@
 
 namespace JEB { namespace String {
 
-class CharClassPredicate : public std::unary_function<uint32_t, bool>
-{
-public:
-    CharClassPredicate(uint32_t classes);
-    bool operator()(uint32_t chr) const;
-private:
-    uint32_t m_Classes;
-};
+// class CharClassPredicate : public std::unary_function<uint32_t, bool>
+// {
+// public:
+//     CharClassPredicate(uint32_t classes);
+//     bool operator()(uint32_t chr) const;
+// private:
+//     uint32_t m_Classes;
+// };
 
 template <typename BinaryFunc = std::equal_to<uint32_t>>
 class CharacterPredicate : public std::unary_function<uint32_t, bool>
@@ -32,19 +32,19 @@ private:
     BinaryFunc m_Compare;
 };
 
-class HexDigitPredicate
-{
-public:
-    bool operator()(uint32_t chr);
-};
+// class HexDigitPredicate
+// {
+// public:
+//     bool operator()(uint32_t chr);
+// };
 
-class NewlinePredicate : public std::unary_function<uint32_t, bool>
-{
-public:
-    bool operator()(uint32_t chr) const;
-private:
-    static uint32_t s_CodePoints[7];
-};
+// class NewlinePredicate : public std::unary_function<uint32_t, bool>
+// {
+// public:
+//     bool operator()(uint32_t chr) const;
+// private:
+//     static uint32_t s_CodePoints[7];
+// };
 
 template <typename FwdIt, typename BinaryFunc = std::equal_to<uint32_t>>
 class OneOfPredicate;
@@ -103,22 +103,22 @@ private:
     BinaryFunc m_Compare;
 };
 
-class WhitespacePredicate : public std::unary_function<uint32_t, bool>
-{
-public:
-    bool operator()(uint32_t chr) const;
-private:
-    static uint32_t s_CodePoints[12];
-};
+// class WhitespacePredicate : public std::unary_function<uint32_t, bool>
+// {
+// public:
+//     bool operator()(uint32_t chr) const;
+// private:
+//     static uint32_t s_CodePoints[12];
+// };
 
-CharClassPredicate isCharClass(uint32_t classes);
-bool isCharClass(uint32_t classes, uint32_t chr);
+// CharClassPredicate isCharClass(uint32_t classes);
+// bool isCharClass(uint32_t classes, uint32_t chr);
 
-CharClassPredicate isAlphaNumeric();
-bool isAlphaNumeric(uint32_t chr);
+// CharClassPredicate isAlphaNumeric();
+// bool isAlphaNumeric(uint32_t chr);
 
-CharClassPredicate isCasedLetter();
-bool isCasedLetter(uint32_t chr);
+// CharClassPredicate isCasedLetter();
+// bool isCasedLetter(uint32_t chr);
 
 template <typename BinaryFunc>
 CharacterPredicate<BinaryFunc> isCharacter(uint32_t chr, BinaryFunc compare)
@@ -131,23 +131,23 @@ inline CharacterPredicate<> isCharacter(uint32_t chr)
     return CharacterPredicate<>(chr, std::equal_to<uint32_t>());
 }
 
-CharClassPredicate isGraphical();
-bool isGraphical(uint32_t chr);
+// CharClassPredicate isGraphical();
+// bool isGraphical(uint32_t chr);
 
-HexDigitPredicate isHexDigit();
-bool isHexDigit(uint32_t chr);
+// HexDigitPredicate isHexDigit();
+// bool isHexDigit(uint32_t chr);
 
-CharClassPredicate isLetter();
-bool isLetter(uint32_t chr);
+// CharClassPredicate isLetter();
+// bool isLetter(uint32_t chr);
 
-CharClassPredicate isLower();
-bool isLower(uint32_t chr);
+// CharClassPredicate isLower();
+// bool isLower(uint32_t chr);
 
-NewlinePredicate isNewline();
-bool isNewline(uint32_t chr);
+// NewlinePredicate isNewline();
+// bool isNewline(uint32_t chr);
 
-CharClassPredicate isNumber();
-bool isNumber(uint32_t chr);
+// CharClassPredicate isNumber();
+// bool isNumber(uint32_t chr);
 
 template <typename FwdIt, typename BinaryFunc>
 OneOfPredicate<FwdIt, BinaryFunc>
@@ -162,17 +162,17 @@ OneOfPredicate<FwdIt> isOneOf(FwdIt begin, FwdIt end)
     return OneOfPredicate<FwdIt>(begin, end);
 }
 
-CharClassPredicate isTitle();
-bool isTitle(uint32_t chr);
+// CharClassPredicate isTitle();
+// bool isTitle(uint32_t chr);
 
-CharClassPredicate isUpper();
-bool isUpper(uint32_t chr);
+// CharClassPredicate isUpper();
+// bool isUpper(uint32_t chr);
 
-CharClassPredicate isVisible();
-bool isVisible(uint32_t chr);
+// CharClassPredicate isVisible();
+// bool isVisible(uint32_t chr);
 
-WhitespacePredicate isWhitespace();
-bool isWhitespace(uint32_t chr);
+// WhitespacePredicate isWhitespace();
+// bool isWhitespace(uint32_t chr);
 
 }}
 

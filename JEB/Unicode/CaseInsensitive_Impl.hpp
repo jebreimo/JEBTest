@@ -48,22 +48,24 @@ int32_t CaseInsensitiveCompare<char>::operator()(char a, char b) const;
 template <>
 int32_t CaseInsensitiveCompare<uint32_t>::operator()(uint32_t a, uint32_t b) const;
 
-template <typename FwdIt>
-bool caseInsensitiveEqual(FwdIt beg, FwdIt end, FwdIt cmpBeg, FwdIt cmpEnd)
+template <typename InpIt1, typename InpIt2>
+bool caseInsensitiveEqual(InpIt1 beg, InpIt1 end,
+                          InpIt2 cmpBeg, InpIt2 cmpEnd)
 {
     return JEB::Algorithms::equal(beg, end, cmpBeg, cmpEnd,
                                   CaseInsensitiveEqual<uint32_t>());
 }
 
-template <typename FwdIt>
-bool caseInsensitiveLess(FwdIt beg, FwdIt end, FwdIt cmpBeg, FwdIt cmpEnd)
+template <typename InpIt1, typename InpIt2>
+bool caseInsensitiveLess(InpIt1 beg, InpIt1 end,
+                         InpIt2 cmpBeg, InpIt2 cmpEnd)
 {
     return caseInsensitiveCompare(beg, end, cmpBeg, cmpEnd) < 0;
 }
 
-template <typename It, typename BinaryFunc>
-int32_t findFirstNonZero(It beg, It end,
-                         It cmpBeg, It cmpEnd,
+template <typename InpIt1, typename InpIt2, typename BinaryFunc>
+int32_t findFirstNonZero(InpIt1 beg, InpIt1 end,
+                         InpIt2 cmpBeg, InpIt2 cmpEnd,
                          BinaryFunc compare)
 {
     while (beg != end && cmpBeg != cmpEnd)
@@ -82,8 +84,9 @@ int32_t findFirstNonZero(It beg, It end,
         return 0;
 }
 
-template <typename FwdIt>
-int32_t caseInsensitiveCompare(FwdIt beg, FwdIt end, FwdIt cmpBeg, FwdIt cmpEnd)
+template <typename InpIt1, typename InpIt2>
+int32_t caseInsensitiveCompare(InpIt1 beg, InpIt1 end,
+                               InpIt2 cmpBeg, InpIt2 cmpEnd)
 {
     return findFirstNonZero(beg, end, cmpBeg, cmpEnd,
                             Unicode::CaseInsensitiveCompare<uint32_t>());

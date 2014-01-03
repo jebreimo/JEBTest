@@ -10,7 +10,7 @@ namespace JEB { namespace String { namespace Utf16 {
 
 template <typename OutIt, bool SwapBytes = false>
 class OutIterator
-    : public std::iterator<std::output_iterator_tag, void, void, void, void>
+    : public std::iterator<std::output_iterator_tag, uint32_t, void, void, void>
 {
 public:
     OutputIterator(OutIt it);
@@ -23,10 +23,10 @@ private:
     OutIt m_It;
 };
 
-template <typename Coll>
-OutIterator<std::back_insert_iterator<Coll>> backInserter(Coll& collection)
+template <typename Container>
+OutIterator<std::back_insert_iterator<Container>> backInserter(Container& c)
 {
-    return OutIterator<std::back_insert_iterator<Coll>>(std::back_inserter(collection));
+    return OutIterator<std::back_insert_iterator<Container>>(std::back_inserter(c));
 }
 
 }}}

@@ -17,28 +17,28 @@
 
 namespace JEB { namespace String { namespace Utf8 {
 
-template <typename StringCollection>
-void split(StringCollection& dst,
+template <typename StringContainer>
+void split(StringContainer& dst,
            const std::string& str,
            size_t maxSplits = 0,
            SplitFlags::Flags flags = SplitFlags::IgnoreEmpty);
 
-template <typename StringCollection>
-void split(StringCollection& dst,
+template <typename StringContainer>
+void split(StringContainer& dst,
            const std::string& str,
            const std::string& sep,
            size_t maxSplits = 0,
            SplitFlags::Flags flags = SplitFlags::Defaults);
 
-template <typename StringCollection, typename Finder>
-void splitWithFinder(StringCollection& dst,
+template <typename StringContainer, typename Finder>
+void splitWithFinder(StringContainer& dst,
                      const std::string& str,
                      Finder finder,
                      size_t maxSplits = 0,
                      bool ignoreEmpty = false);
 
-template <typename StringCollection, typename FwdIt, typename Finder>
-void splitWithFinder(StringCollection& dst,
+template <typename StringContainer, typename FwdIt, typename Finder>
+void splitWithFinder(StringContainer& dst,
                      FwdIt begin, FwdIt end,
                      Finder finder,
                      size_t maxSplits = 0,

@@ -20,6 +20,49 @@ namespace JEB
 namespace Algorithms
 {
 
+template <typename InpIt1, typename InpIt2, typename BinaryFunc>
+auto compare(InpIt1 beg, InpIt2 end,
+             InpIt2 cmpBeg, InpIt2 cmpEnd) -> decltype(*beg - *cmpBeg)
+{
+    typedef decltype(compare(*beg, *cmpBeg)) ReturnType;
+    while (beg != end && cmpBeg != cmpEnd)
+    {
+        auto value = *beg - *cmpBeg;
+        if (value != ReturnType())
+            return value;
+        beg++;
+        cmpBeg++;
+    }
+    if (beg != end)
+        return ReturnType(1);
+    else if (cmpBeg != cmpEnd)
+        return ReturnType(-1);
+    else
+        return ReturnType();
+}
+
+template <typename InpIt1, typename InpIt2, typename BinaryFunc>
+auto compare(InpIt1 beg, InpIt2 end,
+             InpIt2 cmpBeg, InpIt2 cmpEnd,
+             BinaryFunc compare) -> decltype(compare(*beg, *cmpBeg))
+{
+    typedef decltype(compare(*beg, *cmpBeg)) ReturnType;
+    while (beg != end && cmpBeg != cmpEnd)
+    {
+        auto value = compare(*beg, *cmpBeg);
+        if (value != ReturnType())
+            return value;
+        beg++;
+        cmpBeg++;
+    }
+    if (beg != end)
+        return ReturnType(1);
+    else if (cmpBeg != cmpEnd)
+        return ReturnType(-1);
+    else
+        return ReturnType();
+}
+
 template <typename InpIt1, typename InpIt2>
 std::pair<InpIt1, InpIt2> mismatch(InpIt1 beg, InpIt1 end,
                                    InpIt2 cmpBeg, InpIt2 cmpEnd)
@@ -191,9 +234,9 @@ FwdIt find_last_if_impl(FwdIt beg, FwdIt end,
     return it;
 }
 
-template <typename BiIt, typename UnaryFunc>
+template <typename BiIt, typename UnaryPredicate>
 BiIt find_last_if_impl(BiIt beg, BiIt end,
-                       UnaryFunc predicate,
+                       UnaryPredicate predicate,
                        std::bidirectional_iterator_tag)
 {
     BiIt it = end;
@@ -206,13 +249,67 @@ BiIt find_last_if_impl(BiIt beg, BiIt end,
     return end;
 }
 
-template <typename FwdIt, typename UnaryFunc>
-FwdIt find_last_if(FwdIt beg, FwdIt end, UnaryFunc predicate)
+template <typename FwdIt, typename UnaryPredicate>
+FwdIt find_last_if(FwdIt beg, FwdIt end, UnaryPredicate predicate)
 {
     return find_last_if_impl(
             beg, end,
             predicate,
             typename std::iterator_traits<FwdIt>::iterator_category());
+}
+
+template <typename FwdIt, typename UnaryPredicate>
+FwdIt find_last_if_not(FwdIt beg, FwdIt end, UnaryPredicate predicate)
+{
+    return find_last_if(beg, end,
+                        [&](decltype(*beg) s){return !predicate(s);});
+}
+
+template <typename FwdIt, typename UnaryFunc>
+FwdIt find_end_if_impl(FwdIt beg, FwdIt end,
+                       UnaryFunc predicate,
+                       std::forward_iterator_tag)
+{
+    FwdIt it = end;
+    while (beg != end)
+    {
+        if (predicate(*beg))
+            it = ++beg;
+        else
+            ++beg;
+    }
+    return it;
+}
+
+template <typename BiIt, typename UnaryPredicate>
+BiIt find_end_if_impl(BiIt beg, BiIt end,
+                      UnaryPredicate predicate,
+                      std::bidirectional_iterator_tag)
+{
+    BiIt it = end;
+    while (beg != it)
+    {
+        --it;
+        if (predicate(*it))
+            return ++it;
+    }
+    return it;
+}
+
+template <typename FwdIt, typename UnaryPredicate>
+FwdIt find_end_if(FwdIt beg, FwdIt end, UnaryPredicate predicate)
+{
+    return find_end_if_impl(
+            beg, end,
+            predicate,
+            typename std::iterator_traits<FwdIt>::iterator_category());
+}
+
+template <typename FwdIt, typename UnaryPredicate>
+FwdIt find_end_if_not(FwdIt beg, FwdIt end, UnaryPredicate predicate)
+{
+    return find_end_if(beg, end,
+                       [&](decltype(*beg) s){return !predicate(s);});
 }
 
 template <typename FwdIt1, typename FwdIt2>
@@ -281,17 +378,17 @@ template <typename UnaryFunc>
 class KeyComparer
 {
 public:
-  KeyComparer(UnaryFunc keyFunc) : m_KeyFunc(keyFunc) {}
-  template <typename T>
-  bool operator()(T a, T b) {return m_KeyFunc(a) < m_KeyFunc(b);}
+    KeyComparer(UnaryFunc keyFunc) : m_KeyFunc(keyFunc) {}
+    template <typename T>
+    bool operator()(T a, T b) {return m_KeyFunc(a) < m_KeyFunc(b);}
 private:
-  UnaryFunc m_KeyFunc;
+    UnaryFunc m_KeyFunc;
 };
 
 template <typename RndIt, typename UnaryFunc>
 void sort_by_key(RndIt beg, RndIt end, UnaryFunc keyFunc)
 {
-  std::sort(beg, end, KeyComparer<UnaryFunc>(keyFunc));
+    std::sort(beg, end, KeyComparer<UnaryFunc>(keyFunc));
 }
 
 template <typename FwdIt, typename UnaryFunc>

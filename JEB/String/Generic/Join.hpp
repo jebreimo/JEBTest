@@ -16,10 +16,10 @@
   */
 namespace JEB { namespace String { namespace Generic {
 
-template <typename StrCollIt, typename String>
-String join(StrCollIt begin, StrCollIt end,
+template <typename StrContainerIt, typename String>
+String join(StrContainerIt begin, StrContainerIt end,
             const String& sep,
-            const std::input_iterator_tag&)
+            std::input_iterator_tag)
 {
     if (begin == end)
         return String();
@@ -34,10 +34,10 @@ String join(StrCollIt begin, StrCollIt end,
     return result;
 }
 
-template <typename StrCollIt, typename String>
-String join(StrCollIt begin, StrCollIt end,
+template <typename StrContainerIt, typename String>
+String join(StrContainerIt begin, StrContainerIt end,
             const String& sep,
-            const std::random_access_iterator_tag&)
+            std::random_access_iterator_tag)
 {
     if (begin == end)
         return String();
@@ -58,13 +58,13 @@ String join(StrCollIt begin, StrCollIt end,
     return result;
 }
 
-template <typename StrCollIt, typename String>
-String join(StrCollIt begin, StrCollIt end,
+template <typename StrContainerIt, typename String>
+String join(StrContainerIt begin, StrContainerIt end,
             const String& sep)
 {
     return join(begin, end,
                 sep,
-                typename std::iterator_traits<StrCollIt>::iterator_category());
+                typename std::iterator_traits<StrContainerIt>::iterator_category());
 }
 
 }}}

@@ -30,14 +30,17 @@ struct CaseInsensitiveCompare : std::binary_function<T, T, bool>
     int32_t operator()(T a, T b) const;
 };
 
-template <typename FwdIt>
-bool caseInsensitiveEqual(FwdIt beg, FwdIt end, FwdIt cmpBeg, FwdIt cmpEnd);
+template <typename InpIt1, typename InpIt2>
+bool caseInsensitiveEqual(InpIt1 beg, InpIt1 end,
+                          InpIt2 cmpBeg, InpIt2 cmpEnd);
 
-template <typename FwdIt>
-bool caseInsensitiveLess(FwdIt beg, FwdIt end, FwdIt cmpBeg, FwdIt cmpEnd);
+template <typename InpIt1, typename InpIt2>
+bool caseInsensitiveLess(InpIt1 beg, InpIt1 end,
+                         InpIt2 cmpBeg, InpIt2 cmpEnd);
 
-template <typename FwdIt>
-int32_t caseInsensitiveCompare(FwdIt beg, FwdIt end, FwdIt cmpBeg, FwdIt cmpEnd);
+template <typename InpIt1, typename InpIt2>
+int32_t caseInsensitiveCompare(InpIt1 beg, InpIt1 end,
+                               InpIt2 cmpBeg, InpIt2 cmpEnd);
 
 }}
 

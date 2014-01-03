@@ -45,10 +45,10 @@ BiIterator<BiIt> begin(BiIt begin, BiIt end)
     return BiIterator<BiIt>(begin, end);
 }
 
-template <typename Coll>
-BiIterator<typename Coll::const_iterator> begin(const Coll& coll)
+template <typename Container>
+BiIterator<typename Container::const_iterator> begin(const Container& c)
 {
-    return begin(coll.cbegin(), coll.cend());
+    return begin(c.cbegin(), c.cend());
 }
 
 template <typename BiIt>
@@ -57,10 +57,10 @@ BiIterator<BiIt> end(BiIt begin, BiIt end)
     return BiIterator<BiIt>(begin, end, end);
 }
 
-template <typename Coll>
-BiIterator<typename Coll::const_iterator> end(const Coll& coll)
+template <typename Container>
+BiIterator<typename Container::const_iterator> end(const Container& c)
 {
-    return end(coll.cbegin(), coll.cend());
+    return end(c.cbegin(), c.cend());
 }
 
 template <typename BiIt>
@@ -69,10 +69,10 @@ std::reverse_iterator<BiIterator<BiIt>> rbegin(BiIt begin, BiIt end)
     return std::reverse_iterator<BiIterator<BiIt>>(Utf8::end(begin, end));
 }
 
-template <typename Coll>
-std::reverse_iterator<BiIterator<typename Coll::const_iterator>> rbegin(const Coll& coll)
+template <typename Container>
+std::reverse_iterator<BiIterator<typename Container::const_iterator>> rbegin(const Container& c)
 {
-    return rbegin(coll.cbegin(), coll.cend());
+    return rbegin(c.cbegin(), c.cend());
 }
 
 template <typename BiIt>
@@ -81,10 +81,10 @@ std::reverse_iterator<BiIterator<BiIt>> rend(BiIt begin, BiIt end)
     return std::reverse_iterator<BiIterator<BiIt>>(Utf8::begin(begin, end));
 }
 
-template <typename Coll>
-std::reverse_iterator<BiIterator<typename Coll::const_iterator>> rend(const Coll& coll)
+template <typename Container>
+std::reverse_iterator<BiIterator<typename Container::const_iterator>> rend(const Container& c)
 {
-    return rend(coll.cbegin(), coll.cend());
+    return rend(c.cbegin(), c.cend());
 }
 
 }}}

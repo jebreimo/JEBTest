@@ -7,7 +7,7 @@
 #include <utility>
 #include "JEB/JEBDefinitions.hpp"
 
-namespace JEB { namespace Iterator {
+namespace JEB { namespace Iterators {
 
 namespace Throwing {
 
@@ -26,8 +26,7 @@ FwdIt next(FwdIt begin, FwdIt end, size_t n, std::forward_iterator_tag)
 template <typename RndIt>
 RndIt next(RndIt begin, RndIt end, size_t n, std::random_access_iterator_tag)
 {
-    typename std::iterator_traits<RndIt>::difference_type len =
-            std::distance(begin, end);
+    auto len = std::distance(begin, end);
     assert(len >= 0);
     if ((size_t)len < n)
         throw std::range_error("advance beyond start of range");
@@ -71,8 +70,7 @@ BiIt prev(BiIt begin, BiIt end, size_t n, std::bidirectional_iterator_tag)
 template <typename RndIt>
 RndIt prev(RndIt begin, RndIt end, size_t n, std::random_access_iterator_tag)
 {
-    typename std::iterator_traits<RndIt>::difference_type len =
-            std::distance(begin, end);
+    auto len = std::distance(begin, end);
     assert(len >= 0);
     if ((size_t)len < n)
         throw std::range_error("retreat beyond start of range");
@@ -114,8 +112,7 @@ FwdIt next(FwdIt begin, FwdIt end, size_t n, std::forward_iterator_tag)
 template <typename RndIt>
 RndIt next(RndIt begin, RndIt end, size_t n, std::random_access_iterator_tag)
 {
-    typename std::iterator_traits<RndIt>::difference_type len =
-            std::distance(begin, end);
+    auto len = std::distance(begin, end);
     assert(len >= 0);
     if ((size_t)len < n)
         return end;
@@ -159,8 +156,7 @@ BiIt prev(BiIt begin, BiIt end, size_t n, std::bidirectional_iterator_tag)
 template <typename RndIt>
 RndIt prev(RndIt begin, RndIt end, size_t n, std::random_access_iterator_tag)
 {
-    typename std::iterator_traits<RndIt>::difference_type len =
-            std::distance(begin, end);
+    auto len = std::distance(begin, end);
     assert(len >= 0);
     if ((size_t)len < n)
         return begin;

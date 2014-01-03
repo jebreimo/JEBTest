@@ -16,6 +16,7 @@ set(PUBLIC_HEADERS
     StandardUpperCase.hpp
     Unicode.hpp
     UnicodeChars.hpp
+    UnicodePredicates.hpp
     )
 
 set(SRC

@@ -2,11 +2,13 @@
 
 #include "JEB/Iterators/PairInserter.hpp"
 #include "JEB/Unicode/CaseInsensitive.hpp"
-#include "JEB/String/StringPredicates.hpp"
+#include "JEB/Unicode/UnicodePredicates.hpp"
 #include "JEB/String/Generic/SplitIterator.hpp"
 #include "Finder.hpp"
 
 namespace JEB { namespace String { namespace Utf8 {
+
+using JEB::Iterators::backInserter;
 
 template <typename OutIterator, typename SplitIterator>
 void splitWithIterators(OutIterator outIt,
@@ -14,22 +16,22 @@ void splitWithIterators(OutIterator outIt,
                         size_t maxSplits,
                         bool ignoreEmpty);
 
-template <typename StringCollection>
-void split(StringCollection& dst,
+template <typename StringContainer>
+void split(StringContainer& dst,
            const std::string& str,
            size_t maxSplits,
            SplitFlags::Flags flags)
 {
     splitWithFinder(dst,
                     str,
-                    tokenFinder(String::isWhitespace(),
+                    tokenFinder(Unicode::isWhitespace,
                                 SplitFlags::mergeTokens(flags)),
                     maxSplits,
                     SplitFlags::ignoreEmpty(flags));
 }
 
-template <typename StringCollection>
-void split(StringCollection& dst,
+template <typename StringContainer>
+void split(StringContainer& dst,
            const std::string& str,
            const std::string& sep,
            size_t maxSplits,
@@ -41,8 +43,8 @@ void split(StringCollection& dst,
         splitWithFinder(dst, str, firstFinder(sep, Unicode::CaseInsensitiveEqual<uint32_t>()), maxSplits, SplitFlags::ignoreEmpty(flags));
 }
 
-template <typename StringCollection, typename Finder>
-void splitWithFinder(StringCollection& dst,
+template <typename StringContainer, typename Finder>
+void splitWithFinder(StringContainer& dst,
                      const std::string& str,
                      Finder finder,
                      size_t maxSplits,
@@ -55,8 +57,8 @@ void splitWithFinder(StringCollection& dst,
                     ignoreEmpty);
 }
 
-template <typename StringCollection, typename FwdIt, typename Finder>
-void splitWithFinder(StringCollection& dst,
+template <typename StringContainer, typename FwdIt, typename Finder>
+void splitWithFinder(StringContainer& dst,
                      FwdIt begin, FwdIt end,
                      Finder finder,
                      size_t maxSplits,
@@ -82,7 +84,7 @@ std::pair<std::string, std::string> splitPairWithFinder(
         Finder finder)
 {
     std::pair<std::string, std::string> result;
-    splitWithIterators(JEB::backInserter(result),
+    splitWithIterators(backInserter(result),
                        makeSplitIterator(begin, end, finder),
                        2,
                        false);

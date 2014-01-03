@@ -24,7 +24,7 @@
 
 namespace JEB { namespace String {
 
-using namespace ::JEB::Iterator;
+using namespace JEB::Iterators;
 
 typedef Utf8::BiIterator<std::string::const_iterator> Utf8Iterator;
 
@@ -537,7 +537,7 @@ std::pair<std::string, std::string> splitFirst(
 {
     return Utf8::splitPairWithFinder(
             str,
-            Utf8::tokenFinder(isWhitespace(),
+            Utf8::tokenFinder(Unicode::isWhitespace,
                         SplitFlags::mergeTokens(flags)));
 }
 
@@ -602,7 +602,7 @@ std::pair<std::string, std::string> splitLast(
 {
     return Utf8::splitPairWithFinder(
             str,
-            Utf8::lastTokenFinder(isWhitespace(),
+            Utf8::lastTokenFinder(Unicode::isWhitespace,
                                   SplitFlags::mergeTokens(flags)));
 }
 
@@ -721,7 +721,7 @@ std::string trim(const std::string& str)
 {
     return detail::string(Generic::trim(
                 Utf8::begin(str), Utf8::end(str),
-                isWhitespace()));
+                Unicode::isWhitespace));
 }
 
 std::string trim(const std::string& str,
@@ -744,7 +744,7 @@ std::string trimStart(const std::string& str)
 {
     return detail::string(Generic::trimStart(
                 Utf8::begin(str), Utf8::end(str),
-                isWhitespace()));
+                Unicode::isWhitespace));
 }
 
 std::string trimStart(const std::string& str,
@@ -767,7 +767,7 @@ std::string trimEnd(const std::string& str)
 {
     return detail::string(Generic::trimEnd(
                 Utf8::begin(str), Utf8::end(str),
-                isWhitespace()));
+                Unicode::isWhitespace));
 }
 
 std::string trimEnd(const std::string& str,

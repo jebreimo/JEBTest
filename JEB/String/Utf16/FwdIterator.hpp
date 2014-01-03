@@ -39,10 +39,10 @@ FwdIterator<FwdIt> begin(FwdIt begin, FwdIt end)
     return FwdIterator<FwdIt>(begin, end);
 }
 
-template <typename Coll>
-FwdIterator<typename Coll::const_iterator> begin(const Coll& coll)
+template <typename Container>
+FwdIterator<typename Container::const_iterator> begin(const Container& c)
 {
-    return FwdIterator<typename Coll::const_iterator>(coll.begin(), coll.end());
+    return begin(c.begin(), c.end());
 }
 
 template <typename FwdIt>
@@ -51,10 +51,10 @@ FwdIterator<FwdIt> end(FwdIt begin, FwdIt end)
     return FwdIterator<FwdIt>(end, end);
 }
 
-template <typename Coll>
-FwdIterator<typename Coll::const_iterator> end(const Coll& coll)
+template <typename Container>
+FwdIterator<typename Container::const_iterator> end(const Container& c)
 {
-    return end(coll.end(), coll.end());
+    return end(c.end(), c.end());
 }
 
 }}}

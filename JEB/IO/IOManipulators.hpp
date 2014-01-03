@@ -5,56 +5,67 @@
 #include <string>
 #include "JEB/JEBDefinitions.hpp"
 
-namespace JEB
+namespace JEB { namespace IO {
+
+template <typename ValueT>
+struct OSFiller
 {
+    OSFiller(size_t n, const ValueT& value)
+        : n(n), value(value) {}
+    OSFiller(size_t n, ValueT&& value)
+        : n(n), value(std::move(value)) {}
+    size_t n;
+    ValueT value;
+};
 
-template <typename CharT>
-struct OStreamFill {size_t n; CharT ch;};
-
-template <typename CharT>
-struct OStreamFillStr {size_t n; const std::basic_string<CharT>* str;};
-
-template <typename CharT>
-OStreamFill<CharT> fill(size_t n, CharT ch)
+template <typename StreamT, typename ValueT>
+StreamT& operator<<(StreamT& os, OSFiller<ValueT>&& filler)
 {
-    OStreamFill<CharT> f = {n, ch};
-    return f;
-}
-
-template <typename CharT>
-OStreamFillStr<CharT> fill(size_t n, const std::basic_string<CharT>& str)
-{
-    OStreamFill<CharT> f = {n, &str};
-    return f;
-}
-
-inline OStreamFill<char> spaces(size_t n)
-{
-    OStreamFill<char> f = {n, ' '};
-    return f;
-}
-
-inline OStreamFill<wchar_t> wspaces(size_t n)
-{
-    OStreamFill<wchar_t> f = {n, ' '};
-    return f;
-}
-
-template <typename CharT, typename Traits>
-std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const OStreamFill<CharT>& fill)
-{
-    for (size_t i = 0; i < fill.n; ++i)
-        os.put(fill.ch);
+    for (size_t i = 0; i < filler.n; ++i)
+        os << filler.value;
     return os;
 }
 
-template <typename CharT, typename Traits>
-std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const OStreamFillStr<CharT>& fill)
+template <typename ValueT>
+OSFiller<ValueT> fill(size_t n, ValueT&& str)
 {
-    for (size_t i = 0; i < fill.n; ++i)
-        os.write(fill.c_str(), fill.size());
+    return OSFiller<ValueT>(n, str);
+}
+
+inline OSFiller<char> spaces(size_t n)
+{
+    return fill(n, ' ');
+}
+
+template <typename FwdIt, typename StringT>
+struct OSJoiner
+{
+    OSJoiner(FwdIt first, FwdIt last, StringT separator)
+        : first(first), last(last), separator(separator)
+    {}
+
+    FwdIt first, last;
+    StringT separator;
+};
+
+template <typename StreamT, typename FwdIt, typename StringT>
+StreamT& operator<<(StreamT& os, OSJoiner<FwdIt, StringT>&& joiner)
+{
+    if (joiner.first != joiner.last)
+    {
+        os << *joiner.first;
+        for (auto it = std::next(joiner.first); it != joiner.last; ++it)
+            os << joiner.separator << *it;
+    }
     return os;
 }
+
+template <typename FwdIt, typename StringT>
+OSJoiner<FwdIt, StringT> join(FwdIt first, FwdIt last, StringT&& separator)
+{
+    return OSJoiner<FwdIt, StringT>(first, last, separator);
 }
+
+}}
 
 #endif

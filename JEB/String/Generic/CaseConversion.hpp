@@ -19,10 +19,10 @@ OutIt title(FwdIt begin, FwdIt end, OutIt out)
     bool capNext = true;
     for (; begin != end; ++begin)
     {
-        if (!isCasedLetter(*begin))
+        if (!Unicode::isCasedLetter(*begin))
         {
             *out++ = *begin;
-            capNext = !isAlphaNumeric(*begin);
+            capNext = !Unicode::isAlphaNumeric(*begin);
         }
         else if (capNext)
         {

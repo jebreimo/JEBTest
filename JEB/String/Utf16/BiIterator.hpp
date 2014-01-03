@@ -41,27 +41,27 @@ private:
 };
 
 template <typename BiIt>
-BiIterator<BiIt> begin(BiIt begin, BiIt end)
+BiIterator<BiIt> begin(BiIt first, BiIt last)
 {
-    return BiIterator<BiIt>(begin, end);
+    return BiIterator<BiIt>(first, last);
 }
 
-template <typename Coll>
-BiIterator<typename Coll::const_iterator> begin(const Coll& coll)
+template <typename Container>
+BiIterator<typename Container::const_iterator> begin(const Container& c)
 {
-    return BiIterator<typename Coll::const_iterator>(coll.begin(), coll.end());
+    return begin(c.begin(), c.end());
 }
 
 template <typename BiIt>
-BiIterator<BiIt> end(BiIt begin, BiIt end)
+BiIterator<BiIt> end(BiIt first, BiIt last)
 {
-    return BiIterator<BiIt>(end, end);
+    return BiIterator<BiIt>(first, last, last);
 }
 
-template <typename Coll>
-BiIterator<typename Coll::const_iterator> end(const Coll& coll)
+template <typename Container>
+BiIterator<typename Container::const_iterator> end(const Container& c)
 {
-    return end(coll.end(), coll.end());
+    return end(c.begin(), c.end());
 }
 
 }}}
