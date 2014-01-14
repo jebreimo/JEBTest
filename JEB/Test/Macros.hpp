@@ -328,6 +328,16 @@
                    FatalFailure, __FILE__, __LINE__, \
                    ::JEB::Test::formatComparison((a), #a, (b), #b, "!="))
 
+#define JT_GREATER(a, b) \
+    JT_IMPL_ASSERT((a) > (b), \
+                   TestFailure, __FILE__, __LINE__, \
+                   ::JEB::Test::formatComparison((a), #a, (b), #b, "<="))
+
+#define JT_LESS(a, b) \
+    JT_IMPL_ASSERT((a) < (b), \
+                   TestFailure, __FILE__, __LINE__, \
+                   ::JEB::Test::formatComparison((a), #a, (b), #b, ">="))
+
 /** @brief Verifies that number @a a is sufficiently close to @a b.
   */
 #define JT_EQUIVALENT(a, b, epsilon) \
