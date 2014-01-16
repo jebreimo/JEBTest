@@ -97,11 +97,8 @@ inline bool isVisible(uint32_t c)
 
 inline bool isWhitespace(uint32_t c)
 {
-    return c == '\t' || c == ' ' ||
-           c == Unicode::ZeroWidthSpace ||
-           c == Unicode::MediumMathematicalSpace ||
-           c == Unicode::IdeographicSpace ||
-           isNewline(c);
+    return c == '\t' || c == ' ' || isNewline(c) ||
+           (c > 128 && (charClass(c) & CharClass::Separator) != 0);
 }
 
 }}

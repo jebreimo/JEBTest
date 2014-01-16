@@ -139,8 +139,6 @@ std::pair<FwdIt1, FwdIt1> search_last_impl(FwdIt1 beg, FwdIt1 end,
         std::pair<FwdIt1, FwdIt2> its = mismatch(beg, end, cmpBeg, cmpEnd, pred);
         if (its.second == cmpEnd)
             result = std::make_pair(beg, its.first);
-        else if (its.first == end)
-            break;
         beg++;
     }
     return result;
@@ -155,15 +153,14 @@ std::pair<BiIt, BiIt> search_last_impl(BiIt beg, BiIt end,
     if (cmpBeg == cmpEnd)
         return std::make_pair(end, end);
     BiIt it = end;
-    while (it-- != beg)
+    while (it != beg)
     {
+        --it;
         std::pair<BiIt, FwdIt> its = mismatch(it, end, cmpBeg, cmpEnd, pred);
         if (its.second == cmpEnd)
             return std::make_pair(it, its.first);
-        else if (its.first == end)
-            break;
     }
-    return std::make_pair(end, end);
+    return std::make_pair(it, it);
 }
 
 template <typename FwdIt1, typename FwdIt2, typename BinaryPredicate>
@@ -244,9 +241,9 @@ BiIt find_last_if_impl(BiIt beg, BiIt end,
     {
         --it;
         if (predicate(*it))
-            return it;
+            break;
     }
-    return end;
+    return it;
 }
 
 template <typename FwdIt, typename UnaryPredicate>
@@ -316,8 +313,7 @@ template <typename FwdIt1, typename FwdIt2>
 bool equal(FwdIt1 beg, FwdIt1 end,
            FwdIt2 cmpBeg, FwdIt2 cmpEnd)
 {
-    std::pair<FwdIt1, FwdIt2> its = mismatch(beg, end, cmpBeg, cmpEnd);
-    return its.first == end && its.second == cmpEnd;
+    return mismatch(beg, end, cmpBeg, cmpEnd) == std::make_pair(end, cmpEnd);
 }
 
 template <typename FwdIt1, typename FwdIt2, typename BinaryPredicate>
@@ -325,8 +321,8 @@ bool equal(FwdIt1 beg, FwdIt1 end,
            FwdIt2 cmpBeg, FwdIt2 cmpEnd,
            BinaryPredicate pred)
 {
-    std::pair<FwdIt1, FwdIt2> its = mismatch(beg, end, cmpBeg, cmpEnd, pred);
-    return its.first == end && its.second == cmpEnd;
+    return mismatch(beg, end, cmpBeg, cmpEnd, pred) ==
+            std::make_pair(end, cmpEnd);
 }
 
 template <typename RndIt, typename T, typename UnaryFunc>
@@ -367,6 +363,13 @@ RndIt binary_find(RndIt beg, RndIt end, const T& value, UnaryFunc keyFunc)
 }
 
 template <typename RndIt, typename T, typename UnaryFunc>
+bool binary_search(RndIt beg, RndIt end, const T& value, UnaryFunc keyFunc)
+{
+    RndIt it = Algorithms::lower_bound(beg, end, value, keyFunc);
+    return it != end && value == keyFunc(*it);
+}
+
+template <typename RndIt, typename T, typename UnaryFunc>
 std::pair<RndIt, RndIt> bounds(RndIt beg, RndIt end, const T& value, UnaryFunc keyFunc)
 {
     RndIt first = ::JEB::Algorithms::lower_bound(beg, end, value, keyFunc);
@@ -404,9 +407,26 @@ FwdIt min_element_by_key(FwdIt begin, FwdIt end, UnaryFunc func)
 }
 
 template <typename FwdIt, typename UnaryFunc>
-std::pair<FwdIt, FwdIt> minmax_element_by_key(FwdIt begin, FwdIt end, UnaryFunc func)
+std::pair<FwdIt, FwdIt> minmax_element_by_key(
+        FwdIt begin, FwdIt end, UnaryFunc func)
 {
     return std::minmax_element(begin, end, KeyComparer<UnaryFunc>(func));
+}
+
+template <typename InIt, typename OutIt, typename UnaryPred,
+          typename UnaryFunc>
+OutIt transform_if(InIt first, InIt last, OutIt dst,
+                   UnaryPred predicate, UnaryFunc func)
+{
+    for (; first != last; ++first)
+    {
+        if (predicate(*first))
+        {
+            *dst = func(*first);
+            ++dst;
+        }
+    }
+    return dst;
 }
 
 }}

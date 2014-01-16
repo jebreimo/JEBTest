@@ -87,19 +87,12 @@ FwdIt prevCharacter(FwdIt first, FwdIt last, size_t n)
 }
 
 template <typename FwdIt>
-std::pair<FwdIt, FwdIt> characterRange(FwdIt first, FwdIt last, long pos)
+FwdIt nthCharacter(FwdIt first, FwdIt last, long pos)
 {
     if (pos >= 0)
-    {
-        first = nextCharacter(first, last, pos);
-        last = nextCharacter(first, last);
-    }
+        return nextCharacter(first, last, pos);
     else
-    {
-        last = prevCharacter(first, last, -pos);
-        first = prevCharacter(first, last);
-    }
-    return std::make_pair(last, last);
+        return prevCharacter(first, last, -pos);
 }
 
 template <typename FwdIt>
