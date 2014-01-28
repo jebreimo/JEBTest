@@ -125,7 +125,7 @@ bool caseInsensitiveLess(const std::string& a, const std::string& b)
 
 Range characterRange(const std::string& str, long pos)
 {
-    return detail::range(Unicode::characterRange(
+    return detail::range(Unicode::nthCharacter(
             Utf8::begin(str), Utf8::end(str), pos));
 }
 
