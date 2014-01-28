@@ -49,7 +49,8 @@ public:
 
     void writeReports();
 
-    void beginTest(const std::string& name = "<unnamed>");
+    void beginTest(const std::string& name = "<unnamed>",
+                   bool silent = false);
     void endTest();
     void testFailed(const Error& error);
     void assertPassed();
@@ -75,6 +76,7 @@ private:
     Session();
     ~Session();
     TestPtr findTest(const std::string& name);
+    std::string getTestName() const;
     std::string getTestName(const std::string& name) const;
     void setLogFile(const std::string& fileName);
 

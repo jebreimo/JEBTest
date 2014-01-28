@@ -31,9 +31,9 @@ public:
             Session::instance().endTest();
     }
 
-    void push(const std::string& name)
+    void push(const std::string& name, bool silent = false)
     {
-        Session::instance().beginTest(name);
+        Session::instance().beginTest(name, silent);
         ++m_Count;
     }
 private:

@@ -136,7 +136,8 @@ void Session::writeReports()
                     (m_EnabledReports & ~JUnitReport) != 0, *this);
 }
 
-void Session::beginTest(const std::string& name)
+void Session::beginTest(const std::string& name /*= "<unnamed>"*/,
+                        bool silent /*= false*/)
 {
     TestPtr test;
     if (!m_ActiveTest.empty())
@@ -153,7 +154,12 @@ void Session::beginTest(const std::string& name)
     }
     m_ActiveTest.push_back(test);
     m_TestFilter->descend(name);
-    printInfo(std::string("Running test ") + name);
+    if (!silent)
+    {
+        auto testName = getTestName();
+        testName += ":";
+        printInfo(testName);
+    }
     m_ActiveTest.back()->setStartTime(clock());
 }
 
@@ -272,6 +278,14 @@ TestPtr Session::findTest(const std::string& name)
         return *it;
     else
         return TestPtr();
+}
+
+std::string Session::getTestName() const
+{
+    std::vector<std::string> names;
+    for (auto it = begin(m_ActiveTest); it != end(m_ActiveTest); ++it)
+        names.push_back((*it)->name());
+    return join(names, "/");
 }
 
 std::string Session::getTestName(const std::string& name) const

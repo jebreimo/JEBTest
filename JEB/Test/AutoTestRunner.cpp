@@ -50,7 +50,7 @@ void AutoTestRunner::run()
         for (; name != end(path); ++name)
         {
             if (session.isTestEnabled(*name))
-                scope.push(*name);
+                scope.push(*name, true);
         }
         if (name == end(path) && session.isTestEnabled((*test)->name()))
         {
