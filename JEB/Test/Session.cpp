@@ -155,11 +155,7 @@ void Session::beginTest(const std::string& name /*= "<unnamed>"*/,
     m_ActiveTest.push_back(test);
     m_TestFilter->descend(name);
     if (!silent)
-    {
-        auto testName = getTestName();
-        testName += ":";
-        printInfo(testName);
-    }
+        printInfo(getTestName());
     m_ActiveTest.back()->setStartTime(clock());
 }
 
