@@ -35,10 +35,28 @@ inline bool equal<const char*, const char*>(const char* t, const char* u)
     return std::strcmp(t, u) == 0;
 }
 
+template <typename T, typename U>
+bool notEqual(T t, U u)
+{
+    return !::JEB::Test::equal(t, u);
+}
+
 template <typename T, typename U, typename V>
 bool equivalent(T a, U b, V epsilon)
 {
     return std::abs(a - b) <= epsilon;
+}
+
+template <typename T, typename U>
+bool lessThan(T a, U b)
+{
+    return a < b;
+}
+
+template <typename T, typename U>
+bool greaterThan(T a, U b)
+{
+    return b < a;
 }
 
 }}

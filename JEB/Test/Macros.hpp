@@ -304,6 +304,31 @@
 #define JT_ASSERT_MSG_FATAL(cond, msg) \
     JT_IMPL_ASSERT_MSG(cond, #cond, FatalFailure, __FILE__, __LINE__, msg)
 
+#define JT_IMPL_COMPARISON(test, a, b, failure, file, line, cmpStr) \
+    do { \
+        auto JT_PRIV_UNIQUE_NAME(aa) = (a); \
+        auto JT_PRIV_UNIQUE_NAME(bb) = (b); \
+        JT_IMPL_ASSERT( \
+                test(JT_PRIV_UNIQUE_NAME(aa), JT_PRIV_UNIQUE_NAME(bb)), \
+                failure, file, line, \
+                ::JEB::Test::formatComparison(JT_PRIV_UNIQUE_NAME(aa), #a, \
+                                              JT_PRIV_UNIQUE_NAME(bb), #b, \
+                                              cmpStr)); \
+    } while (false)
+
+#define JT_IMPL_EQUIVALENT(a, b, epsilon, failure, file, line) \
+    do { \
+        auto JT_PRIV_UNIQUE_NAME(aa) = (a); \
+        auto JT_PRIV_UNIQUE_NAME(bb) = (b); \
+        JT_IMPL_ASSERT( \
+                ::JEB::Test::equivalent(JT_PRIV_UNIQUE_NAME(aa), \
+                                        JT_PRIV_UNIQUE_NAME(bb), epsilon), \
+                failure, file, line, \
+                ::JEB::Test::formatComparison(JT_PRIV_UNIQUE_NAME(aa), #a, \
+                                              JT_PRIV_UNIQUE_NAME(bb), #b, \
+                                              "!=")); \
+    } while (false)
+
 /** @brief Verifies that @a a equals @a b.
   *
   * Requirements for a and b:
@@ -314,65 +339,51 @@
   *   output operator that accepts @a b.
   */
 #define JT_EQUAL(a, b) \
-    JT_IMPL_ASSERT(::JEB::Test::equal((a), (b)), \
-                   TestFailure, __FILE__, __LINE__, \
-                   ::JEB::Test::formatComparison((a), #a, (b), #b, "!="))
+    JT_IMPL_COMPARISON(::JEB::Test::equal, a, b, TestFailure, \
+                       __FILE__, __LINE__, "!=")
 
 #define JT_EQUAL_CRITICAL(a, b) \
-    JT_IMPL_ASSERT(::JEB::Test::equal((a), (b)), \
-                   CriticalFailure, __FILE__, __LINE__, \
-                   ::JEB::Test::formatComparison((a), #a, (b), #b, "!="))
+    JT_IMPL_COMPARISON(::JEB::Test::equal, a, b, CriticalFailure, \
+                       __FILE__, __LINE__, "!=")
 
 #define JT_EQUAL_FATAL(a, b) \
-    JT_IMPL_ASSERT(::JEB::Test::equal((a), (b)), \
-                   FatalFailure, __FILE__, __LINE__, \
-                   ::JEB::Test::formatComparison((a), #a, (b), #b, "!="))
+    JT_IMPL_COMPARISON(::JEB::Test::equal, a, b, FatalFailure, \
+                       __FILE__, __LINE__, "!=")
 
 #define JT_GREATER(a, b) \
-    JT_IMPL_ASSERT((a) > (b), \
-                   TestFailure, __FILE__, __LINE__, \
-                   ::JEB::Test::formatComparison((a), #a, (b), #b, "<="))
+    JT_IMPL_COMPARISON(::JEB::Test::greaterThan, a, b, TestFailure, \
+                       __FILE__, __LINE__, "<=")
 
 #define JT_LESS(a, b) \
-    JT_IMPL_ASSERT((a) < (b), \
-                   TestFailure, __FILE__, __LINE__, \
-                   ::JEB::Test::formatComparison((a), #a, (b), #b, ">="))
+    JT_IMPL_COMPARISON(::JEB::Test::lessThan, a, b, TestFailure, \
+                       __FILE__, __LINE__, ">=")
 
 /** @brief Verifies that number @a a is sufficiently close to @a b.
   */
 #define JT_EQUIVALENT(a, b, epsilon) \
-    JT_IMPL_ASSERT(::JEB::Test::equivalent((a), (b), (epsilon)), \
-                   TestFailure, __FILE__, __LINE__, \
-                   ::JEB::Test::formatComparison((a), #a, (b), #b, "!="))
+    JT_IMPL_EQUIVALENT(a, b, epsilon, TestFailure, __FILE__, __LINE__)
 
 #define JT_EQUIVALENT_CRITICAL(a, b, epsilon) \
-    JT_IMPL_ASSERT(::JEB::Test::equivalent((a), (b), (epsilon)), \
-                   CriticalFailure, __FILE__, __LINE__, \
-                   ::JEB::Test::formatComparison((a), #a, (b), #b, "!="))
+    JT_IMPL_EQUIVALENT(a, b, epsilon, CriticalFailure, __FILE__, __LINE__)
 
 #define JT_EQUIVALENT_FATAL(a, b, epsilon) \
-    JT_IMPL_ASSERT(::JEB::Test::equivalent((a), (b), (epsilon)), \
-                   FatalFailure, __FILE__, __LINE__, \
-                   ::JEB::Test::formatComparison((a), #a, (b), #b, "!="))
+    JT_IMPL_EQUIVALENT(a, b, epsilon, FatalFailure, __FILE__, __LINE__)
 
 /** @brief Verifies that @a a is not equal to @a b.
   *
   *  Requirements to @a a and @a b are the same as in JT_EQUAL.
   */
 #define JT_NOT_EQUAL(a, b) \
-    JT_IMPL_ASSERT(!::JEB::Test::equal((a), (b)), \
-                   TestFailure, __FILE__, __LINE__, \
-                   ::JEB::Test::formatComparison((a), #a, (b), #b, "=="))
+    JT_IMPL_COMPARISON(::JEB::Test::notEqual, a, b, TestFailure, \
+                       __FILE__, __LINE__, "==")
 
 #define JT_NOT_EQUAL_CRITICAL(a, b) \
-    JT_IMPL_ASSERT(!::JEB::Test::equal((a), (b)), \
-                   CriticalFailure, __FILE__, __LINE__, \
-                   ::JEB::Test::formatComparison((a), #a, (b), #b, "=="))
+    JT_IMPL_COMPARISON(::JEB::Test::notEqual, a, b, CriticalFailure, \
+                       __FILE__, __LINE__, "==")
 
 #define JT_NOT_EQUAL_FATAL(a, b) \
-    JT_IMPL_ASSERT(!::JEB::Test::equal((a), (b)), \
-                   FatalFailure, __FILE__, __LINE__, \
-                   ::JEB::Test::formatComparison((a), #a, (b), #b, "=="))
+    JT_IMPL_COMPARISON(::JEB::Test::notEqual, a, b, FatalFailure, \
+                       __FILE__, __LINE__, "==")
 
 /** @brief Force a test failure with the given error message.
   */
