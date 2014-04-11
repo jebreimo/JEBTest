@@ -9,9 +9,6 @@
 #define JEB_TEST_FORMATTERS_HPP
 
 #include <sstream>
-#include "JEB/String/StringConversion.hpp"
-
-#undef JEB
 
 namespace JEB { namespace Test {
 
