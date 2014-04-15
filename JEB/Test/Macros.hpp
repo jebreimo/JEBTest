@@ -168,7 +168,7 @@
             name(__VA_ARGS__); \
         } catch (const ::JEB::Test::AbstractFailure& ex) { \
             ::JEB::Test::Session::instance().testFailed(ex.error()); \
-            if (ex.error().level() != ::JEB::Test::Error::Failure) \
+            if (ex.error().type() != ::JEB::Test::Error::Failure) \
                 throw; \
         } catch (const std::exception& ex) { \
             ::JEB::Test::Session::instance().testFailed(::JEB::Test::Error( \
