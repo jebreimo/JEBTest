@@ -1,4 +1,4 @@
-#include "JEB/JEBTest.hpp"
+#include "JEBTest/JEBTest.hpp"
 #include <stdexcept>
 #include <vector>
 

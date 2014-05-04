@@ -8,7 +8,7 @@ cmake_minimum_required(VERSION 2.8)
 
 project(Test)
 
-set(JEB_DIR JEB/${PROJECT_NAME})
+set(JEB_DIR JEBTest/${PROJECT_NAME})
 
 set(SRC
     AutoTest.cpp

@@ -8,11 +8,12 @@ cmake_minimum_required(VERSION 2.8)
 
 project(JEB)
 
-set(JEB_DIR JEB)
+set(JEB_DIR JEBTest)
 
-add_subdirectory(Containers)
-add_subdirectory(String)
-add_subdirectory(Sys)
-add_subdirectory(Text)
-add_subdirectory(Unicode)
-add_subdirectory(Xml)
+add_subdirectory(Test)
+
+set(PUBLIC_HEADERS
+    JEBTest.hpp
+    )
+
+install(FILES ${PUBLIC_HEADERS} DESTINATION include/${JEB_DIR})

@@ -70,7 +70,8 @@ BiIterator<BiIt, SwapBytes>& BiIterator<BiIt, SwapBytes>::operator--()
     m_CharEnd = m_CharStart;
     if (prevCodePoint<BiIt, SwapBytes>(m_Value, m_CharStart, m_Begin) != DecodeResult::Ok)
     {
-        throw std::runtime_error("invalid UTF-16 character");
+        throw std::runtime_error("invalid UTF-16 character at position" +
+                    std::to_string(std::distance(m_Begin, m_CharEnd)));
     }
     return *this;
 }
@@ -104,7 +105,8 @@ BiIt BiIterator<BiIt, SwapBytes>::endCodePoint() const
     {
         int dr = nextCodePoint<BiIt, SwapBytes>(m_Value, m_CharEnd, m_End);
         if (dr != DecodeResult::Ok && dr != DecodeResult::EndOfString)
-            throw std::runtime_error("invalid UTF-16 character");
+            throw std::runtime_error("invalid UTF-16 character at position" +
+                        std::to_string(std::distance(m_Begin, m_CharEnd)));
     }
     return m_CharEnd;
 }

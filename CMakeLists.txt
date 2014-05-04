@@ -24,6 +24,7 @@ elseif (WIN32)
 endif (APPLE)
 
 add_subdirectory(JEB)
+add_subdirectory(JEBTest)
 add_library(JEBTest
             $<TARGET_OBJECTS:String>
             $<TARGET_OBJECTS:Sys>
