@@ -5,8 +5,8 @@
  * This file is distributed under the BSD License.
  * License text is included with the source distribution.
  */
-#ifndef JEB_ERROR_HPP
-#define JEB_ERROR_HPP
+#ifndef JEBTEST_TEST_ERROR_HPP
+#define JEBTEST_TEST_ERROR_HPP
 
 #include <iosfwd>
 #include <string>

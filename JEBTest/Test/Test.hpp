@@ -5,8 +5,8 @@
  * This file is distributed under the BSD License.
  * License text is included with the source distribution.
  */
-#ifndef JEB_TEST_TEST_HPP
-#define JEB_TEST_TEST_HPP
+#ifndef JEBTEST_TEST_TEST_HPP
+#define JEBTEST_TEST_TEST_HPP
 
 #include <ctime>
 #include <memory>

@@ -5,8 +5,8 @@
  * This file is distributed under the BSD License.
  * License text is included with the source distribution.
  */
-#ifndef JEB_TEST_TESTSCOPE_HPP
-#define JEB_TEST_TESTSCOPE_HPP
+#ifndef JEBTEST_TEST_TESTSCOPE_HPP
+#define JEBTEST_TEST_TESTSCOPE_HPP
 
 #include "Session.hpp"
 

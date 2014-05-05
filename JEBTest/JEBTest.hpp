@@ -5,8 +5,8 @@
  * This file is distributed under the BSD License.
  * License text is included with the source distribution.
  */
-#ifndef JEB_JEBTEST_HPP
-#define JEB_JEBTEST_HPP
+#ifndef JEBTEST_JEBTEST_HPP
+#define JEBTEST_JEBTEST_HPP
 
 #include "Test/AutoTest.hpp"
 #include "Test/AutoTestRunner.hpp"

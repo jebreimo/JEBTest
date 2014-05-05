@@ -5,8 +5,8 @@
  * This file is distributed under the BSD License.
  * License text is included with the source distribution.
  */
-#ifndef JEB_TEST_TEXTREPORT_HPP
-#define JEB_TEST_TEXTREPORT_HPP
+#ifndef JEBTEST_TEST_TEXTREPORT_HPP
+#define JEBTEST_TEST_TEXTREPORT_HPP
 
 #include <iosfwd>
 

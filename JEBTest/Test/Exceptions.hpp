@@ -5,8 +5,8 @@
  * This file is distributed under the BSD License.
  * License text is included with the source distribution.
  */
-#ifndef JEB_TEST_EXCEPTIONS_HPP
-#define JEB_TEST_EXCEPTIONS_HPP
+#ifndef JEBTEST_TEST_EXCEPTIONS_HPP
+#define JEBTEST_TEST_EXCEPTIONS_HPP
 
 #include <exception>
 #include <vector>
