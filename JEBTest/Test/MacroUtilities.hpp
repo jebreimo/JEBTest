@@ -5,8 +5,8 @@
  * This file is distributed under the BSD License.
  * License text is included with the source distribution.
  */
-#ifndef JEB_MACRO_UTILITIES_HPP
-#define JEB_MACRO_UTILITIES_HPP
+#ifndef JEBTEST_TEST_MACROUTILITIES_HPP
+#define JEBTEST_TEST_MACROUTILITIES_HPP
 
 #include <functional>
 

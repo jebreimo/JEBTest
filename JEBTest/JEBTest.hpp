@@ -5,17 +5,12 @@
  * This file is distributed under the BSD License.
  * License text is included with the source distribution.
  */
-#ifndef JEB_TEST_TEXTREPORT_HPP
-#define JEB_TEST_TEXTREPORT_HPP
+#ifndef JEBTEST_JEBTEST_HPP
+#define JEBTEST_JEBTEST_HPP
 
-#include <iosfwd>
-
-namespace JEB { namespace Test {
-
-class Session;
-
-void writeTextReport(std::ostream& os, const Session& session);
-
-}}
+#include "Test/AutoTest.hpp"
+#include "Test/AutoTestRunner.hpp"
+#include "Test/Macros.hpp"
+#include "Test/Session.hpp"
 
 #endif

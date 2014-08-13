@@ -5,7 +5,7 @@
  * This file is distributed under the BSD License.
  * License text is included with the source distribution.
  */
-#include "JEB/JEBTest.hpp"
+#include "JEBTest/JEBTest.hpp"
 #include <stdexcept>
 #include <vector>
 

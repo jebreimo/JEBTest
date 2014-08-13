@@ -5,8 +5,8 @@
  * This file is distributed under the BSD License.
  * License text is included with the source distribution.
  */
-#ifndef JEB_TEST_MACROS_HPP
-#define JEB_TEST_MACROS_HPP
+#ifndef JEBTEST_TEST_MACROS_HPP
+#define JEBTEST_TEST_MACROS_HPP
 
 #include <cmath>
 #include <exception>
