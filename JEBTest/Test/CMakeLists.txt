@@ -22,6 +22,14 @@ set(SRC
     Session.cpp
     Test.cpp
     TextReport.cpp
+    VisualStudioReport.cpp
+    )
+
+set(PRIVATE_HEADERS
+    JUnitReport.hpp
+    Test.hpp
+    TextReport.hpp
+    VisualStudioReport.hpp
     )
 
 set(PUBLIC_HEADERS
@@ -38,5 +46,5 @@ set(PUBLIC_HEADERS
     TestScope.hpp
     )
 
-add_library(${PROJECT_NAME} OBJECT ${SRC})
+add_library(${PROJECT_NAME} OBJECT ${SRC} ${PUBLIC_HEADERS} ${PRIVATE_HEADERS})
 install(FILES ${PUBLIC_HEADERS} DESTINATION include/${JEB_DIR})

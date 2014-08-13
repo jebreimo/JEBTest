@@ -15,6 +15,7 @@
 #include "ParseArguments.hpp"
 #include "Test.hpp"
 #include "TextReport.hpp"
+#include "VisualStudioReport.hpp"
 
 #include "JEB/Algorithms/Algorithms.hpp"
 #include "JEB/String/String.hpp"
@@ -111,7 +112,10 @@ void writeReport(ReportFunc func,
 {
     if (fileName.empty())
     {
-        func(std::cout, session);
+        if (isRunnningInVisualStudio())
+            writeVisualStudioReport(func, session);
+        else
+            func(std::cout, session);
     }
     else if (!forceExtension ||
              endsWith(fileName, fileNameExtension,

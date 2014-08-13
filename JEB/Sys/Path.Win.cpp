@@ -19,8 +19,7 @@ bool isDirSeparator(uint32_t chr)
 
 std::string absPath(const std::string& p)
 {
-    //if (p.size() == 1)
-	return p;
+    return p;
 }
 
 std::string baseName(const std::string& p)
@@ -82,7 +81,7 @@ std::string join(const std::string& left, const std::string& right)
 
 std::string normalize(const std::string& p)
 {
-  return p;
+    return p;
 }
 
 std::string removeExtension(const std::string& p)
