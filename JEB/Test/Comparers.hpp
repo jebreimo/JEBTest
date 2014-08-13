@@ -35,6 +35,14 @@ inline bool equal<const char*, const char*>(const char* t, const char* u)
     return std::strcmp(t, u) == 0;
 }
 
+template <>
+inline bool equal<char*, const char*>(char* t, const char* u)
+{
+    if (t == nullptr || u == nullptr)
+        return t == u;
+    return std::strcmp(t, u) == 0;
+}
+
 template <typename T, typename U>
 bool notEqual(T t, U u)
 {
