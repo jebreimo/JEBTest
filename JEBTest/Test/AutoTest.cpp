@@ -9,7 +9,6 @@
 
 #include <limits>
 #include "JEB/String/String.hpp"
-// #include "JEB/Sys/Path.hpp"
 #include <boost/filesystem.hpp>
 
 #undef JEB
@@ -20,7 +19,6 @@
 namespace JEB { namespace Test {
 
 using namespace JEBTestLib::String;
-// using namespace JEBTestLib::Sys;
 
 namespace
 {
