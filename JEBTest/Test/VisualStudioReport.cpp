@@ -7,14 +7,14 @@
  */
 #include "VisualStudioReport.hpp"
 
+#if (_MSC_VER > 1200)
+
 #include <sstream>
 #include <windows.h>
 
 #include "TextReport.hpp"
 
 namespace JEB { namespace Test {
-
-#ifdef _MSC_VER > 1200
 
 bool isRunnningInVisualStudio()
 {
@@ -30,7 +30,11 @@ void writeVisualStudioReport(
     OutputDebugStringA(ss.str().c_str());
 }
 
+}}
+
 #else
+
+namespace JEB { namespace Test {
 
 bool isRunnningInVisualStudio()
 {
@@ -42,6 +46,6 @@ void writeVisualStudioReport(
         const Session& session)
 {}
 
-#endif
-
 }}
+
+#endif

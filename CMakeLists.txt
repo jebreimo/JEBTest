@@ -10,7 +10,9 @@ project(JEBTest)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
 
-include_directories(${CMAKE_SOURCE_DIR})
+find_package(Boost REQUIRED COMPONENTS filesystem)
+
+include_directories(${Boost_INCLUDE_DIRS} ${CMAKE_SOURCE_DIR})
 add_definitions(-DJEB_USE_UNIT_TEST_NAMESPACE)
 
 if (APPLE)

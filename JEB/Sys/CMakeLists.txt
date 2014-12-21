@@ -5,41 +5,13 @@ project(Sys)
 set(JEB_DIR JEB/${PROJECT_NAME})
 
 set(PUBLIC_HEADERS
-    Environment.hpp
-    Path.hpp
     StreamRedirection.hpp
-    Users.hpp
     )
 
 set(SRC
-    Environment.cpp
-    EnvironmentIterator.cpp
     PathFilter.cpp
     StreamRedirection.cpp
     )
-
-if (WIN32)
-    set(PUBLIC_HEADERS
-        ${PUBLIC_HEADERS}
-        Path.Win.hpp
-        )
-    set(SRC
-        ${SRC}
-        Path.Win.cpp
-        Users.Win.cpp
-        )
-else (WIN32)
-    set(PUBLIC_HEADERS
-        ${PUBLIC_HEADERS}
-        Path.Posix.hpp
-        )
-    set(SRC
-        ${SRC}
-        Environment.Posix.cpp
-        Path.Posix.cpp
-        Users.Posix.cpp
-        )
-endif (WIN32)
 
 add_library(${PROJECT_NAME} OBJECT ${SRC})
 

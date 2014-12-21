@@ -9,7 +9,8 @@
 
 #include <limits>
 #include "JEB/String/String.hpp"
-#include "JEB/Sys/Path.hpp"
+// #include "JEB/Sys/Path.hpp"
+#include <boost/filesystem.hpp>
 
 #undef JEB
 
@@ -19,13 +20,15 @@
 namespace JEB { namespace Test {
 
 using namespace JEBTestLib::String;
-using namespace JEBTestLib::Sys;
+// using namespace JEBTestLib::Sys;
 
 namespace
 {
     std::string extractSuiteName(const std::string& path)
     {
-        return Path::baseName(Path::removeExtension(path));
+        return boost::filesystem::path(path).filename()
+                                            .replace_extension()
+                                            .string();
     }
 }
 
