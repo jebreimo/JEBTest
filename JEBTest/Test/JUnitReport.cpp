@@ -9,15 +9,14 @@
 
 #include <iomanip>
 #include <iostream>
-#include "JEB/Xml/XmlWriter.hpp"
-#undef JEB
+#include "JEBIO/Xml/XmlWriter.hpp"
 
 #include "Session.hpp"
 #include "Test.hpp"
 
 namespace JEB { namespace Test {
 
-using namespace JEBTestLib::Xml;
+using namespace JEBTest_JEBIO::Xml;
 
 void addTestCases(std::map<std::string, std::vector<TestPtr>>& testCases,
                   std::string path, TestPtr test)

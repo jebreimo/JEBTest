@@ -6,20 +6,22 @@
  * License text is included with the source distribution.
  */
 #include "Formatters.hpp"
-#include "JEB/String/StringConversion.hpp"
+#include "JEBString/JEBUtf8.hpp"
 
 #undef JEB
 
 namespace JEB { namespace Test {
 
+using namespace JEBTest_JEBString;
+
 std::ostream& operator<<(std::ostream& os, const std::wstring& s)
 {
-    return os << JEBTestLib::String::utf16ToUtf8(s);
+    return os << Utf8::toUtf8(s, Encoding::Utf16);
 }
 
 std::ostream& operator<<(std::ostream& os, const wchar_t* s)
 {
-    return os << JEBTestLib::String::utf16ToUtf8(s);
+    return os << Utf8::toUtf8(s, Encoding::Utf16);
 }
 
 }}

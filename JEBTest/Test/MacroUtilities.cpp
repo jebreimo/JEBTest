@@ -9,9 +9,7 @@
 
 #include <algorithm>
 #include <cassert>
-#include "JEB/String/String.hpp"
-
-#undef JEB
+#include "JEBString/JEBUtf8.hpp"
 
 #include "Exceptions.hpp"
 #include "Session.hpp"
@@ -19,15 +17,15 @@
 
 namespace JEB { namespace Test {
 
-using namespace JEBTestLib::String;
+using namespace JEBTest_JEBString;
 
 namespace
 {
     std::vector<std::string> extractTestNames(const std::string& names)
     {
-        std::vector<std::string> result = split(names, ",", 0, SplitFlags::IgnoreEmpty);
+        auto result = Utf8::split(names, ",", 0, SplitFlags::IgnoreEmpty);
         for (auto it = result.begin(); it != result.end(); ++it)
-          *it = trim(*it);
+          *it = Utf8::trim(*it);
         return result;
     }
 }

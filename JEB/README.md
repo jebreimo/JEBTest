@@ -1,1 +1,0 @@
-This folder and its subfolders are are small subset of my personal code library and its structure reflects that. Folders with single header files are kept that way to simplify merging changes to and from the other library.

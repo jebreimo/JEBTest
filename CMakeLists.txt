@@ -12,8 +12,12 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
 
 find_package(Boost REQUIRED COMPONENTS filesystem)
 
-include_directories(${Boost_INCLUDE_DIRS} ${CMAKE_SOURCE_DIR})
-add_definitions(-DJEB_USE_UNIT_TEST_NAMESPACE)
+include_directories(${Boost_INCLUDE_DIRS}
+                    ${CMAKE_SOURCE_DIR}/JEBBase
+                    ${CMAKE_SOURCE_DIR}/JEBMath
+                    ${CMAKE_SOURCE_DIR}/JEBString
+                    ${CMAKE_SOURCE_DIR}/JEBIO)
+add_definitions(-DJEB_USE_JEBTEST_NAMESPACE)
 
 if (APPLE)
     set(CMAKE_CXX_FLAGS "-std=c++11 -stdlib=libc++ -Wall")
@@ -21,16 +25,31 @@ elseif (WIN32)
     add_definitions(-D_SCL_SECURE_NO_WARNINGS)
 endif (APPLE)
 
-add_subdirectory(JEB)
+add_subdirectory(JEBBase)
+add_subdirectory(JEBString)
+add_subdirectory(JEBIO)
 add_subdirectory(JEBTest)
 add_library(JEBTest
-            $<TARGET_OBJECTS:String>
-            $<TARGET_OBJECTS:Sys>
-            $<TARGET_OBJECTS:Test>
-            $<TARGET_OBJECTS:Text>
+            # JEBBase
+            $<TARGET_OBJECTS:Bits>
+
+            # JEBString
+            $<TARGET_OBJECTS:CodePageStrings>
+            $<TARGET_OBJECTS:EncodedStrings>
+            $<TARGET_OBJECTS:Encodings>
             $<TARGET_OBJECTS:Unicode>
+            $<TARGET_OBJECTS:Utf8>
+            $<TARGET_OBJECTS:Utf16>
+
+            # JEBIO
+            $<TARGET_OBJECTS:Paths>
+            $<TARGET_OBJECTS:Streams>
             $<TARGET_OBJECTS:Xml>
+
+            # JEBTest
+            $<TARGET_OBJECTS:Test>
             )
+
 add_subdirectory(Examples)
 
 install(TARGETS JEBTest DESTINATION lib)

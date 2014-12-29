@@ -16,12 +16,12 @@
 
 #include "Error.hpp"
 
-namespace JEBTestLib { namespace Sys {
+namespace JEBTest_JEBIO {
 
 class PathFilter;
 class StreamRedirection;
 
-}}
+}
 
 namespace JEB { namespace Test {
 
@@ -85,10 +85,10 @@ private:
     unsigned m_EnabledReports;
     std::ostream* m_Log;
     std::ofstream m_LogFile;
-    std::vector<JEBTestLib::Sys::StreamRedirection> m_Redirections;
+    std::vector<JEBTest_JEBIO::StreamRedirection> m_Redirections;
     std::string m_ReportFileName;
     bool m_StartOfLine;
-    std::unique_ptr<JEBTestLib::Sys::PathFilter> m_TestFilter;
+    std::unique_ptr<JEBTest_JEBIO::PathFilter> m_TestFilter;
     std::vector<TestPtr> m_Tests;
     bool m_Verbose;
 };

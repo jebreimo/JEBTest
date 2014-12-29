@@ -12,8 +12,6 @@
 #include <sstream>
 #include <windows.h>
 
-#include "TextReport.hpp"
-
 namespace JEB { namespace Test {
 
 bool isRunnningInVisualStudio()

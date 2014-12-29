@@ -10,9 +10,6 @@
 #include <iostream>
 #include <stdexcept>
 
-#include "JEB/String/String.hpp"
-#undef JEB
-
 namespace JEB { namespace Test {
 
 Test::Test(const std::string& name)

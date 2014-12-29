@@ -17,17 +17,14 @@
 #include "TextReport.hpp"
 #include "VisualStudioReport.hpp"
 
-#include "JEB/Algorithms/Algorithms.hpp"
-#include "JEB/String/String.hpp"
-#include "JEB/Sys/PathFilter.hpp"
-#include "JEB/Sys/StreamRedirection.hpp"
-#undef JEB
+#include "JEBString/JEBUtf8.hpp"
+#include "JEBIO/Paths/PathFilter.hpp"
+#include "JEBIO/Streams/StreamRedirection.hpp"
 
 namespace JEB { namespace Test {
 
-using namespace JEBTestLib::Algorithms;
-using namespace JEBTestLib::String;
-using namespace JEBTestLib::Sys;
+using namespace JEBTest_JEBString;
+using namespace JEBTest_JEBIO;
 
 Session::Session()
     : m_AllTestsEnabled(true),
@@ -99,8 +96,7 @@ void writeFileReport(ReportFunc func,
 {
     std::ofstream file(fileName);
     if (!file)
-        throw std::runtime_error(FORMAT_STRING("Can't create report file: "
-                                               << fileName));
+        throw std::runtime_error("Can't create report file: " + fileName);
     func(file, session);
 }
 
@@ -118,8 +114,8 @@ void writeReport(ReportFunc func,
             func(std::cout, session);
     }
     else if (!forceExtension ||
-             endsWith(fileName, fileNameExtension,
-                      FindFlags::CaseInsensitive))
+             Utf8::endsWith(fileName, fileNameExtension,
+                            FindFlags::CaseInsensitive))
     {
         writeFileReport(func, fileName, session);
     }
@@ -285,7 +281,7 @@ std::string Session::getTestName() const
     std::vector<std::string> names;
     for (auto it = begin(m_ActiveTest); it != end(m_ActiveTest); ++it)
         names.push_back((*it)->name());
-    return join(names, "/");
+    return Utf8::join(names, "/");
 }
 
 std::string Session::getTestName(const std::string& name) const
@@ -294,7 +290,7 @@ std::string Session::getTestName(const std::string& name) const
     for (auto it = begin(m_ActiveTest); it != end(m_ActiveTest); ++it)
         names.push_back((*it)->name());
     names.push_back(name);
-    return join(names, "/");
+    return Utf8::join(names, "/");
 }
 
 void Session::setLogFile(const std::string& fileName)

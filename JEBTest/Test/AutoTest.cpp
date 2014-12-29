@@ -8,17 +8,15 @@
 #include "AutoTest.hpp"
 
 #include <limits>
-#include "JEB/String/String.hpp"
 #include <boost/filesystem.hpp>
-
-#undef JEB
+#include "JEBString/JEBUtf8.hpp"
 
 #include "AutoTestRunner.hpp"
 #include "MacroUtilities.hpp"
 
 namespace JEB { namespace Test {
 
-using namespace JEBTestLib::String;
+using namespace JEBTest_JEBString;
 
 namespace
 {
@@ -37,7 +35,7 @@ AutoTest::AutoTest(const std::string& fileName, Func func,
       m_Priority(std::numeric_limits<int>::max())
 {
     if (!path.empty())
-        m_Path = splitToken(path, '/');
+        m_Path = Utf8::split(path, "/");
     AutoTestRunner::instance().addTest(this);
 }
 
@@ -48,7 +46,7 @@ AutoTest::AutoTest(const std::string& fileName, Func func,
       m_Priority(priority)
 {
     if (!path.empty())
-        m_Path = splitToken(path, '/');
+        m_Path = Utf8::split(path, "/");
     AutoTestRunner::instance().addTest(this);
 }
 
