@@ -14,7 +14,7 @@
 #include "Session.hpp"
 #include "Test.hpp"
 
-namespace JEB { namespace Test {
+namespace JEBTest {
 
 struct Counters
 {
@@ -107,4 +107,4 @@ void writeTextReport(std::ostream& os, const Session& session)
     os.flush();
 }
 
-}}
+}

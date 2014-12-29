@@ -12,7 +12,7 @@
 #include <string>
 #include <vector>
 
-namespace JEB { namespace Test {
+namespace JEBTest {
 
 class AutoTest
 {
@@ -38,6 +38,6 @@ private:
     int m_Priority;
 };
 
-}}
+}
 
 #endif

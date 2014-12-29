@@ -14,7 +14,7 @@
 #include "Session.hpp"
 #include "Test.hpp"
 
-namespace JEB { namespace Test {
+namespace JEBTest {
 
 using namespace JEBTest_JEBIO::Xml;
 
@@ -99,4 +99,4 @@ void writeJUnitReport(std::ostream& os, const Session& session)
     writer.endElement();
 }
 
-}}
+}

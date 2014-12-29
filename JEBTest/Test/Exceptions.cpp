@@ -7,7 +7,7 @@
  */
 #include "Exceptions.hpp"
 
-namespace JEB { namespace Test {
+namespace JEBTest {
 
 AbstractFailure::AbstractFailure(const Error& error)
     : m_Error(error)
@@ -60,4 +60,4 @@ FatalFailure::FatalFailure(const std::string& file,
 FatalFailure::~FatalFailure()
 {}
 
-}}
+}

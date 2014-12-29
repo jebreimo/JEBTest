@@ -12,7 +12,7 @@
 #include <vector>
 #include "Error.hpp"
 
-namespace JEB { namespace Test {
+namespace JEBTest {
 
 class AbstractFailure
 {
@@ -58,6 +58,6 @@ public:
     ~FatalFailure();
 };
 
-}}
+}
 
 #endif

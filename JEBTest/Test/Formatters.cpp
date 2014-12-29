@@ -10,7 +10,7 @@
 
 #undef JEB
 
-namespace JEB { namespace Test {
+namespace JEBTest {
 
 using namespace JEBTest_JEBString;
 
@@ -24,4 +24,4 @@ std::ostream& operator<<(std::ostream& os, const wchar_t* s)
     return os << Utf8::toUtf8(s, Encoding::Utf16);
 }
 
-}}
+}

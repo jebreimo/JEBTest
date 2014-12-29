@@ -10,7 +10,7 @@
 
 #include <iosfwd>
 
-namespace JEB { namespace Test {
+namespace JEBTest {
 
 class Session;
 
@@ -20,6 +20,6 @@ void writeVisualStudioReport(
         void (*reportFunc)(std::ostream&, const Session&),
         const Session& session);
 
-}}
+}
 
 #endif

@@ -8,7 +8,7 @@
 #include "Error.hpp"
 #include <sstream>
 
-namespace JEB { namespace Test {
+namespace JEBTest {
 
 Error::Error()
     : m_Type(None),
@@ -88,4 +88,4 @@ std::ostream& operator<<(std::ostream& os, const Error& e)
     return os << e.text();
 }
 
-}}
+}

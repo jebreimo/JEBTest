@@ -10,7 +10,7 @@
 
 #include <functional>
 
-namespace JEB { namespace Test {
+namespace JEBTest {
 
 void runTests(const char* file, int line, const char* testNamesString,
               std::function<void()>* testFuncs, size_t testFuncSize);
@@ -22,6 +22,6 @@ void runTests(const char* file, int line, const char* testNamesString,
     runTests(file, line, testNamesString, testFuncs, N);
 }
 
-}}
+}
 
 #endif

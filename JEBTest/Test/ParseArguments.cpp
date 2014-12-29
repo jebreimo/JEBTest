@@ -6,7 +6,7 @@
 #include <iterator>
 #include <sstream>
 
-namespace JEB { namespace Test {
+namespace JEBTest {
 
 namespace
 {
@@ -427,4 +427,4 @@ std::unique_ptr<Arguments> parse_arguments(int argc, char* argv[])
     return result;
 }
 
-}}
+}

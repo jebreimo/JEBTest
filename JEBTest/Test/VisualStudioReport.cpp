@@ -12,7 +12,7 @@
 #include <sstream>
 #include <windows.h>
 
-namespace JEB { namespace Test {
+namespace JEBTest {
 
 bool isRunnningInVisualStudio()
 {
@@ -32,7 +32,7 @@ void writeVisualStudioReport(
 
 #else
 
-namespace JEB { namespace Test {
+namespace JEBTest {
 
 bool isRunnningInVisualStudio()
 {
@@ -44,6 +44,6 @@ void writeVisualStudioReport(
         const Session& session)
 {}
 
-}}
+}
 
 #endif

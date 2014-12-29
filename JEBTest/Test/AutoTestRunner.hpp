@@ -10,7 +10,7 @@
 
 #include <vector>
 
-namespace JEB { namespace Test {
+namespace JEBTest {
 
 class AutoTest;
 
@@ -27,6 +27,6 @@ private:
     std::vector<const AutoTest*> m_Tests;
 };
 
-}}
+}
 
 #endif

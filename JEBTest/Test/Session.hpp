@@ -23,7 +23,7 @@ class StreamRedirection;
 
 }
 
-namespace JEB { namespace Test {
+namespace JEBTest {
 
 typedef std::shared_ptr<class Test> TestPtr;
 
@@ -93,6 +93,6 @@ private:
     bool m_Verbose;
 };
 
-}}
+}
 
 #endif

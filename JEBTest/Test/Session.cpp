@@ -21,7 +21,7 @@
 #include "JEBIO/Paths/PathFilter.hpp"
 #include "JEBIO/Streams/StreamRedirection.hpp"
 
-namespace JEB { namespace Test {
+namespace JEBTest {
 
 using namespace JEBTest_JEBString;
 using namespace JEBTest_JEBIO;
@@ -302,4 +302,4 @@ void Session::setLogFile(const std::string& fileName)
     m_Redirections.push_back(StreamRedirection(std::clog, m_LogFile));
 }
 
-}}
+}

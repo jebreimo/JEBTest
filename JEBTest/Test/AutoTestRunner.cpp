@@ -13,7 +13,7 @@
 #include "Session.hpp"
 #include "TestScope.hpp"
 
-namespace JEB { namespace Test {
+namespace JEBTest {
 
 AutoTestRunner::AutoTestRunner()
 {
@@ -67,4 +67,4 @@ void AutoTestRunner::run()
     }
 }
 
-}}
+}

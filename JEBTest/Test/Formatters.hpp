@@ -10,7 +10,7 @@
 
 #include <sstream>
 
-namespace JEB { namespace Test {
+namespace JEBTest {
 
 template <typename T, typename U>
 std::ostream& operator<<(std::ostream& os, const std::pair<T, U>& p)
@@ -45,6 +45,6 @@ std::string formatComparison(T* t, const char* tName,
     return ss.str();
 }
 
-}}
+}
 
 #endif

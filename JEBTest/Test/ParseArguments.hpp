@@ -9,7 +9,7 @@
   * Defines the function parse_arguments and its result Arguments.
   */
 
-namespace JEB { namespace Test {
+namespace JEBTest {
 
 /** @brief The result of parse_arguments
   */
@@ -89,6 +89,6 @@ struct Arguments
   */
 std::unique_ptr<Arguments> parse_arguments(int argc, char* argv[]);
 
-}}
+}
 
 #endif

@@ -10,7 +10,7 @@
 #include <iostream>
 #include <stdexcept>
 
-namespace JEB { namespace Test {
+namespace JEBTest {
 
 Test::Test(const std::string& name)
     : m_Assertions(0),
@@ -126,4 +126,4 @@ TestPtr Test::findTest(const std::string& name) const
         return TestPtr();
 }
 
-}}
+}

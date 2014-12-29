@@ -10,12 +10,12 @@
 
 #include <iosfwd>
 
-namespace JEB { namespace Test {
+namespace JEBTest {
 
 class Session;
 
 void writeJUnitReport(std::ostream& os, const Session& session);
 
-}}
+}
 
 #endif

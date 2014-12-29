@@ -59,8 +59,8 @@
   */
 #define JT_CONSOLE_END() \
     } catch (...) {} \
-    ::JEB::Test::Session::instance().print(""); \
-    ::JEB::Test::Session::instance().writeReports()
+    ::JEBTest::Session::instance().print(""); \
+    ::JEBTest::Session::instance().writeReports()
 
 /** @brief Creates a main function for console programs that run test suites.
   *
@@ -73,16 +73,16 @@
     int main(int argc, char* argv[]) \
     { \
         try { \
-            if (!::JEB::Test::Session::instance().parseCommandLine(argc, argv)) \
+            if (!::JEBTest::Session::instance().parseCommandLine(argc, argv)) \
                 return 1; \
             JT_CONSOLE_BEGIN(); \
-            ::JEB::Test::AutoTestRunner::instance().run(); \
+            ::JEBTest::AutoTestRunner::instance().run(); \
             JT_CONSOLE_END(); \
         } catch (std::exception& ex) { \
             std::cerr << "EXCEPTION: " << ex.what() << std::endl; \
             return 1; \
         } \
-        return (int)::JEB::Test::Session::instance().numberOfFailedTests(); \
+        return (int)::JEBTest::Session::instance().numberOfFailedTests(); \
     }
 
 /** @brief Defines a test suite.
@@ -97,36 +97,36 @@
     static void JT_PRIV_UNIQUE_NAME(JT_suite_)() \
     { \
         std::function<void()> tests_JT_[] = {__VA_ARGS__}; \
-        ::JEB::Test::runTests(__FILE__, __LINE__, #__VA_ARGS__, tests_JT_); \
+        ::JEBTest::runTests(__FILE__, __LINE__, #__VA_ARGS__, tests_JT_); \
     } \
-    static ::JEB::Test::AutoTest JT_PRIV_UNIQUE_NAME(JT_suite_instance_) \
+    static ::JEBTest::AutoTest JT_PRIV_UNIQUE_NAME(JT_suite_instance_) \
             (__FILE__, JT_PRIV_UNIQUE_NAME(JT_suite_))
 
 #define JT_SUBTEST(path, ...) \
     static void JT_PRIV_UNIQUE_NAME(JT_suite_)() \
     { \
         std::function<void()> tests_JT_[] = {__VA_ARGS__}; \
-        ::JEB::Test::runTests(__FILE__, __LINE__, #__VA_ARGS__, tests_JT_); \
+        ::JEBTest::runTests(__FILE__, __LINE__, #__VA_ARGS__, tests_JT_); \
     } \
-    static ::JEB::Test::AutoTest JT_PRIV_UNIQUE_NAME(JT_suite_instance_) \
+    static ::JEBTest::AutoTest JT_PRIV_UNIQUE_NAME(JT_suite_instance_) \
             (__FILE__, JT_PRIV_UNIQUE_NAME(JT_suite_), (path))
 
 #define JT_PRIORITIZED_TEST(priority, ...) \
     static void JT_PRIV_UNIQUE_NAME(JT_suite_)() \
     { \
         std::function<void()> tests_JT_[] = {__VA_ARGS__}; \
-        ::JEB::Test::runTests(__FILE__, __LINE__, #__VA_ARGS__, tests_JT_); \
+        ::JEBTest::runTests(__FILE__, __LINE__, #__VA_ARGS__, tests_JT_); \
     } \
-    static ::JEB::Test::AutoTest JT_PRIV_UNIQUE_NAME(JT_suite_instance_) \
+    static ::JEBTest::AutoTest JT_PRIV_UNIQUE_NAME(JT_suite_instance_) \
             (__FILE__, JT_PRIV_UNIQUE_NAME(JT_suite_), "", (priority))
 
 #define JT_PRIORITIZED_SUBTEST(priority, path, ...) \
     static void JT_PRIV_UNIQUE_NAME(JT_suite_)() \
     { \
         std::function<void()> tests_JT_[] = {__VA_ARGS__}; \
-        ::JEB::Test::runTests(__FILE__, __LINE__, #__VA_ARGS__, tests_JT_); \
+        ::JEBTest::runTests(__FILE__, __LINE__, #__VA_ARGS__, tests_JT_); \
     } \
-    static ::JEB::Test::AutoTest JT_PRIV_UNIQUE_NAME(JT_suite_instance_) \
+    static ::JEBTest::AutoTest JT_PRIV_UNIQUE_NAME(JT_suite_instance_) \
             (__FILE__, JT_PRIV_UNIQUE_NAME(JT_suite_), (path), (priority))
 
 /** @brief Macro for explcitly running a test with arguments.
@@ -161,26 +161,26 @@
   *     }
   */
 #define JT_RUN_TEST(name, ...) \
-    if (::JEB::Test::Session::instance().isTestEnabled(#name)) \
+    if (::JEBTest::Session::instance().isTestEnabled(#name)) \
     { \
-        ::JEB::Test::TestScope scope(#name); \
+        ::JEBTest::TestScope scope(#name); \
         try { \
             name(__VA_ARGS__); \
-        } catch (const ::JEB::Test::AbstractFailure& ex) { \
-            ::JEB::Test::Session::instance().testFailed(ex.error()); \
-            if (ex.error().type() != ::JEB::Test::Error::Failure) \
+        } catch (const ::JEBTest::AbstractFailure& ex) { \
+            ::JEBTest::Session::instance().testFailed(ex.error()); \
+            if (ex.error().type() != ::JEBTest::Error::Failure) \
                 throw; \
         } catch (const std::exception& ex) { \
-            ::JEB::Test::Session::instance().testFailed(::JEB::Test::Error( \
+            ::JEBTest::Session::instance().testFailed(::JEBTest::Error( \
                     __FILE__, __LINE__, \
                     std::string("Unhandled exception: \"") + ex.what() \
-                    + "\"", ::JEB::Test::Error::UnhandledException)); \
+                    + "\"", ::JEBTest::Error::UnhandledException)); \
             throw; \
         } catch (...) { \
-            ::JEB::Test::Session::instance().testFailed(::JEB::Test::Error( \
+            ::JEBTest::Session::instance().testFailed(::JEBTest::Error( \
                     __FILE__, __LINE__, \
                     "Unhandled exception (not derived from std::exception)", \
-                    ::JEB::Test::Error::UnhandledException)); \
+                    ::JEBTest::Error::UnhandledException)); \
             throw; \
         } \
     }
@@ -189,9 +189,9 @@
     do { \
         try { \
             expr; \
-            throw ::JEB::Test::failure(file, line, msg); \
+            throw ::JEBTest::failure(file, line, msg); \
         } catch (const exception&) { \
-            ::JEB::Test::Session::instance().assertPassed(); \
+            ::JEBTest::Session::instance().assertPassed(); \
         } \
     } while (false)
 
@@ -219,10 +219,10 @@
 #define JT_IMPL_EXPECT(cond, file, line, msg) \
     do { \
         if (cond) { \
-            ::JEB::Test::Session::instance().assertPassed(); \
+            ::JEBTest::Session::instance().assertPassed(); \
         } else { \
-            ::JEB::Test::Session::instance().testFailed(::JEB::Test::Error( \
-                    file, line, msg, ::JEB::Test::Error::Failure)); \
+            ::JEBTest::Session::instance().testFailed(::JEBTest::Error( \
+                    file, line, msg, ::JEBTest::Error::Failure)); \
         } \
     } while (false)
 
@@ -230,20 +230,20 @@
     JT_IMPL_EXPECT((cond), __FILE__, __LINE__, "Assertion failed: " #cond)
 
 #define JT_EXPECT_EQUAL(a, b) \
-    JT_IMPL_EXPECT(::JEB::Test::equal((a), (b)), \
+    JT_IMPL_EXPECT(::JEBTest::equal((a), (b)), \
                    __FILE__, __LINE__, \
-                   ::JEB::Test::formatComparison((a), #a, (b), #b, "!="))
+                   ::JEBTest::formatComparison((a), #a, (b), #b, "!="))
 
 #define JT_EXPECT_MSG(cond, msg) \
     do { \
         if (cond) { \
-            ::JEB::Test::Session::instance().assertPassed(); \
+            ::JEBTest::Session::instance().assertPassed(); \
         } else { \
             std::ostringstream JT_os; \
             JT_os << "Error: " #cond ". " << msg; \
-            ::JEB::Test::Session::instance().testFailed(::JEB::Test::Error( \
+            ::JEBTest::Session::instance().testFailed(::JEBTest::Error( \
                     __FILE__, __LINE__, JT_os.str(), \
-                    ::JEB::Test::Error::Failure)); \
+                    ::JEBTest::Error::Failure)); \
         } \
     } while (false)
 
@@ -253,9 +253,9 @@
 #define JT_IMPL_ASSERT(cond, failure, file, line, msg) \
     do { \
         if (cond) { \
-            ::JEB::Test::Session::instance().assertPassed(); \
+            ::JEBTest::Session::instance().assertPassed(); \
         } else { \
-            throw ::JEB::Test::failure(file, line, msg); \
+            throw ::JEBTest::failure(file, line, msg); \
         } \
     } while (false)
 
@@ -278,11 +278,11 @@
 #define JT_IMPL_ASSERT_MSG(cond, condStr, failure, file, line, msg) \
     do { \
         if (cond) { \
-            ::JEB::Test::Session::instance().assertPassed(); \
+            ::JEBTest::Session::instance().assertPassed(); \
         } else { \
             std::ostringstream JT_os; \
             JT_os << "Assertion failed: " condStr ". " << msg; \
-            throw ::JEB::Test::failure(file, line, JT_os.str()); \
+            throw ::JEBTest::failure(file, line, JT_os.str()); \
         } \
     } while (false)
 
@@ -311,7 +311,7 @@
         JT_IMPL_ASSERT( \
                 test(JT_PRIV_UNIQUE_NAME(aa), JT_PRIV_UNIQUE_NAME(bb)), \
                 failure, file, line, \
-                ::JEB::Test::formatComparison(JT_PRIV_UNIQUE_NAME(aa), #a, \
+                ::JEBTest::formatComparison(JT_PRIV_UNIQUE_NAME(aa), #a, \
                                               JT_PRIV_UNIQUE_NAME(bb), #b, \
                                               cmpStr)); \
     } while (false)
@@ -321,10 +321,10 @@
         auto JT_PRIV_UNIQUE_NAME(aa) = (a); \
         auto JT_PRIV_UNIQUE_NAME(bb) = (b); \
         JT_IMPL_ASSERT( \
-                ::JEB::Test::equivalent(JT_PRIV_UNIQUE_NAME(aa), \
+                ::JEBTest::equivalent(JT_PRIV_UNIQUE_NAME(aa), \
                                         JT_PRIV_UNIQUE_NAME(bb), epsilon), \
                 failure, file, line, \
-                ::JEB::Test::formatComparison(JT_PRIV_UNIQUE_NAME(aa), #a, \
+                ::JEBTest::formatComparison(JT_PRIV_UNIQUE_NAME(aa), #a, \
                                               JT_PRIV_UNIQUE_NAME(bb), #b, \
                                               "!=")); \
     } while (false)
@@ -339,23 +339,23 @@
   *   output operator that accepts @a b.
   */
 #define JT_EQUAL(a, b) \
-    JT_IMPL_COMPARISON(::JEB::Test::equal, a, b, TestFailure, \
+    JT_IMPL_COMPARISON(::JEBTest::equal, a, b, TestFailure, \
                        __FILE__, __LINE__, "!=")
 
 #define JT_EQUAL_CRITICAL(a, b) \
-    JT_IMPL_COMPARISON(::JEB::Test::equal, a, b, CriticalFailure, \
+    JT_IMPL_COMPARISON(::JEBTest::equal, a, b, CriticalFailure, \
                        __FILE__, __LINE__, "!=")
 
 #define JT_EQUAL_FATAL(a, b) \
-    JT_IMPL_COMPARISON(::JEB::Test::equal, a, b, FatalFailure, \
+    JT_IMPL_COMPARISON(::JEBTest::equal, a, b, FatalFailure, \
                        __FILE__, __LINE__, "!=")
 
 #define JT_GREATER(a, b) \
-    JT_IMPL_COMPARISON(::JEB::Test::greaterThan, a, b, TestFailure, \
+    JT_IMPL_COMPARISON(::JEBTest::greaterThan, a, b, TestFailure, \
                        __FILE__, __LINE__, "<=")
 
 #define JT_LESS(a, b) \
-    JT_IMPL_COMPARISON(::JEB::Test::lessThan, a, b, TestFailure, \
+    JT_IMPL_COMPARISON(::JEBTest::lessThan, a, b, TestFailure, \
                        __FILE__, __LINE__, ">=")
 
 /** @brief Verifies that number @a a is sufficiently close to @a b.
@@ -374,27 +374,27 @@
   *  Requirements to @a a and @a b are the same as in JT_EQUAL.
   */
 #define JT_NOT_EQUAL(a, b) \
-    JT_IMPL_COMPARISON(::JEB::Test::notEqual, a, b, TestFailure, \
+    JT_IMPL_COMPARISON(::JEBTest::notEqual, a, b, TestFailure, \
                        __FILE__, __LINE__, "==")
 
 #define JT_NOT_EQUAL_CRITICAL(a, b) \
-    JT_IMPL_COMPARISON(::JEB::Test::notEqual, a, b, CriticalFailure, \
+    JT_IMPL_COMPARISON(::JEBTest::notEqual, a, b, CriticalFailure, \
                        __FILE__, __LINE__, "==")
 
 #define JT_NOT_EQUAL_FATAL(a, b) \
-    JT_IMPL_COMPARISON(::JEB::Test::notEqual, a, b, FatalFailure, \
+    JT_IMPL_COMPARISON(::JEBTest::notEqual, a, b, FatalFailure, \
                        __FILE__, __LINE__, "==")
 
 /** @brief Force a test failure with the given error message.
   */
 #define JT_FAILURE(msg) \
-    throw ::JEB::Test::TestFailure(__FILE__, __LINE__, msg)
+    throw ::JEBTest::TestFailure(__FILE__, __LINE__, msg)
 
 #define JT_CRITICAL_FAILURE(msg) \
-    throw ::JEB::Test::CriticalFailure(__FILE__, __LINE__, msg)
+    throw ::JEBTest::CriticalFailure(__FILE__, __LINE__, msg)
 
 #define JT_FATAL_FAILURE(msg) \
-    throw ::JEB::Test::FatalFailure(__FILE__, __LINE__, msg)
+    throw ::JEBTest::FatalFailure(__FILE__, __LINE__, msg)
 
 /** @brief Provide extra information when calling a function from within
   *     a test.
@@ -415,7 +415,7 @@
         { \
             expr; \
         } \
-        catch (::JEB::Test::TestFailure& ex) \
+        catch (::JEBTest::TestFailure& ex) \
         { \
             ex.addContext(__FILE__, __LINE__, #expr); \
             throw ex; \

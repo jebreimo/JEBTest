@@ -10,7 +10,7 @@
 
 #include "Session.hpp"
 
-namespace JEB { namespace Test {
+namespace JEBTest {
 
 class TestScope
 {
@@ -40,6 +40,6 @@ private:
     int m_Count;
 };
 
-}}
+}
 
 #endif

@@ -13,7 +13,7 @@
 #include <string>
 #include "Error.hpp"
 
-namespace JEB { namespace Test {
+namespace JEBTest {
 
 typedef std::shared_ptr<class Test> TestPtr;
 
@@ -68,6 +68,6 @@ private:
     std::vector<std::pair<std::string, std::string>> m_Filter;
 };
 
-}}
+}
 
 #endif

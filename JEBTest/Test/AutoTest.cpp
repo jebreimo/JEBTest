@@ -14,7 +14,7 @@
 #include "AutoTestRunner.hpp"
 #include "MacroUtilities.hpp"
 
-namespace JEB { namespace Test {
+namespace JEBTest {
 
 using namespace JEBTest_JEBString;
 
@@ -65,7 +65,7 @@ void AutoTest::setFunction(const Func& function)
 
 std::string AutoTest::name() const
 {
-    return JEB::Test::extractSuiteName(m_Name);
+    return extractSuiteName(m_Name);
 }
 
 const std::vector<std::string>& AutoTest::path() const
@@ -78,4 +78,4 @@ int AutoTest::priority() const
     return m_Priority;
 }
 
-}}
+}

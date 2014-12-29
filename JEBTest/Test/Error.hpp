@@ -12,7 +12,7 @@
 #include <string>
 #include <vector>
 
-namespace JEB { namespace Test {
+namespace JEBTest {
 
 class Error
 {
@@ -56,6 +56,6 @@ private:
 
 std::ostream& operator<<(std::ostream& os, const Error& e);
 
-}}
+}
 
 #endif

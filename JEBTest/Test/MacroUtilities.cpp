@@ -15,7 +15,7 @@
 #include "Session.hpp"
 #include "TestScope.hpp"
 
-namespace JEB { namespace Test {
+namespace JEBTest {
 
 using namespace JEBTest_JEBString;
 
@@ -68,4 +68,4 @@ void runTests(const char* file, int line, const char* testNamesString,
     }
 }
 
-}}
+}

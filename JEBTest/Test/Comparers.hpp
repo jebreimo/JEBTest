@@ -11,7 +11,7 @@
 #include <cmath>
 #include <cstring>
 
-namespace JEB { namespace Test {
+namespace JEBTest {
 
 template <typename T, typename U>
 bool equal(T t, U u)
@@ -46,7 +46,7 @@ inline bool equal<char*, const char*>(char* t, const char* u)
 template <typename T, typename U>
 bool notEqual(T t, U u)
 {
-    return !::JEB::Test::equal(t, u);
+    return !::JEBTest::equal(t, u);
 }
 
 template <typename T, typename U, typename V>
@@ -67,6 +67,6 @@ bool greaterThan(T a, U b)
     return b < a;
 }
 
-}}
+}
 
 #endif
