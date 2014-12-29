@@ -312,8 +312,8 @@
                 test(JT_PRIV_UNIQUE_NAME(aa), JT_PRIV_UNIQUE_NAME(bb)), \
                 failure, file, line, \
                 ::JEBTest::formatComparison(JT_PRIV_UNIQUE_NAME(aa), #a, \
-                                              JT_PRIV_UNIQUE_NAME(bb), #b, \
-                                              cmpStr)); \
+                                            JT_PRIV_UNIQUE_NAME(bb), #b, \
+                                            cmpStr)); \
     } while (false)
 
 #define JT_IMPL_EQUIVALENT(a, b, epsilon, failure, file, line) \
@@ -322,11 +322,11 @@
         auto JT_PRIV_UNIQUE_NAME(bb) = (b); \
         JT_IMPL_ASSERT( \
                 ::JEBTest::equivalent(JT_PRIV_UNIQUE_NAME(aa), \
-                                        JT_PRIV_UNIQUE_NAME(bb), epsilon), \
+                                      JT_PRIV_UNIQUE_NAME(bb), epsilon), \
                 failure, file, line, \
                 ::JEBTest::formatComparison(JT_PRIV_UNIQUE_NAME(aa), #a, \
-                                              JT_PRIV_UNIQUE_NAME(bb), #b, \
-                                              "!=")); \
+                                            JT_PRIV_UNIQUE_NAME(bb), #b, \
+                                            "!=")); \
     } while (false)
 
 /** @brief Verifies that @a a equals @a b.
