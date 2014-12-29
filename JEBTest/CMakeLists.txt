@@ -6,7 +6,7 @@
 # License text is included with the source distribution.
 cmake_minimum_required(VERSION 2.8)
 
-project(JEB)
+project(JEBTest_Root)
 
 set(JEB_DIR JEBTest)
 

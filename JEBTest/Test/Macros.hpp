@@ -396,8 +396,8 @@
 #define JT_FATAL_FAILURE(msg) \
     throw ::JEBTest::FatalFailure(__FILE__, __LINE__, msg)
 
-/** @brief Provide extra information when calling a function from within
-  *     a test.
+/** @brief Provide extra call-stack information when calling a function from
+  *     within a test function.
   *
   *  If a test function calls another function that uses JT-macros to test
   *  various conditions, surround the calls to the other function with this
@@ -406,8 +406,9 @@
   *  To reduce code duplication it often makes sense to place the different
   *  assert macros in a function that is called from the actual test function.
   *  The test report will in such cases only contain the line number of the
-  *  assert that failed, which may not provide much information if this
-  *  assertion is executed many times. This macro helps solving that problem.
+  *  assert that failed, which may not provide much information about the
+  *  condition that made the fail test if this assertion is executed many
+  *  times. This macro helps solve that problem.
   */
 #define JT_CALL(expr) \
     do { \
