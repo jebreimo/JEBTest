@@ -175,7 +175,6 @@ void Session::testFailed(const Error& error)
         throw std::logic_error("Call to testFailed was not preceded by "
                                "a call to beginTest.");
     m_ActiveTest.back()->addError(error);
-    m_ActiveTest.back()->incrementAssertions();
     printInfo(std::string("    ") + error.text() + "\n");
 }
 
