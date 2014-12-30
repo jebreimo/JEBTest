@@ -10,10 +10,7 @@ project(JEBTest)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
 
-find_package(Boost REQUIRED COMPONENTS filesystem)
-
-include_directories(${Boost_INCLUDE_DIRS}
-                    ${CMAKE_SOURCE_DIR}/JEBBase
+include_directories(${CMAKE_SOURCE_DIR}/JEBBase
                     ${CMAKE_SOURCE_DIR}/JEBMath
                     ${CMAKE_SOURCE_DIR}/JEBString
                     ${CMAKE_SOURCE_DIR}/JEBIO)

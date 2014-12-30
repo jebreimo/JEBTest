@@ -10,12 +10,12 @@ set(SRC
     WarningsTest.cpp
     )
 
-find_package(Boost REQUIRED COMPONENTS filesystem system)
+# find_package(Boost REQUIRED COMPONENTS filesystem system)
 
 add_executable(${PROJECT_NAME} ${SRC})
 
 target_link_libraries(${PROJECT_NAME}
                       JEBTest
-                      ${Boost_LIBRARIES}
+                      #${Boost_LIBRARIES}
                      )
 add_test(JEBTest ${PROJECT_NAME})

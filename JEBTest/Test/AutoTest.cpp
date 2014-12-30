@@ -8,23 +8,22 @@
 #include "AutoTest.hpp"
 
 #include <limits>
-#include <boost/filesystem.hpp>
+// #include <boost/filesystem.hpp>
 #include "JEBString/JEBUtf8.hpp"
-
+#include "JEBIO/JEBPath.hpp"
 #include "AutoTestRunner.hpp"
 #include "MacroUtilities.hpp"
 
 namespace JEBTest {
 
 using namespace JEBTest_JEBString;
+using namespace JEBTest_JEBIO;
 
 namespace
 {
     std::string extractSuiteName(const std::string& path)
     {
-        return boost::filesystem::path(path).filename()
-                                            .replace_extension()
-                                            .string();
+        return removeExtension(baseName(path));
     }
 }
 
