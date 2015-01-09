@@ -125,17 +125,17 @@ static void toInternalYD(int* year, int* dayOfYear, uint64_t daysSinceEpoch)
     const int days100 = 100 * 365 + 24; /* Number of days in a century not divisible by 400. */
     const int days4 = 4 * 365 + 1; /* Number of days in 4 years. */
 
-    *year = EPOCH_YEAR + 400 * (daysSinceEpoch / days400);
+    *year = static_cast<int>(EPOCH_YEAR + 400 * (daysSinceEpoch / days400));
     daysSinceEpoch %= days400;
 
     if (daysSinceEpoch > days100 + 1)
     {
         daysSinceEpoch -= days100 + 1;
-        *year += 100 * (1 + daysSinceEpoch / days100);
+        *year += static_cast<int>(100 * (1 + daysSinceEpoch / days100));
         daysSinceEpoch %= days100;
         if (daysSinceEpoch < days4 - 1)
         {
-            *year += daysSinceEpoch / 365;
+            *year += static_cast<int>(daysSinceEpoch / 365);
             daysSinceEpoch %= 365;
         }
         else
@@ -145,17 +145,17 @@ static void toInternalYD(int* year, int* dayOfYear, uint64_t daysSinceEpoch)
         }
     }
 
-    *year += 4 * (daysSinceEpoch / days4);
+    *year += static_cast<int>(4 * (daysSinceEpoch / days4));
     daysSinceEpoch %= days4;
 
     if (daysSinceEpoch > 365)
     {
-        *year += (daysSinceEpoch - 1) / 365;
+        *year += static_cast<int>((daysSinceEpoch - 1) / 365);
         *dayOfYear = (daysSinceEpoch - 1) % 365;
     }
     else
     {
-        *dayOfYear = daysSinceEpoch;
+        *dayOfYear = static_cast<int>(daysSinceEpoch);
     }
 }
 
@@ -166,7 +166,8 @@ static YearMonthDay toYMD(uint64_t daysSinceEpoch)
     auto it = std::upper_bound(std::begin(gAccumulatedDays),
                                std::end(gAccumulatedDays),
                                dayOfYear);
-    int month = std::distance(std::begin(gAccumulatedDays), it);
+    int month = static_cast<int>(std::distance(std::begin(gAccumulatedDays),
+                                 it));
     int dayOfMonth = dayOfYear - gAccumulatedDays[month - 1] + 1;
 
     if (month > 10)
@@ -183,12 +184,12 @@ static YearMonthDay toYMD(uint64_t daysSinceEpoch)
 
 static HourMinuteSecond toHMS(int64_t useconds)
 {
-    auto hour = useconds / (60 * 60 * USECS_PER_SEC);
+    auto hour = static_cast<int>(useconds / (60 * 60 * USECS_PER_SEC));
     useconds %= (60 * 60 * USECS_PER_SEC);
-    auto minute = useconds / (60 * USECS_PER_SEC);
+    auto minute = static_cast<int>(useconds / (60 * USECS_PER_SEC));
     useconds %= (60 * USECS_PER_SEC);
-    auto second = useconds / USECS_PER_SEC;
-    auto usecond = useconds % USECS_PER_SEC;
+    auto second = static_cast<int>(useconds / USECS_PER_SEC);
+    auto usecond = static_cast<int>(useconds % USECS_PER_SEC);
     return HourMinuteSecond(hour, minute, second, usecond);
 }
 
@@ -233,11 +234,9 @@ static int toWeek(int dayOfYear, int dayOfWeek, int firstDayOfWeek)
     return (dayOfYear + 10 - logicalDayOfWeek) / 7;
 }
 
-#pragma mark Pack
-
 PackedDateTime pack(const YearMonthDay& date, const HourMinuteSecond& time)
 {
-    return pack(date, time, timezoneSecs());
+    return pack(date, time, static_cast<int>(timezoneSecs()));
 }
 
 PackedDateTime pack(const YearMonthDay& date, const HourMinuteSecond& time,
@@ -250,7 +249,7 @@ PackedDateTime pack(const YearMonthDay& date, const HourMinuteSecond& time,
 
 PackedDateTime pack(const YearMonthDay& date)
 {
-    return pack(date, timezoneSecs());
+    return pack(date, static_cast<int>(timezoneSecs()));
 }
 
 PackedDateTime pack(const YearMonthDay& date, int timezone)
@@ -260,7 +259,7 @@ PackedDateTime pack(const YearMonthDay& date, int timezone)
 
 PackedDateTime pack(const HourMinuteSecond& time)
 {
-    return pack(time, timezoneSecs());
+    return pack(time, static_cast<int>(timezoneSecs()));
 }
 
 PackedDateTime pack(const HourMinuteSecond& time, int timezone)
@@ -280,7 +279,7 @@ PackedDateTime packNow()
 
 DayOfWeek_t dayOfWeek(PackedDateTime dateTime)
 {
-    return dayOfWeek(dateTime, timezoneSecs());
+    return dayOfWeek(dateTime, static_cast<int>(timezoneSecs()));
 }
 
 DayOfWeek_t dayOfWeek(PackedDateTime dateTime, int timezone)
@@ -291,7 +290,7 @@ DayOfWeek_t dayOfWeek(PackedDateTime dateTime, int timezone)
 
 YearDay unpackYearDay(PackedDateTime dateTime)
 {
-    return unpackYearDay(dateTime, timezoneSecs());
+    return unpackYearDay(dateTime, static_cast<int>(timezoneSecs()));
 }
 
 YearDay unpackYearDay(PackedDateTime dateTime, int timezone)
@@ -314,7 +313,7 @@ YearDay unpackYearDay(PackedDateTime dateTime, int timezone)
 YearWeekDay unpackYearWeekDay(PackedDateTime dateTime,
                               DayOfWeek_t firstDayOfWeek)
 {
-    return unpackYearWeekDay(dateTime, firstDayOfWeek, timezoneSecs());
+    return unpackYearWeekDay(dateTime, firstDayOfWeek, static_cast<int>(timezoneSecs()));
 }
 
 YearWeekDay unpackYearWeekDay(PackedDateTime dateTime,
@@ -343,7 +342,7 @@ YearWeekDay unpackYearWeekDay(PackedDateTime dateTime,
 std::pair<YearMonthDay, HourMinuteSecond>
     unpackDateTime(PackedDateTime dateTime)
 {
-    return unpackDateTime(dateTime, timezoneSecs());
+    return unpackDateTime(dateTime, static_cast<int>(timezoneSecs()));
 }
 
 std::pair<YearMonthDay, HourMinuteSecond>
@@ -355,7 +354,7 @@ std::pair<YearMonthDay, HourMinuteSecond>
 
 YearMonthDay unpackDate(PackedDateTime dateTime)
 {
-    return unpackDate(dateTime, timezoneSecs());
+    return unpackDate(dateTime, static_cast<int>(timezoneSecs()));
 }
 
 YearMonthDay unpackDate(PackedDateTime dateTime, int timezone)
@@ -365,7 +364,7 @@ YearMonthDay unpackDate(PackedDateTime dateTime, int timezone)
 
 HourMinuteSecond unpackTime(PackedDateTime dateTime)
 {
-    return unpackTime(dateTime, timezoneSecs());
+    return unpackTime(dateTime, static_cast<int>(timezoneSecs()));
 }
 
 HourMinuteSecond unpackTime(PackedDateTime dateTime, int timezone)
@@ -375,9 +374,31 @@ HourMinuteSecond unpackTime(PackedDateTime dateTime, int timezone)
 
 void dateTimeToTm(tm& time, PackedDateTime dateTime)
 {
-    return dateTimeToTm(time, dateTime, timezoneSecs());
+    return dateTimeToTm(time, dateTime, static_cast<int>(timezoneSecs()));
 }
 
+#ifdef _MSC_VER
+void dateTimeToTm(tm& time, PackedDateTime dateTime, int timezone)
+{
+    auto dt = unpackDateTime(dateTime, timezone);
+    time.tm_mon = dt.first.month - 1;
+    time.tm_mday = dt.first.day;
+    time.tm_hour = dt.second.hour;
+    time.tm_min = dt.second.minute;
+    time.tm_sec = dt.second.second;
+    time.tm_year = dt.first.year >= 1900 ? dt.first.year - 1900 : 0;
+    time.tm_wday = dayOfWeek(dateTime, timezone) % 7;
+    auto yd = unpackYearDay(dateTime, timezone);
+    time.tm_yday = yd.day - 1;
+}
+
+PackedDateTime pack(const tm& time)
+{
+    return pack(YearMonthDay(time.tm_year + 1900, time.tm_mon + 1, time.tm_mday),
+                HourMinuteSecond(time.tm_hour, time.tm_min, time.tm_sec, 0),
+                static_cast<int>(timezoneSecs()));
+}
+#else
 void dateTimeToTm(tm& time, PackedDateTime dateTime, int timezone)
 {
     auto dt = unpackDateTime(dateTime, timezone);
@@ -399,6 +420,7 @@ PackedDateTime pack(const tm& time)
                 HourMinuteSecond(time.tm_hour, time.tm_min, time.tm_sec, 0),
                 time.tm_gmtoff);
 }
+#endif
 
 PackedDateTimeDelta packDelta(const TimeDelta& delta)
 {
@@ -409,10 +431,10 @@ PackedDateTimeDelta packDelta(const TimeDelta& delta)
 
 TimeDelta unpackDelta(PackedDateTimeDelta delta)
 {
-    auto days = delta / USECS_PER_DAY;
+    auto days = static_cast<int>(delta / USECS_PER_DAY);
     delta %= USECS_PER_DAY;
-    auto seconds = delta / USECS_PER_SEC;
-    return TimeDelta(days, seconds, delta % USECS_PER_SEC);
+    auto seconds = static_cast<int>(delta / USECS_PER_SEC);
+    return TimeDelta(days, seconds, static_cast<int>(delta % USECS_PER_SEC));
 }
 
 }

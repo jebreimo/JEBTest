@@ -25,7 +25,7 @@ namespace
         return n < sizeof(T) * 8 ? ((T)1 << n) - 1 : ~(T)0;
     }
 
-    constexpr unsigned char oneCounts[] = {
+    unsigned char oneCounts[] = {
             /* 0 */ 0, 1, 1, 2, /* 4 */ 1, 2, 2, 3,
             /* 8 */ 1, 2, 2, 3, /* C */ 2, 3, 3, 4};
 }

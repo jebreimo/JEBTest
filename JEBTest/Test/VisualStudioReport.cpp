@@ -16,7 +16,7 @@ namespace JEBTest {
 
 bool isRunnningInVisualStudio()
 {
-    return IsDebuggerPresent();
+    return IsDebuggerPresent() != 0;
 }
 
 void writeVisualStudioReport(
@@ -28,7 +28,7 @@ void writeVisualStudioReport(
     OutputDebugStringA(ss.str().c_str());
 }
 
-}}
+}
 
 #else
 
