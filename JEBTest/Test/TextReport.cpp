@@ -65,7 +65,7 @@ static Counters writeTextReport(
         {
             ++counters.failedTests;
             os << testName(parents, *it) << ": FAILED (assertion "
-               << ((*it)->assertions()) << ")\n";
+               << ((*it)->assertions() + 1) << ")\n";
         }
         else if (!errors.empty())
         {
