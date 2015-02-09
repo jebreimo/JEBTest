@@ -10,6 +10,8 @@
 
 #include <cmath>
 #include <cstring>
+#include <sstream>
+#include <string>
 
 namespace JEBTest {
 
@@ -65,6 +67,44 @@ template <typename T, typename U>
 bool greaterThan(T a, U b)
 {
     return b < a;
+}
+
+template <typename Range1, typename Range2>
+inline std::pair<bool, std::string> equalRanges(
+        Range1&& a, Range2&& b,
+        const std::string& aName, const std::string& bName)
+{
+    auto itA = a.begin();
+    auto itB = b.begin();
+    size_t i = 0;
+    for (; itA != a.end() && itB != b.end(); ++itA, ++itB)
+    {
+        if (!equal(*itA, *itB))
+        {
+            std::stringstream ss;
+            ss << aName << "[" << i << "] != " << bName << "[" << i
+               << "]: \"" << *itA << "\" != \"" << *itB << "\".";
+            return std::make_pair(false, ss.str());
+        }
+        ++i;
+    }
+    if (itA != a.end())
+    {
+        std::stringstream ss;
+        ss << aName << " != " << bName << ": the former has "
+           << i + std::distance(itA, a.end())
+           << " elements while the latter has " << i << " elements.";
+        return std::make_pair(false, ss.str());
+    }
+    if (itB != b.end())
+    {
+        std::stringstream ss;
+        ss << aName << " != " << bName << ": the former has " << i
+           << " elements while the latter has "
+           << i + std::distance(itB, b.end()) << " elements.";
+        return std::make_pair(false, ss.str());
+    }
+    return std::make_pair(true, std::string());
 }
 
 }

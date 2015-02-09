@@ -2,78 +2,116 @@
 #include <stdexcept>
 #include <vector>
 
-static double divide(double a, double b)
+namespace {
+
+double divide(double a, double b)
 {
     if (b == 0)
         throw std::invalid_argument("division by zero");
     return a / b;
 }
 
-static void throwsSuccessful()
+void throwsSuccessful()
 {
     JT_THROWS(divide(1, 0), std::logic_error);
 }
 
-static void throwsUnsuccessful()
+void throwsUnsuccessful()
 {
     JT_THROWS(divide(5, 2.5), std::logic_error);
 }
 
-static void assertSuccessful()
+void assertSuccessful()
 {
     std::vector<int> foo;
     JT_ASSERT(foo.empty());
 }
 
-static void assertUnsuccessful()
+void assertUnsuccessful()
 {
     std::vector<int> foo(2);
     JT_ASSERT(foo.empty());
 }
 
-static void assertMsgSuccessful()
+void assertMsgSuccessful()
 {
     std::vector<int> foo;
     JT_ASSERT_MSG(foo.empty(), "Vector isn't empty!");
 }
 
-static void assertMsgUnsuccessful()
+void assertMsgUnsuccessful()
 {
     std::vector<int> foo(2);
     JT_ASSERT_MSG(foo.empty(), "Vector isn't empty!");
 }
 
-static void equalSuccessful()
+void equalSuccessful()
 {
     JT_EQUAL(divide(10, 2), 5);
 }
 
-static void equalUnsuccessful()
+void equalUnsuccessful()
 {
     JT_EQUAL(divide(10, 3), 3.333);
 }
 
-static void equivalentSuccessful()
+void equivalentSuccessful()
 {
     JT_EQUIVALENT(divide(10, 3), 3.333, 0.001);
 }
 
-static void equivalentUnsuccessful()
+void equivalentUnsuccessful()
 {
     JT_EQUIVALENT(divide(10, 3), 3.333, 0.0001);
 }
 
-static void notEqualSuccessful()
+void notEqualSuccessful()
 {
     JT_NOT_EQUAL(divide(10, 2), 4.999);
 }
 
-static void notEqualUnsuccessful()
+void notEqualUnsuccessful()
 {
     JT_NOT_EQUAL(divide(10, 2), 5);
 }
 
-static void failure()
+void equalRangesSuccessful()
+{
+  std::vector<double> v;
+  v.push_back(1); v.push_back(2); v.push_back(3); v.push_back(4);
+  std::vector<int> u;
+  u.push_back(1); u.push_back(2); u.push_back(3); u.push_back(4);
+  JT_EQUAL_RANGES(v, u);
+}
+
+void equalRangesUnsuccessful_not_equal()
+{
+  std::vector<double> v;
+  v.push_back(1); v.push_back(2); v.push_back(3); v.push_back(4);
+  std::vector<int> u;
+  u.push_back(1); u.push_back(2); u.push_back(4);
+  JT_EQUAL_RANGES(v, u);
+}
+
+void equalRangesUnsuccessful_longer_left()
+{
+  std::vector<double> v;
+  v.push_back(1); v.push_back(2); v.push_back(3); v.push_back(4);
+  std::vector<int> u;
+  u.push_back(1); u.push_back(2); u.push_back(3);
+  JT_EQUAL_RANGES(v, u);
+}
+
+void equalRangesUnsuccessful_longer_right()
+{
+  std::vector<double> v;
+  v.push_back(1); v.push_back(2); v.push_back(3);
+  std::vector<int> u;
+  u.push_back(1); u.push_back(2); u.push_back(3); u.push_back(4);
+  JT_EQUAL_RANGES(v, u);
+}
+
+void failure()
 {
     std::vector<int> v;
     for (int i = 0; i < 10; ++i)
@@ -82,7 +120,7 @@ static void failure()
         JT_FAILURE("Added 10 elements, should have been 11.");
 }
 
-static void subtest(const std::string& s, char c, size_t count)
+void subtest(const std::string& s, char c, size_t count)
 {
     JT_ASSERT(!s.empty());
     size_t pos = 0;
@@ -98,14 +136,14 @@ static void subtest(const std::string& s, char c, size_t count)
     JT_EQUAL(actualCount, count);
 }
 
-static void subSuccessful()
+void subSuccessful()
 {
     JT_CALL(subtest("abcdabcdabcd", 'a', 3));
     JT_CALL(subtest("abcdabcdabcd", 'b', 3));
     JT_CALL(subtest("abcdabcdabcd", 'f', 0));
 }
 
-static void subUnsuccessful()
+void subUnsuccessful()
 {
     JT_CALL(subtest("abcdabcdabcd", 'a', 3));
     JT_CALL(subtest("abcdabcdabcd", 'b', 3));
@@ -124,6 +162,12 @@ JT_TEST(throwsSuccessful,
         equivalentUnsuccessful,
         notEqualSuccessful,
         notEqualUnsuccessful,
+        equalRangesSuccessful,
+        equalRangesUnsuccessful_not_equal,
+        equalRangesUnsuccessful_longer_left,
+        equalRangesUnsuccessful_longer_right,
         failure,
         subSuccessful,
         subUnsuccessful);
+
+}

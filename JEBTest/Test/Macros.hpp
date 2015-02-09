@@ -306,8 +306,8 @@
 
 #define JT_IMPL_COMPARISON(test, a, b, failure, file, line, cmpStr) \
     do { \
-        auto JT_PRIV_UNIQUE_NAME(aa) = (a); \
-        auto JT_PRIV_UNIQUE_NAME(bb) = (b); \
+        auto&& JT_PRIV_UNIQUE_NAME(aa) = (a); \
+        auto&& JT_PRIV_UNIQUE_NAME(bb) = (b); \
         JT_IMPL_ASSERT( \
                 test(JT_PRIV_UNIQUE_NAME(aa), JT_PRIV_UNIQUE_NAME(bb)), \
                 failure, file, line, \
@@ -318,8 +318,8 @@
 
 #define JT_IMPL_EQUIVALENT(a, b, epsilon, failure, file, line) \
     do { \
-        auto JT_PRIV_UNIQUE_NAME(aa) = (a); \
-        auto JT_PRIV_UNIQUE_NAME(bb) = (b); \
+        auto&& JT_PRIV_UNIQUE_NAME(aa) = (a); \
+        auto&& JT_PRIV_UNIQUE_NAME(bb) = (b); \
         JT_IMPL_ASSERT( \
                 ::JEBTest::equivalent(JT_PRIV_UNIQUE_NAME(aa), \
                                       JT_PRIV_UNIQUE_NAME(bb), epsilon), \
@@ -357,6 +357,13 @@
 #define JT_LESS(a, b) \
     JT_IMPL_COMPARISON(::JEBTest::lessThan, a, b, TestFailure, \
                        __FILE__, __LINE__, ">=")
+
+#define JT_EQUAL_RANGES(a, b) \
+    do { \
+        auto result = ::JEBTest::equalRanges(a, b, #a, #b); \
+        JT_IMPL_ASSERT(result.first, TestFailure, __FILE__, __LINE__, \
+                       result.second); \
+    } while (false)
 
 /** @brief Verifies that number @a a is sufficiently close to @a b.
   */
