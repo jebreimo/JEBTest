@@ -74,10 +74,11 @@ inline std::pair<bool, std::string> equalRanges(
         Range1&& a, Range2&& b,
         const std::string& aName, const std::string& bName)
 {
-    auto itA = a.begin();
-    auto itB = b.begin();
+    using namespace std;
+    auto itA = begin(a);
+    auto itB = begin(b);
     size_t i = 0;
-    for (; itA != a.end() && itB != b.end(); ++itA, ++itB)
+    for (; itA != end(a) && itB != end(b); ++itA, ++itB)
     {
         if (!equal(*itA, *itB))
         {
@@ -88,20 +89,20 @@ inline std::pair<bool, std::string> equalRanges(
         }
         ++i;
     }
-    if (itA != a.end())
+    if (itA != end(a))
     {
         std::stringstream ss;
         ss << aName << " != " << bName << ": the former has "
-           << i + std::distance(itA, a.end())
+           << i + std::distance(itA, end(a))
            << " elements while the latter has " << i << " elements.";
         return std::make_pair(false, ss.str());
     }
-    if (itB != b.end())
+    if (itB != end(b))
     {
         std::stringstream ss;
         ss << aName << " != " << bName << ": the former has " << i
            << " elements while the latter has "
-           << i + std::distance(itB, b.end()) << " elements.";
+           << i + std::distance(itB, end(b)) << " elements.";
         return std::make_pair(false, ss.str());
     }
     return std::make_pair(true, std::string());
