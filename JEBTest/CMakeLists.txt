@@ -16,4 +16,6 @@ set(PUBLIC_HEADERS
     JEBTest.hpp
     )
 
+add_custom_target(${PROJECT_NAME} SOURCES ${PUBLIC_HEADERS})
+
 install(FILES ${PUBLIC_HEADERS} DESTINATION include/${JEB_DIR})

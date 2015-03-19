@@ -19,7 +19,7 @@ add_definitions(-DJEB_USE_JEBTEST_NAMESPACE)
 if (APPLE)
     set(CMAKE_CXX_FLAGS "-std=c++11 -stdlib=libc++ -Wall")
 elseif (WIN32)
-    add_definitions(-D_SCL_SECURE_NO_WARNINGS)
+    add_definitions(-D_SCL_SECURE_NO_WARNINGS /wd4482)
 endif (APPLE)
 
 add_subdirectory(JEBBase)

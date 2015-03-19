@@ -8,6 +8,10 @@
 #ifndef JEBTEST_JEBTEST_HPP
 #define JEBTEST_JEBTEST_HPP
 
+#ifdef _WIN32
+  #pragma comment (lib, "JEBTest.lib")
+#endif
+
 #include "Test/AutoTest.hpp"
 #include "Test/AutoTestRunner.hpp"
 #include "Test/Macros.hpp"
