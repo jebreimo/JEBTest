@@ -360,9 +360,9 @@
 
 #define JT_EQUAL_RANGES(a, b) \
     do { \
-        auto result = ::JEBTest::equalRanges(a, b, #a, #b); \
-        JT_IMPL_ASSERT(result.first, TestFailure, __FILE__, __LINE__, \
-                       result.second); \
+        auto resultJEBTest = ::JEBTest::equalRanges(a, b, #a, #b); \
+        JT_IMPL_ASSERT(resultJEBTest.first, TestFailure, __FILE__, __LINE__, \
+                       resultJEBTest.second); \
     } while (false)
 
 /** @brief Verifies that number @a a is sufficiently close to @a b.
@@ -426,6 +426,37 @@
         catch (::JEBTest::TestFailure& ex) \
         { \
             ex.addContext(__FILE__, __LINE__, #expr); \
+            throw ex; \
+        } \
+    } while (false)
+
+#define JT_CALL_1(expr, arg1) \
+    do { \
+        try \
+        { \
+            expr; \
+        } \
+        catch (::JEBTest::TestFailure& ex) \
+        { \
+            std::stringstream ss; \
+            ss << #expr " // " #arg1 "=" << arg1; \
+            ex.addContext(__FILE__, __LINE__, ss.str()); \
+            throw ex; \
+        } \
+    } while (false)
+
+
+#define JT_CALL_2(expr, arg1, arg2) \
+    do { \
+        try \
+        { \
+            expr; \
+        } \
+        catch (::JEBTest::TestFailure& ex) \
+        { \
+            std::stringstream ss; \
+            ss << #expr " // " #arg1 "=" << arg1 << ", " #arg2 "=" << arg2; \
+            ex.addContext(__FILE__, __LINE__, ss.str()); \
             throw ex; \
         } \
     } while (false)
