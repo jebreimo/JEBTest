@@ -216,6 +216,17 @@
     JT_IMPL_THROWS(expr, exception, FatalFailure, __FILE__, __LINE__, \
                    #expr " didn't throw exception \"" #exception "\"")
 
+#define JT_NO_THROW(expr, exception) \
+    do { \
+        try { \
+            expr; \
+            ::JEBTest::Session::instance().assertPassed(); \
+        } catch (const exception&) { \
+            throw ::JEBTest::failure(__FILE__, __LINE__, \
+                                     #expr " threw exception " #exception); \
+        } \
+    } while (false)
+
 #define JT_IMPL_EXPECT(cond, file, line, msg) \
     do { \
         if (cond) { \
