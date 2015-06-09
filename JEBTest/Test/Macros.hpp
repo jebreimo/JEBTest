@@ -222,8 +222,9 @@
             expr; \
             ::JEBTest::Session::instance().assertPassed(); \
         } catch (const exception&) { \
-            throw ::JEBTest::failure(__FILE__, __LINE__, \
-                                     #expr " threw exception " #exception); \
+            throw ::JEBTest::TestFailure( \
+                    __FILE__, __LINE__, \
+                    #expr " threw exception " #exception); \
         } \
     } while (false)
 
