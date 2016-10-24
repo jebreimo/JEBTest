@@ -4,6 +4,24 @@
 
 namespace {
 
+void testEqual()
+{
+    std::string str = "ABCD";
+    const char* cstr = "ABCD";
+    const char* cstr2 = "ABCD";
+    char mutCstr[] = "ABCD";
+    char mutCstr2[] = "ABCD";
+
+    JT_EQUAL(str, cstr);
+    JT_EQUAL(cstr, str);
+    JT_EQUAL(cstr, cstr);
+    JT_EQUAL(cstr, cstr2);
+    JT_EQUAL(mutCstr, mutCstr);
+    JT_EQUAL(mutCstr, mutCstr2);
+    JT_EQUAL(cstr, mutCstr);
+    JT_EQUAL(mutCstr, cstr);
+}
+
 double divide(double a, double b)
 {
     if (b == 0)
@@ -151,6 +169,7 @@ void subUnsuccessful()
 }
 
 JT_TEST(throwsSuccessful,
+        testEqual,
         throwsUnsuccessful,
         assertSuccessful,
         assertUnsuccessful,

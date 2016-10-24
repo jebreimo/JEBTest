@@ -47,6 +47,12 @@ add_library(JEBTest
             $<TARGET_OBJECTS:Test>
             )
 
+set_target_properties(
+    ${PROJECT_NAME}
+    PROPERTIES
+        MACOSX_RPATH ON
+        DEBUG_OUTPUT_NAME "${PROJECT_NAME}.debug")
+
 add_subdirectory(Examples)
 
 install(TARGETS JEBTest DESTINATION lib)

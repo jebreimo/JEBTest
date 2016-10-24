@@ -16,29 +16,26 @@
 namespace JEBTest {
 
 template <typename T, typename U>
-bool equal(T t, U u)
+bool equal(const T& t, const U& u)
 {
     return t == u;
 }
 
-template <>
-inline bool equal<char*, char*>(char* t, char* u)
+inline bool equal(char* t, char* u)
 {
     if (t == nullptr || u == nullptr)
         return t == u;
     return std::strcmp(t, u) == 0;
 }
 
-template <>
-inline bool equal<const char*, const char*>(const char* t, const char* u)
+inline bool equal(const char* t, const char* u)
 {
     if (t == nullptr || u == nullptr)
         return t == u;
     return std::strcmp(t, u) == 0;
 }
 
-template <>
-inline bool equal<char*, const char*>(char* t, const char* u)
+inline bool equal(char* t, const char* u)
 {
     if (t == nullptr || u == nullptr)
         return t == u;

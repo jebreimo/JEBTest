@@ -9,7 +9,11 @@
 #define JEBTEST_JEBTEST_HPP
 
 #ifdef _WIN32
-  #pragma comment (lib, "JEBTest.lib")
+  #ifdef NDEBUG
+    #pragma comment (lib, "JEBTest.lib")
+  #else
+    #pragma comment (lib, "JEBTest.debug.lib")
+  #endif
 #endif
 
 #include "Test/AutoTest.hpp"
