@@ -254,6 +254,11 @@ void Session::setLog(std::ostream* log)
     m_Log = log;
 }
 
+void Session::flushLog()
+{
+    m_Log->flush();
+}
+
 bool Session::verbose() const
 {
     return m_Verbose;

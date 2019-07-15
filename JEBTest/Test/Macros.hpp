@@ -60,6 +60,7 @@
 #define JT_CONSOLE_END() \
     } catch (...) {} \
     ::JEBTest::Session::instance().print(""); \
+    ::JEBTest::Session::instance().flushLog(); \
     ::JEBTest::Session::instance().writeReports()
 
 /** @brief Creates a main function for console programs that run test suites.

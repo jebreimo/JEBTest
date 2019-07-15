@@ -69,6 +69,7 @@ public:
 
     std::ostream* log();
     void setLog(std::ostream* log);
+    void flushLog();
 
     bool verbose() const;
     void setVerbose(bool verbose);
