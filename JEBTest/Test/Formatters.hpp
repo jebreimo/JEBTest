@@ -9,6 +9,7 @@
 #define JEBTEST_TEST_FORMATTERS_HPP
 
 #include <sstream>
+#include <typeinfo>
 
 namespace JEBTest {
 
@@ -40,8 +41,17 @@ std::string formatComparison(T* t, const char* tName,
 {
     std::ostringstream ss;
     ss << tName << " " << operat << " " << uName
-       << ":  \"" << (t ? t : (void*)t) << "\" " << operat << " \""
-       << (u ? u : (void*)u) << "\".";
+       << ":  (" << typeid(T*).name() << ")\"";
+    if (t)
+        ss << t;
+    else
+        ss << "nullptr";
+    ss << "\" " << operat << " (" << typeid(U*).name() << ")\"";
+    if (u)
+        ss << u;
+    else
+        ss << "nullptr";
+    ss << "\".";
     return ss.str();
 }
 
