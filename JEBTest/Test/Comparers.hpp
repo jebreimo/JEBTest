@@ -10,6 +10,7 @@
 
 #include <cmath>
 #include <cstring>
+#include <cwchar>
 #include <sstream>
 #include <string>
 
@@ -40,6 +41,31 @@ inline bool equal(char* t, const char* u)
     if (t == nullptr || u == nullptr)
         return t == u;
     return std::strcmp(t, u) == 0;
+}
+
+template <>
+inline bool equal<wchar_t*, wchar_t*>(wchar_t* t, wchar_t* u)
+{
+    if (t == nullptr || u == nullptr)
+        return t == u;
+    return std::wcscmp(t, u) == 0;
+}
+
+template <>
+inline bool equal<const wchar_t*, const wchar_t*>(
+        const wchar_t* t, const wchar_t* u)
+{
+    if (t == nullptr || u == nullptr)
+        return t == u;
+    return std::wcscmp(t, u) == 0;
+}
+
+template <>
+inline bool equal<wchar_t*, const wchar_t*>(wchar_t* t, const wchar_t* u)
+{
+    if (t == nullptr || u == nullptr)
+        return t == u;
+    return std::wcscmp(t, u) == 0;
 }
 
 template <typename T, typename U>
