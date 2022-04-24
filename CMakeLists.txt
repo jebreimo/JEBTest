@@ -1,83 +1,142 @@
-# JEBTest: A C++ unit testing framework
-# Copyright 2013 Jan Erik Breimo
-# All rights reserved.
-#
-# This file is distributed under the BSD License.
-# License text is included with the source distribution.
-cmake_minimum_required(VERSION 2.8)
+##****************************************************************************
+## Copyright © 2015 Jan Erik Breimo. All rights reserved.
+## Created by Jan Erik Breimo on 2015-08-06.
+##
+## This file is distributed under the Simplified BSD License.
+## License text is included with the source distribution.
+##****************************************************************************
+cmake_minimum_required(VERSION 3.16)
+project(JEBTest VERSION 0.1.1)
 
-project(JEBTest)
+set(CMAKE_CXX_STANDARD 17)
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
+# Set YTEST_MASTER_PROJECT to ON if Ystring is the root level project.
+if (NOT DEFINED YTEST_MASTER_PROJECT)
+    if (CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
+        set(YTEST_MASTER_PROJECT ON)
+    else ()
+        set(YTEST_MASTER_PROJECT OFF)
+    endif ()
+endif ()
 
-include_directories(${CMAKE_SOURCE_DIR}/JEBBase
-                    ${CMAKE_SOURCE_DIR}/JEBMath
-                    ${CMAKE_SOURCE_DIR}/JEBString
-                    ${CMAKE_SOURCE_DIR}/JEBIO)
-add_definitions(-DJEB_USE_JEBTEST_NAMESPACE)
+# Install option
+option(YTEST_INSTALL "Generate the install target" ${YTEST_MASTER_PROJECT})
 
-if (APPLE)
-    set(CMAKE_CXX_FLAGS "-std=c++11 -stdlib=libc++ -Wall")
-elseif (WIN32)
-    add_definitions(-D_SCL_SECURE_NO_WARNINGS /wd4482)
-endif (APPLE)
+# Install option
+option(YTEST_BUILD_EXAMPLES "Build the examples" ${YTEST_MASTER_PROJECT})
 
-add_subdirectory(JEBBase)
-add_subdirectory(JEBString)
-add_subdirectory(JEBIO)
-add_subdirectory(JEBTest)
-add_library(JEBTest
-            # JEBBase
-            $<TARGET_OBJECTS:Bits>
+add_subdirectory(external/Ystring2)
+add_subdirectory(external/Yconvert)
 
-            # JEBString
-            $<TARGET_OBJECTS:CodePageStrings>
-            $<TARGET_OBJECTS:EncodedStrings>
-            $<TARGET_OBJECTS:Encodings>
-            $<TARGET_OBJECTS:Unicode>
-            $<TARGET_OBJECTS:Utf8>
-            $<TARGET_OBJECTS:Utf16>
+add_library(JEBTest STATIC
+    include/JEBTest/AutoTest.hpp
+    include/JEBTest/AutoTestRunner.hpp
+    include/JEBTest/Comparers.hpp
+    include/JEBTest/Error.hpp
+    include/JEBTest/Exceptions.hpp
+    include/JEBTest/Formatters.hpp
+    include/JEBTest/Macros.hpp
+    include/JEBTest/MacroUtilities.hpp
+    include/JEBTest/Session.hpp
+    include/JEBTest/TestScope.hpp
+    include/JEBTest/JEBTest.hpp
+    include/JEBTest/JEBTestMain.hpp
+    src/JEBTest/AutoTest.cpp
+    src/JEBTest/AutoTestRunner.cpp
+    src/JEBTest/Error.cpp
+    src/JEBTest/Formatters.cpp
+    src/JEBTest/Indentation.cpp
+    src/JEBTest/Indentation.hpp
+    src/JEBTest/JUnitReport.cpp
+    src/JEBTest/JUnitReport.hpp
+    src/JEBTest/MacroUtilities.cpp
+    src/JEBTest/ParseArguments.cpp
+    src/JEBTest/ParseArguments.hpp
+    src/JEBTest/PathFilter.cpp
+    src/JEBTest/PathFilter.hpp
+    src/JEBTest/Session.cpp
+    src/JEBTest/StreamRedirection.cpp
+    src/JEBTest/StreamRedirection.hpp
+    src/JEBTest/Test.cpp
+    src/JEBTest/Test.hpp
+    src/JEBTest/TextReport.cpp
+    src/JEBTest/TextReport.hpp
+    src/JEBTest/VisualStudioReport.cpp
+    src/JEBTest/VisualStudioReport.hpp
+    src/JEBTest/XmlWriter.cpp
+    src/JEBTest/XmlWriter.hpp
+    $<TARGET_OBJECTS:JEBTest::Ystring>
+    $<TARGET_OBJECTS:JEBTest::Yconvert>
+    )
 
-            # JEBIO
-            $<TARGET_OBJECTS:Paths>
-            $<TARGET_OBJECTS:Streams>
-            $<TARGET_OBJECTS:Xml>
+target_compile_definitions(JEBTest
+    PRIVATE
+    $<$<BOOL:${MSVC}>:_SCL_SECURE_NO_WARNINGS>
+    Yconvert=JEBTest_Yconvert
+    Ystring=JEBTest_Ystring
+    )
 
-            # JEBTest
-            $<TARGET_OBJECTS:Test>
-            )
-
-set_target_properties(
-    ${PROJECT_NAME}
+set_target_properties(JEBTest
     PROPERTIES
-        MACOSX_RPATH ON
-        DEBUG_OUTPUT_NAME "${PROJECT_NAME}.debug")
+    DEBUG_OUTPUT_NAME "JEBTest.debug"
+    )
 
-add_subdirectory(Examples)
+include(GNUInstallDirs)
 
-install(TARGETS JEBTest DESTINATION lib)
-# 
-# find_package(Doxygen)
-# 
-# if (DOXYGEN_FOUND)
-#     set(DOXYGEN_INPUT Doxyfile)
-#     set(DOXYGEN_OUTPUT doc/html/index.html)
-# 
-#     add_custom_command(
-#       OUTPUT ${DOXYGEN_OUTPUT}
-#       COMMAND ${CMAKE_COMMAND} -E echo_append "Building API Documentation..."
-#       COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_INPUT}
-#       COMMAND ${CMAKE_COMMAND} -E echo "Done."
-#       WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-#       DEPENDS ${DOXYGEN_INPUT}
-#       )
-# 
-#     add_custom_target(apidoc ALL DEPENDS ${DOXYGEN_OUTPUT})
-# 
-#     add_custom_target(apidoc_forced
-#       COMMAND ${CMAKE_COMMAND} -E echo_append "Building API Documentation..."
-#       COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_INPUT}
-#       COMMAND ${CMAKE_COMMAND} -E echo "Done."
-#       WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-#       )
-# endif (DOXYGEN_FOUND)
+target_include_directories(JEBTest
+    PUBLIC
+    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/src
+    ${CMAKE_CURRENT_SOURCE_DIR}/external/Yconvert/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/external/Ystring2/include
+    )
+
+add_library(JEBTest::JEBTest ALIAS JEBTest)
+
+if (YTEST_BUILD_EXAMPLES)
+    add_subdirectory(examples)
+endif ()
+
+export(TARGETS JEBTest
+    NAMESPACE
+    JEBTest::
+    FILE
+    JEBTestConfig.cmake
+    )
+
+if (YTEST_INSTALL)
+    install(TARGETS JEBTest
+        EXPORT JEBTestConfig
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        )
+
+    install(EXPORT JEBTestConfig
+        FILE
+        JEBTestConfig.cmake
+        NAMESPACE
+        JEBTest::
+        DESTINATION
+        ${CMAKE_INSTALL_LIBDIR}/cmake/JEBTest
+        )
+
+    install(
+        DIRECTORY
+        include/
+        DESTINATION
+        ${CMAKE_INSTALL_INCLUDEDIR}
+    )
+
+    include(CMakePackageConfigHelpers)
+
+    write_basic_package_version_file(JEBTestConfigVersion.cmake
+        COMPATIBILITY SameMajorVersion
+        )
+
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/JEBTestConfigVersion.cmake
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/JEBTest
+        )
+endif ()
