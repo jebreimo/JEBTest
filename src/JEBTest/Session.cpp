@@ -106,8 +106,7 @@ namespace JEBTest
         {
             if (isRunningInVisualStudio())
                 writeVisualStudioReport(func, session);
-            else
-                func(std::cout, session);
+            func(std::cout, session);
         }
         else if (!forceExtension ||
                  ystring::case_insensitive_ends_with(fileName, fileNameExtension))

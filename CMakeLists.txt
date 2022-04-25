@@ -10,20 +10,20 @@ project(JEBTest VERSION 0.1.1)
 
 set(CMAKE_CXX_STANDARD 17)
 
-# Set YTEST_MASTER_PROJECT to ON if Ystring is the root level project.
-if (NOT DEFINED YTEST_MASTER_PROJECT)
+# Set JEBTEST_MASTER_PROJECT to ON if Ystring is the root level project.
+if (NOT DEFINED JEBTEST_MASTER_PROJECT)
     if (CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
-        set(YTEST_MASTER_PROJECT ON)
+        set(JEBTEST_MASTER_PROJECT ON)
     else ()
-        set(YTEST_MASTER_PROJECT OFF)
+        set(JEBTEST_MASTER_PROJECT OFF)
     endif ()
 endif ()
 
 # Install option
-option(YTEST_INSTALL "Generate the install target" ${YTEST_MASTER_PROJECT})
+option(JEBTEST_INSTALL "Generate the install target" ${JEBTEST_MASTER_PROJECT})
 
 # Install option
-option(YTEST_BUILD_EXAMPLES "Build the examples" ${YTEST_MASTER_PROJECT})
+option(JEBTEST_BUILD_EXAMPLES "Build the examples" ${JEBTEST_MASTER_PROJECT})
 
 add_subdirectory(external/Ystring2)
 add_subdirectory(external/Yconvert)
@@ -71,42 +71,42 @@ add_library(JEBTest STATIC
 
 target_compile_definitions(JEBTest
     PRIVATE
-    $<$<BOOL:${MSVC}>:_SCL_SECURE_NO_WARNINGS>
-    Yconvert=JEBTest_Yconvert
-    Ystring=JEBTest_Ystring
+        $<$<BOOL:${MSVC}>:_SCL_SECURE_NO_WARNINGS>
+        Yconvert=JEBTest_Yconvert
+        ystring=JEBTest_Ystring
     )
 
 set_target_properties(JEBTest
     PROPERTIES
-    DEBUG_OUTPUT_NAME "JEBTest.debug"
+        DEBUG_OUTPUT_NAME "JEBTest.debug"
     )
 
 include(GNUInstallDirs)
 
 target_include_directories(JEBTest
     PUBLIC
-    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}/src
-    ${CMAKE_CURRENT_SOURCE_DIR}/external/Yconvert/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/external/Ystring2/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
+        ${CMAKE_CURRENT_SOURCE_DIR}/external/Yconvert/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/external/Ystring2/include
     )
 
 add_library(JEBTest::JEBTest ALIAS JEBTest)
 
-if (YTEST_BUILD_EXAMPLES)
+if (JEBTEST_BUILD_EXAMPLES)
     add_subdirectory(examples)
 endif ()
 
 export(TARGETS JEBTest
     NAMESPACE
-    JEBTest::
+        JEBTest::
     FILE
-    JEBTestConfig.cmake
+        JEBTestConfig.cmake
     )
 
-if (YTEST_INSTALL)
+if (JEBTEST_INSTALL)
     install(TARGETS JEBTest
         EXPORT JEBTestConfig
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
@@ -116,19 +116,19 @@ if (YTEST_INSTALL)
 
     install(EXPORT JEBTestConfig
         FILE
-        JEBTestConfig.cmake
+            JEBTestConfig.cmake
         NAMESPACE
-        JEBTest::
+            JEBTest::
         DESTINATION
-        ${CMAKE_INSTALL_LIBDIR}/cmake/JEBTest
+            ${CMAKE_INSTALL_LIBDIR}/cmake/JEBTest
         )
 
     install(
         DIRECTORY
-        include/
+            include/
         DESTINATION
-        ${CMAKE_INSTALL_INCLUDEDIR}
-    )
+            ${CMAKE_INSTALL_INCLUDEDIR}
+        )
 
     include(CMakePackageConfigHelpers)
 

@@ -1,3 +1,3 @@
-#include "JEBTest/JEBTest.hpp"
+#define JT_MAIN
 
-JT_CONSOLE_MAIN()
+#include "JEBTest/JEBTest.hpp"

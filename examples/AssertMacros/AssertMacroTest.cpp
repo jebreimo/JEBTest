@@ -168,6 +168,28 @@ void subUnsuccessful()
     JT_CALL(subtest("abcdabcdabcd", 'f', 3)); // This test fails
 }
 
+    void stringTypes_u16()
+    {
+#if (!defined(_MSC_VER) || _MSC_VER >= 1900)
+        std::u16string s(u"FooBar");
+        JT_EQUAL(s, u"Foozball");
+#endif
+    }
+
+    void stringTypes_u32()
+    {
+#if (!defined(_MSC_VER) || _MSC_VER >= 1900)
+        std::u32string s(U"FooBar");
+        JT_EQUAL(s, U"Foozball");
+#endif
+    }
+
+    void stringTypes_w()
+    {
+        std::wstring s(L"FooBar");
+        JT_EQUAL(s, L"Foozball");
+    }
+
 JT_TEST(throwsSuccessful,
         testEqual,
         throwsUnsuccessful,
@@ -187,6 +209,9 @@ JT_TEST(throwsSuccessful,
         equalRangesUnsuccessful_longer_right,
         failure,
         subSuccessful,
-        subUnsuccessful);
+        subUnsuccessful,
+        stringTypes_u16,
+        stringTypes_u32,
+        stringTypes_w);
 
 }

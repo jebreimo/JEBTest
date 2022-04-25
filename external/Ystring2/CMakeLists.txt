@@ -47,6 +47,7 @@ target_include_directories(JEBTest_Ystring BEFORE
 target_compile_definitions(JEBTest_Ystring
     PRIVATE
         $<$<CXX_COMPILER_ID:MSVC>:YSTRING_EXPORTS>
+        ystring=JEBTest_Ystring
     )
 
 target_compile_options(JEBTest_Ystring
