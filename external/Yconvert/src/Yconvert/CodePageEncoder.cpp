@@ -27,7 +27,7 @@ namespace Yconvert
                 --it;
                 auto offset = c - it->codePoint;
                 if (offset <= it->length)
-                    return it->index + offset;
+                    return static_cast<char>(it->index + offset);
             }
             return {};
         }

@@ -29,8 +29,8 @@ namespace JEBTest
         FilterState descend(const std::string& name);
         bool shouldDescend(const std::string& name);
 
-        void excludePath(const std::string& path);
-        void includePath(const std::string& path);
+        void excludePath(std::string path);
+        void includePath(std::string path);
 
         PathFilterType type() const;
         void setType(PathFilterType type);
@@ -70,14 +70,14 @@ namespace JEBTest
             return m_Type == InclusiveFilter;
     }
 
-    void FilterState::excludePath(const std::string& path)
+    void FilterState::excludePath(std::string path)
     {
-        m_Exclude.push_back(path);
+        m_Exclude.push_back(move(path));
     }
 
-    void FilterState::includePath(const std::string& path)
+    void FilterState::includePath(std::string path)
     {
-        m_Include.push_back(path);
+        m_Include.push_back(move(path));
     }
 
     PathFilterType FilterState::type() const
@@ -114,14 +114,14 @@ namespace JEBTest
         return m_States.back().type() == InclusiveFilter;
     }
 
-    void PathFilter::excludePath(const std::string& path)
+    void PathFilter::excludePath(std::string path)
     {
-        m_States.front().excludePath(path);
+        m_States.front().excludePath(move(path));
     }
 
-    void PathFilter::includePath(const std::string& path)
+    void PathFilter::includePath(std::string path)
     {
-        m_States.front().includePath(path);
+        m_States.front().includePath(move(path));
     }
 
     PathFilterType PathFilter::type() const

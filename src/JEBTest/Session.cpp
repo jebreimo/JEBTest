@@ -8,20 +8,127 @@
 #include "JEBTest/Session.hpp"
 
 #include <algorithm>
+#include <cstdlib>
 #include <ctime>
 #include <iostream>
 #include <stdexcept>
 #include "Ystring/Algorithms.hpp"
 #include "JUnitReport.hpp"
-#include "ParseArguments.hpp"
 #include "PathFilter.hpp"
 #include "StreamRedirection.hpp"
 #include "Test.hpp"
 #include "TextReport.hpp"
 #include "VisualStudioReport.hpp"
 
+#include "Argos/Argos.hpp"
+
 namespace JEBTest
 {
+    namespace
+    {
+        std::string get_env(const char* var_name)
+        {
+            if (const auto* var = std::getenv(var_name))
+                return var;
+            return {};
+        }
+
+        std::string_view get_base_name(std::string_view str)
+        {
+            auto pos = str.find_last_of("/\\");
+            return pos == std::string_view::npos ? str : str.substr(pos + 1);
+        }
+
+        argos::ParsedArguments parse_arguments(int argc, char* argv[])
+        {
+            using namespace argos;
+            const std::string report_section("REPORT OPTIONS");
+
+            ArgumentParser argument_parser(argv[0]);
+            auto report_default = get_env("JEBTEST_REPORT");
+            if (report_default == "-")
+            {
+                report_default = "testresult."
+                                 + std::string(get_base_name(argv[0]));
+            }
+            const auto junit_default = get_env("JEBTEST_JUNIT");
+            return argument_parser
+                .add(Argument("TEST").count(0, UINT_MAX)
+                    .help("The name of the test or tests that will be run."
+                          " All tests are run if no test names are given.\n"
+                          "\n"
+                          "Tests are typically arranged in a two-level"
+                          " hierarchy with a parent (with the same name as the"
+                          " cpp file) and several child-tests.\n"
+                          "\n"
+                          "Example:\n"
+                          "\n"
+                          "If the tests are arranged like this:\n"
+                          "\n"
+                          "Test1:\n"
+                          "    Subtest1:\n"
+                          "        Subsubtest1\n"
+                          "        Subsubtest2\n"
+                          "    Subtest2:\n"
+                          "        Subsubtest1\n"
+                          "        Subsubtest2\n"
+                          "Test2:\n"
+                          "    Subtest1\n"
+                          "    Subtest2\n"
+                          "\n"
+                          "- \"Test1\" will run the tests under Test1, tests"
+                          " under Test2 are ignored.\n"
+                          "- \"Test1/Subtest2\" will run the tests under"
+                          " Test1/Subtest2, all other tests are ignored.\n"
+                          "\n"
+                          "The --exclude option inverts the effect of these"
+                          " arguments: all tests except the named ones (and"
+                          " those under it) are run."))
+                .add(Option{"-e", "--exclude"}
+                    .help("Inverts the effect of the TEST arguments."))
+                .add(Option{"-l", "--logfile"}.argument("FILE")
+                    .help("Redirect all the output the tests normally write"
+                          " to stdout or stderr to a file named FILE instead"
+                          " (this does not affect the test reports)."))
+                .add(Option{"-q", "--quiet"}.alias("--verbose")
+                    .constant(false)
+                    .help("Don't display extra information while running"
+                          " tests (opposite of --verbose)."))
+                .add(Option{"-v", "--verbose"}
+                    .help("Display extra information while running tests"
+                          " (this is the default)."))
+                .add(Option{"--junit"}
+                    .initial_value(junit_default)
+                    .section(report_section)
+                    .help("Produce a test report in the JUnit XML format."))
+                .add(Option{"--text"}
+                    .section(report_section)
+                    .help("Produce a plain text test report that only list"
+                          " failed tests (this is the default)."))
+                .add(Option{"-f", "--report"}.argument("FILE")
+                    .initial_value(report_default)
+                    .section(report_section)
+                    .help("The name of the report file. FILE will have a"
+                          " suitable file type extension appended to it (txt,"
+                          " xml etc.). Test reports are written to stdout if"
+                          " this option isn't used."))
+                .add(Option{"--host"}.argument("HOST")
+                    .section(report_section)
+                    .help("Set the host name. This option has no effect on"
+                          " tests; it's only included in the test report."))
+                .text(TextId::FINAL_TEXT,
+                      "The following environment variables can also be used"
+                      " to override the default behavior, but will themselves"
+                      " be overridden by the corresponding arguments:\n"
+                      "- JEBTEST_REPORT to set the default value for --report."
+                      " If the value is \"-\", a name,"
+                      " \"testreport.<program name>\", is auto-generated.\n"
+                      "- JEBTEST_JUNIT to set the default value for --junit"
+                      " (\"true\" or \"false\").")
+                .parse(argc, argv);
+        }
+    }
+
     Session::Session()
         : m_AllTestsEnabled(true),
           m_EnabledReports(0),
@@ -41,23 +148,20 @@ namespace JEBTest
 
     bool Session::parseCommandLine(int argc, char* argv[])
     {
+        std::getenv("FPP");
         auto args = parse_arguments(argc, argv);
-        if (args->parse_arguments_result != Arguments::RESULT_OK)
-            return false;
-        if (args->junit)
-            setReportEnabled(JUnitReport, true);
-        if (args->text || !args->junit)
-            setReportEnabled(TextReport, true);
-        if (!args->logfile.empty())
-            setLogFile(args->logfile);
-        m_ReportFileName = args->report;
-        setAllTestsEnabled(args->exclude || args->test_name.empty());
-        for (auto it = begin(args->test_name); it != end(args->test_name);
-             ++it)
+        setReportEnabled(JUnitReport, args.value("--junit").as_bool());
+        setReportEnabled(TextReport, args.value("--text").as_bool());
+        setLogFile(args.value("--logfile").as_string());
+        m_ReportFileName = args.value("--report").as_string();
+        const auto exclude = args.value("--exclude").as_bool();
+        const auto test_names = args.values("TEST").as_strings();
+        setAllTestsEnabled(exclude || test_names.empty());
+        for (const auto& name : test_names)
         {
-            setTestEnabled(*it, !args->exclude);
+            setTestEnabled(name, !exclude);
         }
-        m_Verbose = args->verbose;
+        m_Verbose = args.value("--verbose").as_bool(true);
         return true;
     }
 
@@ -99,7 +203,6 @@ namespace JEBTest
     void writeReport(ReportFunc func,
                      const std::string& fileName,
                      const std::string& fileNameExtension,
-                     bool forceExtension,
                      const Session& session)
     {
         if (fileName.empty())
@@ -108,8 +211,7 @@ namespace JEBTest
                 writeVisualStudioReport(func, session);
             func(std::cout, session);
         }
-        else if (!forceExtension ||
-                 ystring::case_insensitive_ends_with(fileName, fileNameExtension))
+        else if (ystring::case_insensitive_ends_with(fileName, fileNameExtension))
         {
             writeFileReport(func, fileName, session);
         }
@@ -123,11 +225,9 @@ namespace JEBTest
     {
         unsigned reports = m_EnabledReports ? m_EnabledReports : TextReport;
         if (reports & TextReport)
-            writeReport(writeTextReport, m_ReportFileName, ".txt",
-                        (m_EnabledReports & ~TextReport) != 0, *this);
+            writeReport(writeTextReport, m_ReportFileName, ".txt", *this);
         if (reports & JUnitReport)
-            writeReport(writeJUnitReport, m_ReportFileName, ".xml",
-                        (m_EnabledReports & ~JUnitReport) != 0, *this);
+            writeReport(writeJUnitReport, m_ReportFileName, ".xml", *this);
     }
 
     void Session::beginTest(const std::string& name /*= "<unnamed>"*/,
@@ -207,12 +307,12 @@ namespace JEBTest
         return m_TestFilter->shouldDescend(name);
     }
 
-    void Session::setTestEnabled(const std::string& name, bool enable)
+    void Session::setTestEnabled(std::string name, bool enable)
     {
         if (enable)
-            m_TestFilter->includePath(name);
+            m_TestFilter->includePath(move(name));
         else
-            m_TestFilter->excludePath(name);
+            m_TestFilter->excludePath(move(name));
     }
 
     const std::vector<TestPtr>& Session::tests() const
@@ -230,7 +330,7 @@ namespace JEBTest
 
     void Session::printInfo(const std::string& text, bool startOnNewLine)
     {
-        if (!m_Verbose)
+        if (!verbose())
             return;
         if (startOnNewLine && !m_StartOfLine)
             *m_Log << '\n';
@@ -282,21 +382,15 @@ namespace JEBTest
         return ystring::join(names.begin(), names.end(), "/");
     }
 
-    std::string Session::getTestName(const std::string& name) const
-    {
-        std::vector<std::string> names;
-        for (const auto& test: m_ActiveTest)
-            names.push_back(test->name());
-        names.push_back(name);
-        return ystring::join(names.begin(), names.end(), "/");
-    }
-
     void Session::setLogFile(const std::string& fileName)
     {
-        m_LogFile.open(fileName);
-        m_Log = &m_LogFile;
-        m_Redirections.emplace_back(std::cout, m_LogFile);
-        m_Redirections.emplace_back(std::cerr, m_LogFile);
-        m_Redirections.emplace_back(std::clog, m_LogFile);
+        if (!fileName.empty())
+        {
+            m_LogFile.open(fileName);
+            m_Log = &m_LogFile;
+            m_Redirections.emplace_back(std::cout, m_LogFile);
+            m_Redirections.emplace_back(std::cerr, m_LogFile);
+            m_Redirections.emplace_back(std::clog, m_LogFile);
+        }
     }
 }

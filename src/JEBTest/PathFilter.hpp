@@ -30,8 +30,8 @@ namespace JEBTest
         bool shouldDescend(const std::string& name);
         bool ascend();
 
-        void excludePath(const std::string& path);
-        void includePath(const std::string& path);
+        void excludePath(std::string path);
+        void includePath(std::string path);
 
         PathFilterType type() const;
         void setType(PathFilterType type);

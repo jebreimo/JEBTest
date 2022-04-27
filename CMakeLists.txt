@@ -41,6 +41,8 @@ add_library(JEBTest STATIC
     include/JEBTest/TestScope.hpp
     include/JEBTest/JEBTest.hpp
     include/JEBTest/JEBTestMain.hpp
+    src/JEBTest/Argos/Argos.cpp
+    src/JEBTest/Argos/Argos.hpp
     src/JEBTest/AutoTest.cpp
     src/JEBTest/AutoTestRunner.cpp
     src/JEBTest/Error.cpp
@@ -50,8 +52,6 @@ add_library(JEBTest STATIC
     src/JEBTest/JUnitReport.cpp
     src/JEBTest/JUnitReport.hpp
     src/JEBTest/MacroUtilities.cpp
-    src/JEBTest/ParseArguments.cpp
-    src/JEBTest/ParseArguments.hpp
     src/JEBTest/PathFilter.cpp
     src/JEBTest/PathFilter.hpp
     src/JEBTest/Session.cpp
@@ -72,6 +72,7 @@ add_library(JEBTest STATIC
 target_compile_definitions(JEBTest
     PRIVATE
         $<$<BOOL:${MSVC}>:_SCL_SECURE_NO_WARNINGS>
+        $<$<BOOL:${MSVC}>:_CRT_SECURE_NO_WARNINGS>
         Yconvert=JEBTest_Yconvert
         ystring=JEBTest_Ystring
     )
