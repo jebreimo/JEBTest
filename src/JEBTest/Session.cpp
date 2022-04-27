@@ -52,6 +52,7 @@ namespace JEBTest
                                  + std::string(get_base_name(argv[0]));
             }
             const auto junit_default = get_env("JEBTEST_JUNIT");
+            const auto text_default = get_env("JEBTEST_TEXT");
             return argument_parser
                 .add(Argument("TEST").count(0, UINT_MAX)
                     .help("The name of the test or tests that will be run."
@@ -102,6 +103,7 @@ namespace JEBTest
                     .section(report_section)
                     .help("Produce a test report in the JUnit XML format."))
                 .add(Option{"--text"}
+                    .initial_value(text_default)
                     .section(report_section)
                     .help("Produce a plain text test report that only list"
                           " failed tests (this is the default)."))
@@ -124,6 +126,8 @@ namespace JEBTest
                       " If the value is \"-\", a name,"
                       " \"testreport.<program name>\", is auto-generated.\n"
                       "- JEBTEST_JUNIT to set the default value for --junit"
+                      " (\"true\" or \"false\").\n"
+                      "- JEBTEST_TEXT to set the default value for --text"
                       " (\"true\" or \"false\").")
                 .parse(argc, argv);
         }
@@ -228,6 +232,8 @@ namespace JEBTest
             writeReport(writeTextReport, m_ReportFileName, ".txt", *this);
         if (reports & JUnitReport)
             writeReport(writeJUnitReport, m_ReportFileName, ".xml", *this);
+        if (!m_ReportFileName.empty())
+            writeReport(writeTextReport, {}, {}, *this);
     }
 
     void Session::beginTest(const std::string& name /*= "<unnamed>"*/,
