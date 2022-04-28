@@ -1,3 +1,6 @@
 lib
 bin
 doc
+build/
+cmake-build-*/
+.idea/
