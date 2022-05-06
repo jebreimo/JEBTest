@@ -46,11 +46,6 @@ namespace JEBTest
 
             ArgumentParser argument_parser(argv[0]);
             auto report_default = get_env("JEBTEST_REPORT");
-            if (report_default == "-")
-            {
-                report_default = "testresult."
-                                 + std::string(get_base_name(argv[0]));
-            }
             const auto junit_default = get_env("JEBTEST_JUNIT");
             const auto text_default = get_env("JEBTEST_TEXT");
             return argument_parser
@@ -91,7 +86,7 @@ namespace JEBTest
                     .help("Redirect all the output the tests normally write"
                           " to stdout or stderr to a file named FILE instead"
                           " (this does not affect the test reports)."))
-                .add(Option{"-q", "--quiet"}.alias("--verbose")
+                .add(Option{"-q", "--quiet"}.alias("--verbse")
                     .constant(false)
                     .help("Don't display extra information while running"
                           " tests (opposite of --verbose)."))
@@ -113,7 +108,9 @@ namespace JEBTest
                     .help("The name of the report file. FILE will have a"
                           " suitable file type extension appended to it (txt,"
                           " xml etc.). Test reports are written to stdout if"
-                          " this option isn't used."))
+                          " this option isn't used. If the name is \"-\", a"
+                          " name, \"jebTestResult.<program name>\", is"
+                          " auto-generated."))
                 .add(Option{"--host"}.argument("HOST")
                     .section(report_section)
                     .help("Set the host name. This option has no effect on"
@@ -122,12 +119,10 @@ namespace JEBTest
                       "The following environment variables can also be used"
                       " to override the default behavior, but will themselves"
                       " be overridden by the corresponding arguments:\n"
-                      "- JEBTEST_REPORT to set the default value for --report."
-                      " If the value is \"-\", a name,"
-                      " \"testreport.<program name>\", is auto-generated.\n"
-                      "- JEBTEST_JUNIT to set the default value for --junit"
+                      "- JEBTEST_REPORT sets the default value for --report.\n"
+                      "- JEBTEST_JUNIT sets the default value for --junit"
                       " (\"true\" or \"false\").\n"
-                      "- JEBTEST_TEXT to set the default value for --text"
+                      "- JEBTEST_TEXT sets the default value for --text"
                       " (\"true\" or \"false\").")
                 .parse(argc, argv);
         }
@@ -158,6 +153,11 @@ namespace JEBTest
         setReportEnabled(TextReport, args.value("--text").as_bool());
         setLogFile(args.value("--logfile").as_string());
         m_ReportFileName = args.value("--report").as_string();
+        if (m_ReportFileName == "-")
+        {
+            m_ReportFileName = "jebTestResult."
+                               + std::string(get_base_name(argv[0]));
+        }
         const auto exclude = args.value("--exclude").as_bool();
         const auto test_names = args.values("TEST").as_strings();
         setAllTestsEnabled(exclude || test_names.empty());
@@ -236,8 +236,7 @@ namespace JEBTest
             writeReport(writeTextReport, {}, {}, *this);
     }
 
-    void Session::beginTest(const std::string& name /*= "<unnamed>"*/,
-                            bool silent /*= false*/)
+    void Session::beginTest(const std::string& name, bool silent)
     {
         TestPtr test;
         if (!m_ActiveTest.empty())
@@ -246,7 +245,7 @@ namespace JEBTest
             test = findTest(name);
         if (!test)
         {
-            test = TestPtr(new Test(name));
+            test = std::make_shared<Test>(name);
             if (!m_ActiveTest.empty())
                 m_ActiveTest.back()->addTest(test);
             else

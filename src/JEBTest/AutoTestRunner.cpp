@@ -39,23 +39,23 @@ namespace JEBTest
     void AutoTestRunner::run()
     {
         std::sort(m_Tests.begin(), m_Tests.end(), hasHigherPriority);
-        for (auto & m_Test : m_Tests)
+        for (auto& test : m_Tests)
         {
             TestScope scope;
             auto& session = Session::instance();
-            auto& path = m_Test->path();
+            auto& path = test->path();
             auto name = begin(path);
             for (; name != end(path); ++name)
             {
                 if (session.isTestEnabled(*name))
                     scope.push(*name, true);
             }
-            if (name == end(path) && session.isTestEnabled(m_Test->name()))
+            if (name == end(path) && session.isTestEnabled(test->name()))
             {
-                scope.push(m_Test->name());
+                scope.push(test->name());
                 try
                 {
-                    m_Test->function()();
+                    test->function()();
                 }
                 catch (const TestFailure&)
                 {}

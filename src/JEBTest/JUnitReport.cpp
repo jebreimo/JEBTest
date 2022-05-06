@@ -22,7 +22,8 @@ namespace JEBTest
         auto subtests = test->tests();
         if (!subtests.empty())
         {
-            path += "/";
+            if (!path.empty())
+                path += "/";
             path += test->name();
             for (auto it = begin(subtests); it != end(subtests); ++it)
                 addTestCases(testCases, path, *it);
@@ -63,10 +64,10 @@ namespace JEBTest
      {
          writer.beginElement("testcase");
          writer.attribute("name", test.name());
+         writer.attribute("classname", std::string_view());
          if (test.assertions() != 0)
          {
              writer.attribute("assertions", (int64_t)test.assertions());
-             writer.attribute("name", "NONE");
              writer.attribute("time", test.elapsedTime());
              auto& errors = test.errors();
              for (auto it = begin(errors); it != end(errors); ++it)
@@ -77,17 +78,18 @@ namespace JEBTest
 
     void writeJUnitReport(std::ostream& os, const Session& session)
     {
-         auto testCases = getTestCases(session.tests());
+         auto suites = getTestCases(session.tests());
          XmlWriter writer(os);
          writer.setFormatting(XmlWriter::IndentElements);
          writer.beginElement("testsuites");
-         for (auto it = begin(testCases); it != end(testCases); ++it)
+         for (auto& [name, tests] : suites)
          {
              writer.beginElement("testsuite");
-             writer.attribute("name", it->first);
-             for (auto t = begin(it->second); t != end(it->second); ++t)
+             writer.attribute("name", name);
+             writer.attribute("tests", int64_t(tests.size()));
+             for (const auto& test : tests)
              {
-                 writeXmlTestCase(writer, **t);
+                 writeXmlTestCase(writer, *test);
              }
              writer.endElement();
          }
