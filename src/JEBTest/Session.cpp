@@ -12,6 +12,7 @@
 #include <ctime>
 #include <iostream>
 #include <stdexcept>
+#include "Argos/Argos.hpp"
 #include "Ystring/Algorithms.hpp"
 #include "JUnitReport.hpp"
 #include "PathFilter.hpp"
@@ -19,8 +20,6 @@
 #include "Test.hpp"
 #include "TextReport.hpp"
 #include "VisualStudioReport.hpp"
-
-#include "Argos/Argos.hpp"
 
 namespace JEBTest
 {
@@ -147,7 +146,6 @@ namespace JEBTest
 
     bool Session::parseCommandLine(int argc, char* argv[])
     {
-        std::getenv("FPP");
         auto args = parse_arguments(argc, argv);
         setReportEnabled(JUnitReport, args.value("--junit").as_bool());
         setReportEnabled(TextReport, args.value("--text").as_bool());
