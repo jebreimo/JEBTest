@@ -85,7 +85,7 @@ namespace JEBTest
                     .help("Redirect all the output the tests normally write"
                           " to stdout or stderr to a file named FILE instead"
                           " (this does not affect the test reports)."))
-                .add(Option{"-q", "--quiet"}.alias("--verbse")
+                .add(Option{"-q", "--quiet"}.alias("--verbose")
                     .constant(false)
                     .help("Don't display extra information while running"
                           " tests (opposite of --verbose)."))
