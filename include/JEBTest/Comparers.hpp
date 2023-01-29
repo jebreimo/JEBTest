@@ -42,6 +42,13 @@ namespace JEBTest
         return std::strcmp(t, u) == 0;
     }
 
+    inline bool equal(const char* t, char* u)
+    {
+        if (t == nullptr || u == nullptr)
+            return t == u;
+        return std::strcmp(t, u) == 0;
+    }
+
     inline bool equal(wchar_t* t, wchar_t* u)
     {
         if (t == nullptr || u == nullptr)
