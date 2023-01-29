@@ -8,6 +8,7 @@
 #include "JEBTest/AutoTestRunner.hpp"
 
 #include <algorithm>
+#include <iostream>
 #include "JEBTest/AutoTest.hpp"
 #include "JEBTest/Exceptions.hpp"
 #include "JEBTest/Session.hpp"
@@ -63,5 +64,44 @@ namespace JEBTest
                 {}
             }
         }
+    }
+
+    int runAllTests()
+    {
+        try
+        {
+            try
+            {
+                AutoTestRunner::instance().run();
+            }
+            catch (...)
+            {
+            }
+            Session::instance().print("");
+            Session::instance().flushLog();
+            Session::instance().writeReports();
+        }
+        catch (std::exception& ex)
+        {
+            std::cerr << "EXCEPTION: " << ex.what() << "\n";
+            return 1;
+        }
+        return int(Session::instance().numberOfFailedTests());
+    }
+
+    int runAllTests(int argc, char** argv)
+    {
+        try
+        {
+            if (!Session::instance().parseCommandLine(argc, argv))
+                return 1;
+            runAllTests();
+        }
+        catch (std::exception& ex)
+        {
+            std::cerr << "EXCEPTION: " << ex.what() << "\n";
+            return 1;
+        }
+        return int(Session::instance().numberOfFailedTests());
     }
 }

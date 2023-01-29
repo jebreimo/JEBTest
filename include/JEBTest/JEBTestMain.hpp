@@ -12,19 +12,5 @@
 
 int main(int argc, char* argv[])
 {
-    using namespace JEBTest;
-    try
-    {
-        if (!Session::instance().parseCommandLine(argc, argv))
-            return 1;
-        JT_CONSOLE_BEGIN();
-        AutoTestRunner::instance().run();
-        JT_CONSOLE_END();
-    }
-    catch (std::exception& ex)
-    {
-        std::cerr << "EXCEPTION: " << ex.what() << "\n";
-        return 1;
-    }
-    return int(Session::instance().numberOfFailedTests());
+    return JEBTest::runAllTests(argc, argv);
 }

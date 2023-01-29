@@ -25,4 +25,8 @@ namespace JEBTest
 
         std::vector<const AutoTest*> m_Tests;
     };
+
+    int runAllTests();
+
+    int runAllTests(int argc, char* argv[]);
 }
