@@ -19,9 +19,9 @@ namespace JEBTest
     class Test
     {
     public:
-        Test(std::string  name);
+        explicit Test(std::string name);
 
-        size_t assertions() const;
+        [[nodiscard]] size_t assertions() const;
         void incrementAssertions();
 
         /** @brief Returns the depth of the test hierarchy this test is the
@@ -29,34 +29,34 @@ namespace JEBTest
           *
           * @returns 1 + the maximum depth of its children.
           */
-        size_t depth() const;
+        [[nodiscard]] size_t depth() const;
 
-        const std::vector<Error>& errors() const;
+        [[nodiscard]] const std::vector<Error>& errors() const;
         void addError(const Error& error);
         void addError(Error&& error);
 
         /** @brief Returns true if the test failed (i.e. error() is set).
           */
-        bool failed() const;
+        [[nodiscard]] bool failed() const;
 
         /** @brief Returns true if the test or any of its sub-tests failed.
           */
-        bool failedHierarchy() const;
+        [[nodiscard]] bool failedHierarchy() const;
 
-        const std::string& name() const;
+        [[nodiscard]] const std::string& name() const;
 
-        clock_t startTime() const;
+        [[nodiscard]] clock_t startTime() const;
         void setStartTime(clock_t startTime);
 
-        clock_t endTime() const;
+        [[nodiscard]] clock_t endTime() const;
         void setEndTime(clock_t endTime);
 
-        double elapsedTime() const;
+        [[nodiscard]] double elapsedTime() const;
 
         void addTest(const TestPtr& test);
         std::vector<TestPtr>& tests();
-        const std::vector<TestPtr>& tests() const;
-        TestPtr findTest(const std::string& name) const;
+        [[nodiscard]] const std::vector<TestPtr>& tests() const;
+        [[nodiscard]] TestPtr findTest(const std::string& name) const;
     private:
         size_t m_Assertions;
         std::vector<Error> m_Errors;
