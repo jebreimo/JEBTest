@@ -8,6 +8,7 @@
 #include "JEBTest/Session.hpp"
 
 #include <algorithm>
+#include <climits>
 #include <cstdlib>
 #include <ctime>
 #include <iostream>
