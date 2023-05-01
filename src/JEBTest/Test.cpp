@@ -39,12 +39,10 @@ namespace JEBTest
     {
         if (failed())
             return true;
-        for (const auto & m_Test : m_Tests)
+        return std::any_of(m_Tests.begin(), m_Tests.end(), [](auto& t)
         {
-            if (m_Test->failed())
-                return true;
-        }
-        return false;
+            return t->failedHierarchy();
+        });
     }
 
     const std::vector<Error>& Test::errors() const
