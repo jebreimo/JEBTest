@@ -49,7 +49,13 @@ namespace JEBTest
     std::string Error::text() const
     {
         std::ostringstream ss;
-        ss << m_File << ":" << m_LineNo << ": ";
+        ss << m_File
+#ifdef _MSC_VER
+           << "(" << m_LineNo << "): ";
+#else
+           << ":" << m_LineNo << ": ";
+#endif
+
         if (m_Type == CriticalFailure)
             ss << "CRITICAL ";
         else if (m_Type == FatalFailure)

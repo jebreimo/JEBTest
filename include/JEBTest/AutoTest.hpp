@@ -18,10 +18,10 @@ namespace JEBTest
     public:
         typedef std::function<void()> Func;
 
-        AutoTest(std::string  fileName, Func func,
+        AutoTest(std::string fileName, Func func,
                  const std::string& path = {}) noexcept;
 
-        AutoTest(std::string  fileName, Func func,
+        AutoTest(std::string fileName, Func func,
                  const std::string& path, int priority) noexcept;
 
         ~AutoTest();

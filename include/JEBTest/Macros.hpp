@@ -96,8 +96,8 @@
 #define JT_TEST(...) \
     static void JT_PRIV_UNIQUE_NAME(JT_suite_)() \
     { \
-        std::function<void()> tests_Y_[] = {__VA_ARGS__}; \
-        ::JEBTest::runTests(__FILE__, __LINE__, #__VA_ARGS__, tests_Y_); \
+        std::function<void()> tests_jeb_[] = {__VA_ARGS__}; \
+        ::JEBTest::runTests(__FILE__, __LINE__, #__VA_ARGS__, tests_jeb_); \
     } \
     static ::JEBTest::AutoTest JT_PRIV_UNIQUE_NAME(JT_suite_instance_) \
             (__FILE__, JT_PRIV_UNIQUE_NAME(JT_suite_))
@@ -105,8 +105,8 @@
 #define JT_SUBTEST(path, ...) \
     static void JT_PRIV_UNIQUE_NAME(JT_suite_)() \
     { \
-        std::function<void()> YTest_tests[] = {__VA_ARGS__}; \
-        ::JEBTest::runTests(__FILE__, __LINE__, #__VA_ARGS__, YTest_tests); \
+        std::function<void()> tests_jeb_[] = {__VA_ARGS__}; \
+        ::JEBTest::runTests(__FILE__, __LINE__, #__VA_ARGS__, tests_jeb_); \
     } \
     static ::JEBTest::AutoTest JT_PRIV_UNIQUE_NAME(JT_suite_instance_) \
             (__FILE__, JT_PRIV_UNIQUE_NAME(JT_suite_), (path))
@@ -114,8 +114,8 @@
 #define JT_PRIORITIZED_TEST(priority, ...) \
     static void JT_PRIV_UNIQUE_NAME(JT_suite_)() \
     { \
-        std::function<void()> YTest_tests[] = {__VA_ARGS__}; \
-        ::JEBTest::runTests(__FILE__, __LINE__, #__VA_ARGS__, YTest_tests); \
+        std::function<void()> tests_jeb_[] = {__VA_ARGS__}; \
+        ::JEBTest::runTests(__FILE__, __LINE__, #__VA_ARGS__, tests_jeb_); \
     } \
     static ::JEBTest::AutoTest JT_PRIV_UNIQUE_NAME(JT_suite_instance_) \
             (__FILE__, JT_PRIV_UNIQUE_NAME(JT_suite_), "", (priority))
@@ -123,13 +123,13 @@
 #define JT_PRIORITIZED_SUBTEST(priority, path, ...) \
     static void JT_PRIV_UNIQUE_NAME(JT_suite_)() \
     { \
-        std::function<void()> tests_Y_[] = {__VA_ARGS__}; \
-        ::JEBTest::runTests(__FILE__, __LINE__, #__VA_ARGS__, tests_Y_); \
+        std::function<void()> tests_jeb_[] = {__VA_ARGS__}; \
+        ::JEBTest::runTests(__FILE__, __LINE__, #__VA_ARGS__, tests_jeb_); \
     } \
     static ::JEBTest::AutoTest JT_PRIV_UNIQUE_NAME(JT_suite_instance_) \
             (__FILE__, JT_PRIV_UNIQUE_NAME(JT_suite_), (path), (priority))
 
-/** @brief Macro for explcitly running a test with arguments.
+/** @brief Macro for explicitly running a test with arguments.
   *
   * Normally you'll just use JT_TEST to define your tests, but
   * if your tests need a common set of data, for instance the contents of a
