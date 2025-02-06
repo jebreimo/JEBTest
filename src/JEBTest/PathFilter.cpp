@@ -72,12 +72,12 @@ namespace JEBTest
 
     void FilterState::excludePath(std::string path)
     {
-        m_Exclude.push_back(move(path));
+        m_Exclude.push_back(std::move(path));
     }
 
     void FilterState::includePath(std::string path)
     {
-        m_Include.push_back(move(path));
+        m_Include.push_back(std::move(path));
     }
 
     PathFilterType FilterState::type() const
@@ -116,12 +116,12 @@ namespace JEBTest
 
     void PathFilter::excludePath(std::string path)
     {
-        m_States.front().excludePath(move(path));
+        m_States.front().excludePath(std::move(path));
     }
 
     void PathFilter::includePath(std::string path)
     {
-        m_States.front().includePath(move(path));
+        m_States.front().includePath(std::move(path));
     }
 
     PathFilterType PathFilter::type() const

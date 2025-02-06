@@ -314,9 +314,9 @@ namespace JEBTest
     void Session::setTestEnabled(std::string name, bool enable)
     {
         if (enable)
-            m_TestFilter->includePath(move(name));
+            m_TestFilter->includePath(std::move(name));
         else
-            m_TestFilter->excludePath(move(name));
+            m_TestFilter->excludePath(std::move(name));
     }
 
     const std::vector<TestPtr>& Session::tests() const

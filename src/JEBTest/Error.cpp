@@ -11,6 +11,28 @@
 
 namespace JEBTest
 {
+    namespace
+    {
+        void write_vs_line_no(std::ostream& os, const std::string& file, unsigned lineNo)
+        {
+            os << file << "(" << lineNo << "): ";
+        }
+
+        void write_gcc_line_no(std::ostream& os, const std::string& file, unsigned lineNo)
+        {
+            os << file << ":" << lineNo << ": ";
+        }
+
+        void write_line_no(std::ostream& os, const std::string& file, unsigned lineNo)
+        {
+#ifdef _MSC_VER
+            write_vs_line_no(os, file, lineNo);
+#else
+            write_gcc_line_no(os, file, lineNo);
+#endif
+        }
+    }
+
     Error::Error()
         : m_Type(None),
           m_LineNo(0)
@@ -49,13 +71,7 @@ namespace JEBTest
     std::string Error::text() const
     {
         std::ostringstream ss;
-        ss << m_File
-#ifdef _MSC_VER
-           << "(" << m_LineNo << "): ";
-#else
-           << ":" << m_LineNo << ": ";
-#endif
-
+        write_line_no(ss, m_File, m_LineNo);
         if (m_Type == CriticalFailure)
             ss << "CRITICAL ";
         else if (m_Type == FatalFailure)

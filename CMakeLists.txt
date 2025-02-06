@@ -6,9 +6,9 @@
 ## License text is included with the source distribution.
 ##****************************************************************************
 cmake_minimum_required(VERSION 3.16)
-project(JEBTest VERSION 0.1.5)
+project(JEBTest VERSION 0.2.0)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 
 # Set JEBTEST_MASTER_PROJECT to ON if Ystring is the root level project.
 if (NOT DEFINED JEBTEST_MASTER_PROJECT)
