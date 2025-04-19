@@ -2,14 +2,14 @@
 // Copyright © 2011, Jan Erik Breimo.
 // Created 2011-07-14 by Jan Erik Breimo
 //
-// This file is distributed under the Simplified BSD License.
+// This file is distributed under the Zero-Clause BSD License.
 // License text is included with the source distribution.
 //****************************************************************************
 #pragma once
 
 #include <cstdint>
 #include <cstddef>
-#include "Ystring/CodePointConstants.hpp"
+#include "Ystring/CodepointConstants.hpp"
 
 /** @file
   * @brief Defines functions for working with UTF-8 encoded strings.

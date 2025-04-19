@@ -2,7 +2,7 @@
 // Copyright © 2015 Jan Erik Breimo. All rights reserved.
 // Created by Jan Erik Breimo on 2015-08-06.
 //
-// This file is distributed under the Simplified BSD License.
+// This file is distributed under the Zero-Clause BSD License.
 // License text is included with the source distribution.
 //****************************************************************************
 #include "Test.hpp"
@@ -63,8 +63,8 @@ namespace JEBTest
     size_t Test::depth() const
     {
         size_t d = 0;
-        for (auto it = begin(m_Tests); it != end(m_Tests); ++it)
-            d = std::max(d, (*it)->depth());
+        for (const auto& test : m_Tests)
+            d = std::max(d, test->depth());
         return d + 1;
     }
 
@@ -95,7 +95,7 @@ namespace JEBTest
 
     double Test::elapsedTime() const
     {
-        return double(m_EndTime - m_StartTime) / CLOCKS_PER_SEC;
+        return static_cast<double>(m_EndTime - m_StartTime) / CLOCKS_PER_SEC;
     }
 
     void Test::addTest(const TestPtr& test)
@@ -121,6 +121,6 @@ namespace JEBTest
         if (it != end(m_Tests))
             return *it;
         else
-            return TestPtr();
+            return {};
     }
 }

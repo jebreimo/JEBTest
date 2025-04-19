@@ -2,7 +2,7 @@
 // Copyright © 2015 Jan Erik Breimo. All rights reserved.
 // Created by Jan Erik Breimo on 2015-08-06.
 //
-// This file is distributed under the Simplified BSD License.
+// This file is distributed under the Zero-Clause BSD License.
 // License text is included with the source distribution.
 //****************************************************************************
 #include "JUnitReport.hpp"
@@ -25,8 +25,8 @@ namespace JEBTest
             if (!path.empty())
                 path += "/";
             path += test->name();
-            for (auto it = begin(subtests); it != end(subtests); ++it)
-                addTestCases(testCases, path, *it);
+            for (auto& subtest : subtests)
+                addTestCases(testCases, path, subtest);
         }
     }
 
@@ -34,8 +34,8 @@ namespace JEBTest
             const std::vector<TestPtr>& tests)
     {
         std::map<std::string, std::vector<TestPtr>> testCases;
-        for (auto it = begin(tests); it != end(tests); ++it)
-            addTestCases(testCases, std::string(), *it);
+        for (const auto& test : tests)
+            addTestCases(testCases, std::string(), test);
         return testCases;
     }
 
@@ -49,13 +49,13 @@ namespace JEBTest
          writer.attribute("type", Error::levelName(error.type()));
          writer.characterData(error.file());
          writer.characterData("[");
-         writer.characterData((int)error.lineNo());
+         writer.characterData(static_cast<int>(error.lineNo()));
          writer.characterData("]");
          auto& context = error.context();
-         for (auto c = begin(context); c != end(context); ++c)
+         for (const auto& c : context)
          {
              writer.characterData("\n");
-             writer.characterData(c->text());
+             writer.characterData(c.text());
          }
          writer.endElement();
      }
@@ -67,11 +67,11 @@ namespace JEBTest
          writer.attribute("classname", std::string_view());
          if (test.assertions() != 0)
          {
-             writer.attribute("assertions", (int64_t)test.assertions());
+             writer.attribute("assertions", static_cast<int64_t>(test.assertions()));
              writer.attribute("time", test.elapsedTime());
              auto& errors = test.errors();
-             for (auto it = begin(errors); it != end(errors); ++it)
-                 writeXmlError(writer, *it);
+             for (const auto& error : errors)
+                 writeXmlError(writer, error);
          }
          writer.endElement();
      }
@@ -86,7 +86,7 @@ namespace JEBTest
          {
              writer.beginElement("testsuite");
              writer.attribute("name", name);
-             writer.attribute("tests", int64_t(tests.size()));
+             writer.attribute("tests", static_cast<int64_t>(tests.size()));
              for (const auto& test : tests)
              {
                  writeXmlTestCase(writer, *test);

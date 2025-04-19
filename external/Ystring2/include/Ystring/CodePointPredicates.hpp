@@ -2,13 +2,13 @@
 // Copyright © 2020 Jan Erik Breimo. All rights reserved.
 // Created by Jan Erik Breimo on 2020-05-08.
 //
-// This file is distributed under the BSD License.
+// This file is distributed under the Zero-Clause BSD License.
 // License text is included with the source distribution.
 //****************************************************************************
 #pragma once
 
 #include "Ystring/CharClass.hpp"
-#include "Ystring/CodePointConstants.hpp"
+#include "Ystring/CodepointConstants.hpp"
 
 /** @file
   * @brief Defines predicates for testing properties of unicode code-points.

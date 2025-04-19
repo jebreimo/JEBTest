@@ -2,7 +2,7 @@
 // Copyright © 2020 Jan Erik Breimo. All rights reserved.
 // Created by Jan Erik Breimo on 2020-07-14
 //
-// This file is distributed under the Simplified BSD License.
+// This file is distributed under the Zero-Clause BSD License.
 // License text is included with the source distribution.
 //****************************************************************************
 #pragma once
@@ -10,10 +10,10 @@
 #include <array>
 #include "Yconvert/Encoding.hpp"
 
-#if defined(YCONVERT_ENABLE_ISO_CODE_PAGES) \
-    || defined(YCONVERT_ENABLE_MAC_CODE_PAGES) \
-    || defined(YCONVERT_ENABLE_DOS_CODE_PAGES) \
-    || defined(YCONVERT_ENABLE_WIN_CODE_PAGES)
+#if defined(YCONVERT_ISO_CODE_PAGES) \
+    || defined(YCONVERT_MAC_CODE_PAGES) \
+    || defined(YCONVERT_DOS_CODE_PAGES) \
+    || defined(YCONVERT_WIN_CODE_PAGES)
     #define YCONVERT_ENABLE_CODE_PAGES
 #endif
 
@@ -21,12 +21,12 @@ namespace Yconvert
 {
     struct CodePageRange
     {
-        uint16_t startCodePoint;
-        uint8_t startIndex;
+        uint16_t start_code_point;
+        uint8_t start_index;
         uint8_t length;
     };
 
-    #ifdef YCONVERT_ENABLE_ISO_CODE_PAGES
+    #ifdef YCONVERT_ISO_CODE_PAGES
 
     constexpr CodePageRange ISO_8859_1_CHARS[] = {
         {0x0000,   0, 255}
@@ -250,7 +250,7 @@ namespace Yconvert
     };
 
     inline std::pair<const CodePageRange*, size_t>
-    getIsoCodePageRanges(Encoding encoding)
+    get_iso_code_page_ranges(Encoding encoding)
     {
         switch (encoding)
         {
@@ -291,7 +291,7 @@ namespace Yconvert
 
     #endif
 
-    #ifdef YCONVERT_ENABLE_MAC_CODE_PAGES
+    #ifdef YCONVERT_MAC_CODE_PAGES
 
     constexpr CodePageRange MAC_CYRILLIC_CHARS[] = {
         {0x0000,   0, 127}, {0x00A0, 202,   0}, {0x00A2, 162,   1},
@@ -515,7 +515,7 @@ namespace Yconvert
     };
 
     inline std::pair<const CodePageRange*, size_t>
-    getMacCodePageRanges(Encoding encoding)
+    get_mac_code_page_ranges(Encoding encoding)
     {
         switch (encoding)
         {
@@ -538,7 +538,7 @@ namespace Yconvert
 
     #endif
 
-    #ifdef YCONVERT_ENABLE_DOS_CODE_PAGES
+    #ifdef YCONVERT_DOS_CODE_PAGES
 
     constexpr CodePageRange DOS_CP437_CHARS[] = {
         {0x0000,   0, 127}, {0x00A0, 255,   0}, {0x00A1, 173,   0},
@@ -1134,7 +1134,7 @@ namespace Yconvert
     };
 
     inline std::pair<const CodePageRange*, size_t>
-    getDosCodePageRanges(Encoding encoding)
+    get_dos_code_page_ranges(Encoding encoding)
     {
         switch (encoding)
         {
@@ -1177,7 +1177,7 @@ namespace Yconvert
 
     #endif
 
-    #ifdef YCONVERT_ENABLE_WIN_CODE_PAGES
+    #ifdef YCONVERT_WIN_CODE_PAGES
 
     constexpr CodePageRange WIN_CP1250_CHARS[] = {
         {0x0000,   0, 127}, {0x00A0, 160,   0}, {0x00A4, 164,   0},
@@ -1365,7 +1365,7 @@ namespace Yconvert
     };
 
     inline std::pair<const CodePageRange*, size_t>
-    getWinCodePageRanges(Encoding encoding)
+    get_win_code_page_ranges(Encoding encoding)
     {
         switch (encoding)
         {

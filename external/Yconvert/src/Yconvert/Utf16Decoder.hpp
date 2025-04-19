@@ -2,51 +2,51 @@
 // Copyright © 2020 Jan Erik Breimo. All rights reserved.
 // Created by Jan Erik Breimo on 2020-06-25.
 //
-// This file is distributed under the BSD License.
+// This file is distributed under the Zero-Clause BSD License.
 // License text is included with the source distribution.
 //****************************************************************************
 #pragma once
-#include "DecoderBase.hpp"
+#include "Decoder.hpp"
 
 namespace Yconvert
 {
     namespace Detail
     {
-        template <bool SwapBytes, typename BiIt>
-        char32_t nextUtf16Word(BiIt& it, BiIt end)
+        template <bool SWAP_BYTES, typename FwdIt>
+        char32_t next_utf16_word(FwdIt& it, FwdIt end)
         {
             if (it == end)
                 return INVALID_CHAR;
 
             union U {char16_t c; uint8_t b[2];} u;
-            u.b[SwapBytes ? 1 : 0] = uint8_t(*it++);
+            u.b[SWAP_BYTES ? 1 : 0] = uint8_t(*it++);
             if (it == end)
                 return INVALID_CHAR;
-            u.b[SwapBytes ? 0 : 1] = uint8_t(*it++);
+            u.b[SWAP_BYTES ? 0 : 1] = uint8_t(*it++);
             return u.c;
         }
 
-        template <bool SwapBytes, typename FwdIt>
-        bool skipNextUtf16CodePoint(FwdIt& it, FwdIt end)
+        template <bool SWAP_BYTES, typename FwdIt>
+        bool skip_next_utf16_code_point(FwdIt& it, FwdIt end)
         {
             if (it == end)
                 return false;
-            auto chr = nextUtf16Word<SwapBytes>(it, end);
+            auto chr = next_utf16_word<SWAP_BYTES>(it, end);
             if (chr < 0xD800 || 0xDC00 <= chr)
                 return true;
 
             auto pos = it;
-            auto chr2 = nextUtf16Word<SwapBytes>(it, end);
+            auto chr2 = next_utf16_word<SWAP_BYTES>(it, end);
             if (chr2 != INVALID_CHAR && (chr2 < 0xDC00 || 0xE000 <= chr2))
                 it = pos;
             return true;
         }
 
-        template <bool SwapBytes, typename BiIt>
-        char32_t nextUtf16CodePoint(BiIt& it, BiIt end)
+        template <bool SWAP_BYTES, typename BiIt>
+        char32_t next_utf16_code_point(BiIt& it, BiIt end)
         {
             auto first = it;
-            auto chr = Detail::nextUtf16Word<SwapBytes>(it, end);
+            auto chr = Detail::next_utf16_word<SWAP_BYTES>(it, end);
             if (chr == INVALID_CHAR)
             {
                 it = first;
@@ -62,7 +62,7 @@ namespace Yconvert
                 return INVALID_CHAR;
             }
 
-            auto chr2 = Detail::nextUtf16Word<SwapBytes>(it, end);
+            auto chr2 = Detail::next_utf16_word<SWAP_BYTES>(it, end);
             if (chr2 == INVALID_CHAR || chr2 < 0xDC00 || 0xE000 <= chr2)
             {
                 it = first;
@@ -73,43 +73,61 @@ namespace Yconvert
         }
     }
 
-    template <bool SwapBytes>
-    class Utf16Decoder : public DecoderBase
+    template <bool SWAP_BYTES>
+    class Utf16Decoder : public Decoder
     {
     public:
-        Utf16Decoder() : DecoderBase(IsBigEndian == SwapBytes
-                                     ? Encoding::UTF_16_LE
-                                     : Encoding::UTF_16_BE)
+        Utf16Decoder()
+            : Decoder(IS_BIG_ENDIAN == SWAP_BYTES
+                          ? Encoding::UTF_16_LE
+                          : Encoding::UTF_16_BE)
         {}
     protected:
-        size_t skipCharacter(const void* src, size_t srcSize) const final
+        size_t skip_codepoint(const void* src, size_t src_size) const final
         {
-            auto cSrc = static_cast<const char*>(src);
-            auto initialSrc = cSrc;
-            Detail::skipNextUtf16CodePoint<SwapBytes>(cSrc, cSrc + srcSize);
-            return size_t(cSrc - initialSrc);
+            auto csrc = static_cast<const char*>(src);
+            auto initial_src = csrc;
+            Detail::skip_next_utf16_code_point<SWAP_BYTES>(csrc, csrc + src_size);
+            return size_t(csrc - initial_src);
         }
 
         std::pair<size_t, size_t>
-        doDecode(const void* src, size_t srcSize,
-                 char32_t* dst, size_t dstSize) const final
+        do_decode(const void* src, size_t src_size,
+                  char32_t* dst, size_t dst_size) const final
         {
-            auto cSrc = static_cast<const char*>(src);
-            auto initialSrc = cSrc;
-            auto initialDst = dst;
-            auto srcEnd = cSrc + srcSize;
-            auto dstEnd = dst + dstSize;
-            while (dst != dstEnd)
+            auto csrc = static_cast<const char*>(src);
+            auto initial_src = csrc;
+            auto initial_dst = dst;
+            auto src_end = csrc + src_size;
+            auto dst_end = dst + dst_size;
+            while (dst != dst_end)
             {
-                auto value = Detail::nextUtf16CodePoint<SwapBytes>(cSrc, srcEnd);
+                auto value = Detail::next_utf16_code_point<SWAP_BYTES>(csrc, src_end);
                 if (value == INVALID_CHAR)
                     break;
                 *dst++ = value;
             }
-            return {size_t(cSrc - initialSrc), size_t(dst - initialDst)};
+            return {size_t(csrc - initial_src), size_t(dst - initial_dst)};
+        }
+
+        std::pair<size_t, size_t>
+        count_valid_codepoints(const void* src, size_t src_size) const override
+        {
+            auto c_src = static_cast<const char*>(src);
+            auto initial_src = c_src;
+            auto src_end = c_src + src_size;
+            size_t valid_codepoints = 0;
+            while (true)
+            {
+                auto prev_src = c_src;
+                auto value = Detail::next_utf16_code_point<SWAP_BYTES>(c_src, src_end);
+                if (value == INVALID_CHAR || value == 0)
+                    return {valid_codepoints, size_t(prev_src - initial_src)};
+                ++valid_codepoints;
+            }
         }
     };
 
-    using Utf16BEDecoder = Utf16Decoder<IsLittleEndian>;
-    using Utf16LEDecoder = Utf16Decoder<IsBigEndian>;
+    using Utf16BEDecoder = Utf16Decoder<IS_LITTLE_ENDIAN>;
+    using Utf16LEDecoder = Utf16Decoder<IS_BIG_ENDIAN>;
 }

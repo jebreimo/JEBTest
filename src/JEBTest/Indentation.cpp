@@ -2,7 +2,7 @@
 // Copyright © 2015 Jan Erik Breimo. All rights reserved.
 // Created by Jan Erik Breimo on 2015-08-16.
 //
-// This file is distributed under the Simplified BSD License.
+// This file is distributed under the Zero-Clause BSD License.
 // License text is included with the source distribution.
 //****************************************************************************
 #include "Indentation.hpp"
@@ -42,8 +42,8 @@ namespace JEBTest
 
     void Indentation::pushAlignment(unsigned pos)
     {
-        assert((int)pos >= 0);
-        m_Indents.push_back(pos);
+        assert(static_cast<int>(pos) >= 0);
+        m_Indents.push_back(static_cast<int>(pos));
     }
 
     void Indentation::pop()
@@ -55,15 +55,15 @@ namespace JEBTest
 
     void Indentation::write(ostream& os) const
     {
-        for (int m_Indent : m_Indents)
+        for (const int indent : m_Indents)
         {
-            if (m_Indent == -1)
+            if (indent == -1)
             {
                 os << m_IndentationString;
             }
             else
             {
-                for (int i = 0; i < m_Indent; i++)
+                for (int i = 0; i < indent; i++)
                     os.put(' ');
             }
         }

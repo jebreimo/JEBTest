@@ -2,7 +2,7 @@
 // Copyright © 2015 Jan Erik Breimo. All rights reserved.
 // Created by Jan Erik Breimo on 2015-08-06.
 //
-// This file is distributed under the Simplified BSD License.
+// This file is distributed under the Zero-Clause BSD License.
 // License text is included with the source distribution.
 //****************************************************************************
 #include "PathFilter.hpp"
@@ -32,7 +32,7 @@ namespace JEBTest
         void excludePath(std::string path);
         void includePath(std::string path);
 
-        PathFilterType type() const;
+        [[nodiscard]] PathFilterType type() const;
         void setType(PathFilterType type);
     private:
         std::vector<std::string> m_Exclude;
@@ -139,13 +139,12 @@ namespace JEBTest
         bool containsName(const std::vector<std::string>& current,
                           const std::string& name)
         {
-            for (auto it = begin(current); it != end(current); ++it)
+            for (const auto& str : current)
             {
-                if (it->size() < name.size())
+                if (str.size() < name.size())
                     continue;
-                auto its = mismatch(begin(name), end(name), begin(*it));
-                if ((its.first == end(name)) &&
-                    (its.second == end(*it) || *its.second == '/'))
+                auto [beg, end] = mismatch(name.begin(), name.end(), str.begin());
+                if (beg == name.end() && (end == str.end() || *end == '/'))
                 {
                     return true;
                 }
@@ -158,17 +157,17 @@ namespace JEBTest
                           std::vector<std::string>& next)
         {
             bool result = false;
-            for (auto it = begin(current); it != end(current); ++it)
+            for (const auto& str : current)
             {
-                if (it->size() < name.size())
+                if (str.size() < name.size())
                     continue;
-                auto its = mismatch(begin(name), end(name), begin(*it));
-                if (its.first != end(name))
+                auto [beg, end] = mismatch(name.begin(), name.end(), str.begin());
+                if (beg != name.end())
                     continue;
-                if (its.second == end(*it))
+                if (end == str.end())
                     result = true;
-                else if (*its.second == '/')
-                    next.emplace_back(std::next(its.second), end(*it));
+                else if (*end == '/')
+                    next.emplace_back(std::next(end), str.end());
             }
             return result;
         }

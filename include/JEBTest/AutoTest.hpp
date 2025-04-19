@@ -2,7 +2,7 @@
 // Copyright © 2015 Jan Erik Breimo. All rights reserved.
 // Created by Jan Erik Breimo on 2015-08-06.
 //
-// This file is distributed under the Simplified BSD License.
+// This file is distributed under the Zero-Clause BSD License.
 // License text is included with the source distribution.
 //****************************************************************************
 #pragma once
@@ -26,15 +26,15 @@ namespace JEBTest
 
         ~AutoTest();
 
-        const Func& function() const;
+        [[nodiscard]] const Func& function() const;
 
         void setFunction(const Func& function);
 
-        std::string name() const;
+        [[nodiscard]] std::string name() const;
 
-        const std::vector<std::string>& path() const;
+        [[nodiscard]] const std::vector<std::string>& path() const;
 
-        int priority() const;
+        [[nodiscard]] int priority() const;
     private:
         Func m_Function;
         std::string m_Name;

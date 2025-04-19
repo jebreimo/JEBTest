@@ -2,7 +2,7 @@
 // Copyright © 2020 Jan Erik Breimo. All rights reserved.
 // Created by Jan Erik Breimo on 2020-05-07.
 //
-// This file is distributed under the BSD License.
+// This file is distributed under the Zero-Clause BSD License.
 // License text is included with the source distribution.
 //****************************************************************************
 #pragma once
@@ -15,13 +15,13 @@ namespace ystring
 {
     struct Subrange
     {
-        Subrange() = default;
+        constexpr Subrange() = default;
 
-        Subrange(size_t offset, size_t length)
+        constexpr Subrange(size_t offset, size_t length)
             : offset(offset), length(length)
         {}
 
-        Subrange(size_t offset)
+        explicit constexpr Subrange(size_t offset)
             : offset(offset)
         {}
 

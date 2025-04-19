@@ -2,13 +2,15 @@
 // Copyright © 2020 Jan Erik Breimo. All rights reserved.
 // Created by Jan Erik Breimo on 2020-06-21.
 //
-// This file is distributed under the BSD License.
+// This file is distributed under the Zero-Clause BSD License.
 // License text is included with the source distribution.
 //****************************************************************************
 #include "Yconvert/Encoding.hpp"
 
 #include <algorithm>
 #include <istream>
+#include "Yconvert/EncodingChecker.hpp"
+#include "YconvertThrow.hpp"
 
 namespace Yconvert
 {
@@ -30,7 +32,7 @@ namespace Yconvert
                  4, 1, Endianness::BIG},
                 {Encoding::ASCII, "ASCII", "",
                  1, 1, Endianness::UNKNOWN},
-            #ifdef YCONVERT_ENABLE_ISO_CODE_PAGES
+            #ifdef YCONVERT_ISO_CODE_PAGES
                 {Encoding::ISO_8859_1, "ISO-8859-1", "",
                  1, 1, Endianness::UNKNOWN},
                 {Encoding::ISO_8859_2, "ISO-8859-2", "",
@@ -62,7 +64,7 @@ namespace Yconvert
                 {Encoding::ISO_8859_16, "ISO-8859-16", "",
                  1, 1, Endianness::UNKNOWN},
             #endif
-            #ifdef YCONVERT_ENABLE_MAC_CODE_PAGES
+            #ifdef YCONVERT_MAC_CODE_PAGES
                 {Encoding::MAC_CYRILLIC, "MAC-CYRILLIC", "",
                  1, 1, Endianness::UNKNOWN},
                 {Encoding::MAC_GREEK, "MAC-GREEK", "",
@@ -76,7 +78,7 @@ namespace Yconvert
                 {Encoding::MAC_TURKISH, "MAC-TURKISH", "",
                  1, 1, Endianness::UNKNOWN},
             #endif
-            #ifdef YCONVERT_ENABLE_DOS_CODE_PAGES
+            #ifdef YCONVERT_DOS_CODE_PAGES
                 {Encoding::DOS_CP437, "DOS-CP437", "",
                  1, 1, Endianness::UNKNOWN},
                 {Encoding::DOS_CP737, "DOS-CP737", "",
@@ -110,7 +112,7 @@ namespace Yconvert
                 {Encoding::DOS_CP874, "DOS-CP874", "",
                  1, 1, Endianness::UNKNOWN},
             #endif
-            #ifdef YCONVERT_ENABLE_WIN_CODE_PAGES
+            #ifdef YCONVERT_WIN_CODE_PAGES
                 {Encoding::WIN_CP1250, "WIN-CP1250", "",
                  1, 1, Endianness::UNKNOWN},
                 {Encoding::WIN_CP1251, "WIN-CP1251", "",
@@ -134,10 +136,10 @@ namespace Yconvert
 
         typedef std::pair<std::string, Encoding> EncodingName;
 
-        static EncodingName ENCODING_ALIASES[] = {
+        EncodingName ENCODING_ALIASES[] = {
             EncodingName("UTF-16", Encoding::UTF_16_NATIVE),
             EncodingName("UTF-32", Encoding::UTF_32_NATIVE),
-            #ifdef YCONVERT_ENABLE_WIN_CODE_PAGES
+            #ifdef YCONVERT_WIN_CODE_PAGES
             EncodingName("WINDOWS-1250", Encoding::WIN_CP1250),
             EncodingName("WINDOWS-1251", Encoding::WIN_CP1251),
             EncodingName("WINDOWS-1252", Encoding::WIN_CP1252),
@@ -148,7 +150,7 @@ namespace Yconvert
             EncodingName("WINDOWS-1257", Encoding::WIN_CP1257),
             EncodingName("WINDOWS-1258", Encoding::WIN_CP1258),
             #endif
-            #ifdef YCONVERT_ENABLE_ISO_CODE_PAGES
+            #ifdef YCONVERT_ISO_CODE_PAGES
             EncodingName("LATIN1", Encoding::ISO_8859_1),
             EncodingName("LATIN2", Encoding::ISO_8859_2),
             EncodingName("LATIN3", Encoding::ISO_8859_3),
@@ -161,9 +163,17 @@ namespace Yconvert
             EncodingName("LATIN10", Encoding::ISO_8859_16),
             #endif
         };
+
+        void to_upper_case(std::string &str)
+        {
+            std::transform(str.begin(), str.end(), str.begin(), [](char c)
+            {
+                return 'a' <= c && c <= 'z' ? char(c - 32) : c;
+            });
+        }
     }
 
-    const EncodingInfo& getEncodingInfo(Encoding encoding)
+    const EncodingInfo& get_info(Encoding encoding)
     {
         using std::begin;
         using std::end;
@@ -176,18 +186,14 @@ namespace Yconvert
         return ENCODING_INFO[0];
     }
 
-    std::pair<const EncodingInfo*, size_t> getSupportedEncodings()
+    std::pair<const EncodingInfo*, size_t> get_all_encodings()
     {
         return {&ENCODING_INFO[1], std::size(ENCODING_INFO) - 1};
     }
 
-
-    Encoding encodingFromName(std::string name)
+    Encoding encoding_from_name(std::string name)
     {
-        std::transform(name.begin(), name.end(), name.begin(), [](auto c)
-        {
-            return 'a' <= c && c <= 'z' ? char(c - 32) : c;
-        });
+        to_upper_case(name);
         using std::begin;
         using std::end;
         auto it = std::find_if(begin(ENCODING_INFO), end(ENCODING_INFO),
@@ -201,27 +207,27 @@ namespace Yconvert
         return Encoding::UNKNOWN;
     }
 
-    Encoding determineEncodingFromByteOrderMark(const char* str, size_t len)
+    Encoding determine_encoding_from_byte_order_mark(const char* str, size_t len)
     {
         auto size = sizeof(ENCODING_INFO) / sizeof(*ENCODING_INFO);
         Encoding encoding = Encoding::UNKNOWN;
-        size_t bomLength = 0;
+        size_t bom_length = 0;
         for (size_t i = 0; i < size; i++)
         {
-            auto& bom = ENCODING_INFO[i].byteOrderMark;
+            auto& bom = ENCODING_INFO[i].byte_order_mark;
             if (!bom.empty()
                 && len >= bom.size()
-                && bom.size() > bomLength
+                && bom.size() > bom_length
                 && std::equal(bom.begin(), bom.end(), str))
             {
                 encoding = ENCODING_INFO[i].encoding;
-                bomLength = bom.size();
+                bom_length = bom.size();
             }
         }
         return encoding;
     }
 
-    unsigned getUtf8CharLength(uint8_t chr)
+    unsigned get_utf8_char_length(uint8_t chr)
     {
         if (!(chr & 0x80u))
             return 1;
@@ -234,11 +240,11 @@ namespace Yconvert
         return 0;
     }
 
-    bool isValidUtf8Char(const char* str, size_t len)
+    bool is_valid_utf8_char(const char* str, size_t len)
     {
         if (len == 0)
             return false;
-        auto n = getUtf8CharLength(str[0]);
+        auto n = get_utf8_char_length(str[0]);
         if (n == 0 || n > len)
             return false;
         for (unsigned i = 1; i < n; ++i)
@@ -249,33 +255,33 @@ namespace Yconvert
         return true;
     }
 
-    Encoding determineEncodingFromFirstCharacter(const char* str, size_t len)
+    Encoding determine_encoding_from_first_character(const char* str, size_t len)
     {
         if (len == 0)
             return Encoding::UNKNOWN;
 
         len = std::min(len, size_t(4));
-        unsigned nonZeroPattern = 0;
-        unsigned nonAsciiPattern = 0;
+        unsigned non_zero_pattern = 0;
+        unsigned non_ascii_pattern = 0;
         for (size_t i = 0; i < len; ++i)
         {
-            nonAsciiPattern <<= 1u;
-            nonAsciiPattern |= uint8_t(str[i]) > 127 ? 1u : 0u;
+            non_ascii_pattern <<= 1u;
+            non_ascii_pattern |= uint8_t(str[i]) > 127 ? 1u : 0u;
 
-            nonZeroPattern <<= 1u;
-            nonZeroPattern |= str[i] != 0 ? 1u : 0u;
+            non_zero_pattern <<= 1u;
+            non_zero_pattern |= str[i] != 0 ? 1u : 0u;
         }
 
-        if ((1u << len) - 1 == nonZeroPattern)
+        if ((1u << len) - 1 == non_zero_pattern)
         {
-            if (nonAsciiPattern == 0 || isValidUtf8Char(str, len))
+            if (non_ascii_pattern == 0 || is_valid_utf8_char(str, len))
                 return Encoding::UTF_8;
             return Encoding::UNKNOWN;
         }
 
         if (len == 4)
         {
-            switch (nonZeroPattern)
+            switch (non_zero_pattern)
             {
             case 0b0001:
             case 0b0010:
@@ -290,40 +296,57 @@ namespace Yconvert
             case 0b1010:
                 return Encoding::UTF_16_LE;
             default:
-                nonZeroPattern >>= 2u;
+                non_zero_pattern >>= 2u;
                 len = 2;
                 break;
             }
         }
         if (len == 2)
         {
-            if (nonZeroPattern == 0b10)
+            if (non_zero_pattern == 0b10)
                 return Encoding::UTF_16_LE;
-            else if (nonZeroPattern == 0b01)
+            else if (non_zero_pattern == 0b01)
                 return Encoding::UTF_16_BE;
         }
 
         return Encoding::UNKNOWN;
     }
 
-    std::pair<Encoding, size_t> determineEncoding(const char* buffer, size_t length)
+    std::pair<Encoding, size_t> determine_encoding(const char* buffer, size_t length)
     {
-        auto enc = determineEncodingFromByteOrderMark(buffer, length);
+        auto enc = determine_encoding_from_byte_order_mark(buffer, length);
         if (enc != Encoding::UNKNOWN)
-            return {enc, getEncodingInfo(enc).byteOrderMark.size()};
+            return {enc, get_info(enc).byte_order_mark.size()};
 
-        enc = determineEncodingFromFirstCharacter(buffer, length);
+        enc = determine_encoding_from_first_character(buffer, length);
         return {enc, 0};
     }
 
-    Encoding determineEncoding(std::istream& stream)
+    Encoding determine_encoding(std::istream& stream)
     {
-        auto startPos = stream.tellg();
+        auto start_pos = std::streamsize(stream.tellg());
         char buf[4];
         stream.read(buf, 4);
-        auto [enc, offset] = determineEncoding(buf, stream.gcount());
+        auto [enc, offset] = determine_encoding(buf, stream.gcount());
         if (offset != 4)
-            stream.seekg(std::streamsize(startPos) + offset, std::ios::beg);
+        {
+            auto pos = start_pos + std::streamsize(offset);
+            stream.clear();
+            stream.seekg(pos, std::ios::beg);
+            if (stream.fail())
+                YCONVERT_THROW("Unable to set position of stream.");
+        }
         return enc;
+    }
+
+    std::pair<size_t, size_t>
+    count_valid_codepoints(const void* buffer, size_t length, Encoding encoding)
+    {
+        return EncodingChecker(encoding).count_valid_codepoints(buffer, length);
+    }
+
+    bool check_encoding(const void* buffer, size_t length, Encoding encoding)
+    {
+        return EncodingChecker(encoding).check_encoding(buffer, length);
     }
 }

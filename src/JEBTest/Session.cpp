@@ -2,7 +2,7 @@
 // Copyright © 2015 Jan Erik Breimo. All rights reserved.
 // Created by Jan Erik Breimo on 2015-08-06.
 //
-// This file is distributed under the Simplified BSD License.
+// This file is distributed under the Zero-Clause BSD License.
 // License text is included with the source distribution.
 //****************************************************************************
 #include "JEBTest/Session.hpp"
@@ -214,7 +214,7 @@ namespace JEBTest
                 writeVisualStudioReport(func, session);
             func(std::cout, session);
         }
-        else if (ystring::case_insensitive_ends_with(fileName, fileNameExtension))
+        else if (ystring::case_insensitive::ends_with(fileName, fileNameExtension))
         {
             writeFileReport(func, fileName, session);
         }
@@ -291,8 +291,8 @@ namespace JEBTest
     size_t Session::numberOfFailedTests() const
     {
         size_t failures = 0;
-        for (auto test = begin(m_Tests); test != end(m_Tests); ++test)
-            failures += (*test)->failedHierarchy() ? 1 : 0;
+        for (const auto& test : m_Tests)
+            failures += test->failedHierarchy() ? 1 : 0;
         return failures;
     }
 
@@ -301,6 +301,7 @@ namespace JEBTest
         return m_AllTestsEnabled;
     }
 
+    // ReSharper disable once CppMemberFunctionMayBeConst
     void Session::setAllTestsEnabled(bool enable)
     {
         m_TestFilter->setType(enable ? InclusiveFilter : ExclusiveFilter);
@@ -381,6 +382,7 @@ namespace JEBTest
     std::string Session::getTestName() const
     {
         std::vector<std::string> names;
+        names.reserve(m_ActiveTest.size());
         for (const auto& test : m_ActiveTest)
             names.push_back(test->name());
         return ystring::join(names.begin(), names.end(), "/");
